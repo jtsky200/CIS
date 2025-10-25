@@ -2,7 +2,7 @@ const OpenAI = require('openai');
 
 // Initialize OpenAI with admin key
 const openai = new OpenAI({
-    apiKey: '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'
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 console.log('OpenAI initialized:', !!openai);
