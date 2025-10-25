@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow Cloud Functions to read and write
+    match /knowledgebase/{document=**} {
+      allow read, write: if true;
+    }
+    
+    // Allow all reads and writes for now (for testing)
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+

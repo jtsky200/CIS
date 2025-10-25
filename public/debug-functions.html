@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Functions - Cadillac EV Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js?v=1736001234"></script>
+</head>
+<body>
+    <div style="padding: 20px; margin-top: 20px;">
+        <h1>Function Debug Page</h1>
+        <div id="debugOutput"></div>
+        
+        <h2>Test Buttons:</h2>
+        <button onclick="testSwitchPage()">Test switchPage</button>
+        <button onclick="testToggleTheme()">Test toggleTheme</button>
+        <button onclick="testSetupThemeToggle()">Test setupThemeToggle</button>
+    </div>
+
+    <script>
+        function testSwitchPage() {
+            const output = document.getElementById('debugOutput');
+            output.innerHTML += '<p>Testing switchPage...</p>';
+            
+            if (typeof switchPage === 'function') {
+                output.innerHTML += '<p>✅ switchPage function exists</p>';
+                try {
+                    switchPage('dashboard');
+                } catch (error) {
+                    output.innerHTML += '<p>❌ Error calling switchPage: ' + error.message + '</p>';
+                }
+            } else {
+                output.innerHTML += '<p>❌ switchPage function not found</p>';
+            }
+        }
+        
+        function testToggleTheme() {
+            const output = document.getElementById('debugOutput');
+            output.innerHTML += '<p>Testing toggleTheme...</p>';
+            
+            if (typeof toggleTheme === 'function') {
+                output.innerHTML += '<p>✅ toggleTheme function exists</p>';
+                try {
+                    toggleTheme();
+                } catch (error) {
+                    output.innerHTML += '<p>❌ Error calling toggleTheme: ' + error.message + '</p>';
+                }
+            } else {
+                output.innerHTML += '<p>❌ toggleTheme function not found</p>';
+            }
+        }
+        
+        function testSetupThemeToggle() {
+            const output = document.getElementById('debugOutput');
+            output.innerHTML += '<p>Testing setupThemeToggle...</p>';
+            
+            if (typeof setupThemeToggle === 'function') {
+                output.innerHTML += '<p>✅ setupThemeToggle function exists</p>';
+                try {
+                    setupThemeToggle();
+                } catch (error) {
+                    output.innerHTML += '<p>❌ Error calling setupThemeToggle: ' + error.message + '</p>';
+                }
+            } else {
+                output.innerHTML += '<p>❌ setupThemeToggle function not found</p>';
+            }
+        }
+        
+        // Check function availability on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const output = document.getElementById('debugOutput');
+            output.innerHTML += '<h3>Function Availability Check:</h3>';
+            output.innerHTML += '<p>switchPage: ' + (typeof switchPage === 'function') + '</p>';
+            output.innerHTML += '<p>toggleTheme: ' + (typeof toggleTheme === 'function') + '</p>';
+            output.innerHTML += '<p>setupThemeToggle: ' + (typeof setupThemeToggle === 'function') + '</p>';
+            output.innerHTML += '<p>loadThemeFromDatabase: ' + (typeof loadThemeFromDatabase === 'function') + '</p>';
+            
+            // Check if theme toggle button exists
+            const themeToggle = document.getElementById('themeToggle');
+            output.innerHTML += '<p>themeToggle button exists: ' + (themeToggle !== null) + '</p>';
+            
+            // Try to call setupThemeToggle if available
+            if (typeof setupThemeToggle === 'function') {
+                setupThemeToggle();
+                output.innerHTML += '<p>✅ setupThemeToggle called</p>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadillac EV Assistant - Dashboard</title>
+    <link rel="stylesheet" href="styles.css?v=123456789">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <div class="nav-brand-icon" id="navLogo">C</div>
+            <span id="navBrandText">Cadillac EV</span>
+        </div>
+        <div class="nav-menu">
+            <a class="nav-item active" href="dashboard.html" data-page="dashboard">Dashboard</a>
+            <a class="nav-item" href="chat.html" data-page="chat">Chat</a>
+            <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting">Troubleshooting</a>
+            <a class="nav-item" href="settings.html" data-page="settings">Einstellungen</a>
+            <button class="theme-toggle" id="themeToggle" title="Theme wechseln">
+                <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg class="theme-icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Dashboard Page -->
+    <div class="page active" id="dashboardPage">
+        <div class="dashboard-container">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-description">Übersicht über Ihre Cadillac EV Assistant Aktivitäten</p>
+            
+            <!-- Statistics -->
+            <div style="margin-bottom: 40px;">
+                <h2 class="section-title">Statistiken</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M17,18H7V16H17V18M17,14H7V12H17V14M17,10H7V8H17V10Z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dashDocCount">0</div>
+                            <div class="stat-label">Dokumente</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dashTotalSize">0 MB</div>
+                            <div class="stat-label">Gesamtgröße</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dashLastUpdate">Nie</div>
+                            <div class="stat-label">Letzte Aktualisierung</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div style="margin-bottom: 40px;">
+                <h2 class="section-title">Schnellzugriff</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <button class="quick-action-btn" onclick="window.location.href='chat.html'">
+                        <div class="quick-action-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2C6.48,2 2,6.48 2,12C2,13.54 2.35,15 2.95,16.29L2,22L7.71,21.05C9,21.65 10.46,22 12,22C17.52,22 22,17.52 22,12S17.52,2 12,2M12,20C10.74,20 9.54,19.81 8.43,19.46L8,19.5L3.5,20.5L4.5,16L4.54,15.57C4.19,14.46 4,13.26 4,12C4,7.59 7.59,4 12,4S20,7.59 20,12S16.41,20 12,20M8,9H16V11H8V9M8,12H13V14H8V12Z"/>
+                            </svg>
+                        </div>
+                        <div class="quick-action-content">
+                            <div class="quick-action-title">Chat starten</div>
+                            <div class="quick-action-subtitle">Neue Konversation</div>
+                        </div>
+                    </button>
+                    <button class="quick-action-btn" onclick="window.location.href='settings.html'">
+                        <div class="quick-action-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,11L9,14H11V18H13V14H15L12,11Z"/>
+                            </svg>
+                        </div>
+                        <div class="quick-action-content">
+                            <div class="quick-action-title">Datei hochladen</div>
+                            <div class="quick-action-subtitle">Wissensdatenbank erweitern</div>
+                        </div>
+                    </button>
+                    <button class="quick-action-btn" onclick="window.open('https://www.cadillaceurope.com/ch-de', '_blank')">
+                        <div class="quick-action-icon">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19M10.5,15.5L12,14L13.5,15.5L14.5,14.5L13,13L14.5,11.5L13.5,10.5L12,12L10.5,10.5L9.5,11.5L11,13L9.5,14.5L10.5,15.5Z"/>
+                            </svg>
+                        </div>
+                        <div class="quick-action-content">
+                            <div class="quick-action-title">Cadillac Website</div>
+                            <div class="quick-action-subtitle">Offizielle Seite besuchen</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div>
+                <h2 class="section-title">Letzte Aktivitäten</h2>
+                <div id="dashRecentActivity" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
+                    <div style="color: #6b7280; text-align: center; padding: 20px;">Keine Aktivitäten vorhanden</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=123456789"></script>
+    <script>
+        // Simple navigation function for dashboard
+        function switchPage(page) {
+            console.log('Switching to page:', page);
+            switch(page) {
+                case 'dashboard':
+                    window.location.href = 'dashboard.html';
+                    break;
+                case 'chat':
+                    window.location.href = 'chat.html';
+                    break;
+                case 'troubleshooting':
+                    window.location.href = 'troubleshooting.html';
+                    break;
+                case 'settings':
+                    window.location.href = 'settings.html';
+                    break;
+            }
+        }
+        
+        // Initialize theme toggle and load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    // Use the global toggleTheme function from app.js
+                    if (typeof window.toggleTheme === 'function') {
+                        window.toggleTheme();
+                    } else {
+                        console.error('toggleTheme function not found');
+                    }
+                });
+            }
+            
+            // Load branding settings first
+            if (typeof loadBrandingSettings === 'function') {
+                loadBrandingSettings();
+            }
+            
+            // Apply branding to entire site
+            if (typeof applyBrandingToEntireSite === 'function') {
+                applyBrandingToEntireSite();
+            }
+            
+            // Load dashboard data
+            console.log('🔄 Dashboard page loaded, loading data...');
+            if (typeof loadDashboard === 'function') {
+                console.log('✅ loadDashboard function found, calling it...');
+                loadDashboard();
+            } else {
+                console.log('❌ loadDashboard function not available, trying alternative...');
+                // Fallback: manually load dashboard data
+                setTimeout(() => {
+                    if (typeof loadDashboard === 'function') {
+                        loadDashboard();
+                    } else {
+                        console.log('❌ loadDashboard still not available');
+                    }
+                }, 1000);
+            }
+            
+            // Reapply branding after a short delay to ensure all elements are loaded
+            setTimeout(() => {
+                if (typeof applyBrandingToEntireSite === 'function' && !window.brandingApplied) {
+                    applyBrandingToEntireSite();
+                    window.brandingApplied = true;
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Loading Debug - Cadillac EV Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js?v=1736001234"></script>
+</head>
+<body>
+    <div style="padding: 20px; margin-top: 20px;">
+        <h1>Database Loading Debug</h1>
+        <div id="debugOutput"></div>
+        
+        <h2>Test Buttons:</h2>
+        <button onclick="testLoadKnowledgeBase()">Test Load Knowledge Base</button>
+        <button onclick="testLoadTechnicalDatabase()">Test Load Technical Database</button>
+        <button onclick="testDisplayFunctions()">Test Display Functions</button>
+        <button onclick="testAll()">Test All</button>
+    </div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('debugOutput');
+            output.innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+            console.log(message);
+        }
+        
+        async function testLoadKnowledgeBase() {
+            log('🔍 Testing loadKnowledgeBase function...');
+            
+            if (typeof loadKnowledgeBase === 'function') {
+                log('✅ loadKnowledgeBase function exists');
+                try {
+                    const result = await loadKnowledgeBase();
+                    log('✅ loadKnowledgeBase completed. Result: ' + (result ? result.length + ' documents' : 'no result'));
+                } catch (error) {
+                    log('❌ Error calling loadKnowledgeBase: ' + error.message);
+                }
+            } else {
+                log('❌ loadKnowledgeBase function not found');
+            }
+        }
+        
+        async function testLoadTechnicalDatabase() {
+            log('🔧 Testing loadTechnicalDatabase function...');
+            
+            if (typeof loadTechnicalDatabase === 'function') {
+                log('✅ loadTechnicalDatabase function exists');
+                try {
+                    const result = await loadTechnicalDatabase();
+                    log('✅ loadTechnicalDatabase completed. Result: ' + (result ? result.length + ' documents' : 'no result'));
+                } catch (error) {
+                    log('❌ Error calling loadTechnicalDatabase: ' + error.message);
+                }
+            } else {
+                log('❌ loadTechnicalDatabase function not found');
+            }
+        }
+        
+        function testDisplayFunctions() {
+            log('📊 Testing display functions...');
+            
+            if (typeof displayKnowledgeBase === 'function') {
+                log('✅ displayKnowledgeBase function exists');
+            } else {
+                log('❌ displayKnowledgeBase function not found');
+            }
+            
+            if (typeof displayTechnicalDatabase === 'function') {
+                log('✅ displayTechnicalDatabase function exists');
+            } else {
+                log('❌ displayTechnicalDatabase function not found');
+            }
+        }
+        
+        async function testAll() {
+            log('🚀 Testing all database functions...');
+            await testLoadKnowledgeBase();
+            await testLoadTechnicalDatabase();
+            testDisplayFunctions();
+            log('✅ All tests completed!');
+        }
+        
+        // Auto-run tests on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('📋 Database Loading Debug Page Loaded');
+            log('Checking function availability...');
+            
+            // Check function availability
+            log('loadKnowledgeBase: ' + (typeof loadKnowledgeBase === 'function'));
+            log('loadTechnicalDatabase: ' + (typeof loadTechnicalDatabase === 'function'));
+            log('displayKnowledgeBase: ' + (typeof displayKnowledgeBase === 'function'));
+            log('displayTechnicalDatabase: ' + (typeof displayTechnicalDatabase === 'function'));
+            
+            // Auto-run tests
+            testAll();
+        });
+    </script>
+</body>
+</html>

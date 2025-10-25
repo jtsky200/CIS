@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadillac EV Assistant - Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <div class="nav-brand-icon" id="navLogo">C</div>
+            <span id="navBrandText">Cadillac EV</span>
+        </div>
+        <div class="nav-menu">
+            <a class="nav-item" href="dashboard.html">Dashboard</a>
+            <a class="nav-item active" href="chat.html">Chat</a>
+            <a class="nav-item" href="troubleshooting.html">Troubleshooting</a>
+            <a class="nav-item" href="settings.html">Einstellungen</a>
+            <button class="theme-toggle" id="themeToggle" title="Theme wechseln">
+                <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg class="theme-icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="chat-container" id="chatPage">
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message" id="welcomeMessage">
+                <h1 class="welcome-title">Cadillac EV Assistant</h1>
+                <p class="welcome-subtitle">Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge</p>
+                <div class="suggestion-grid">
+                    <button class="suggestion-prompt" onclick="sendSuggestion('Was kostet der Cadillac LYRIQ?')">
+                        <span class="suggestion-prompt-text">Was kostet der Cadillac LYRIQ?</span>
+                    </button>
+                    <button class="suggestion-prompt" onclick="sendSuggestion('Wie hoch ist die Reichweite?')">
+                        <span class="suggestion-prompt-text">Wie hoch ist die Reichweite?</span>
+                    </button>
+                    <button class="suggestion-prompt" onclick="sendSuggestion('Lieferzeiten & Bestellung')">
+                        <span class="suggestion-prompt-text">Lieferzeiten & Bestellung</span>
+                    </button>
+                    <button class="suggestion-prompt" onclick="sendSuggestion('Garantie & Service')">
+                        <span class="suggestion-prompt-text">Garantie & Service</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="input-container" id="inputContainer">
+            <div class="input-wrapper">
+                <div class="input-buttons-left">
+                    <button class="input-btn" id="attachBtn" title="Datei anhängen">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                        </svg>
+                    </button>
+                    <button class="input-btn" id="imageBtn" title="Bild hochladen">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <textarea 
+                    class="input-field" 
+                    id="messageInput" 
+                    placeholder="Nachricht an Cadillac EV Assistant..."
+                    rows="1"
+                ></textarea>
+                <div class="input-buttons-right">
+                    <button class="input-btn" id="micBtn" title="Spracheingabe">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </button>
+                    <button class="input-btn send-btn" id="sendBtn" type="button" title="Senden">
+                        <svg fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Working Chat System
+        console.log('🚀 Initializing working chat system...');
+        
+        // Global variables
+        let isProcessing = false;
+        
+        // Initialize chat when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Chat page loaded');
+            setupChat();
+        });
+        
+        // Setup chat functionality
+        function setupChat() {
+            console.log('🔧 Setting up chat functionality...');
+            
+            // Setup send button
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendMessage);
+                console.log('✅ Send button setup complete');
+            }
+            
+            // Setup message input
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+                console.log('✅ Message input setup complete');
+            }
+            
+            // Setup file buttons
+            const attachBtn = document.getElementById('attachBtn');
+            const imageBtn = document.getElementById('imageBtn');
+            const micBtn = document.getElementById('micBtn');
+            
+            if (attachBtn) {
+                attachBtn.addEventListener('click', () => {
+                    showMessage('Datei-Upload wird bald verfügbar sein', 'info');
+                });
+            }
+            
+            if (imageBtn) {
+                imageBtn.addEventListener('click', () => {
+                    showMessage('Bild-Upload wird bald verfügbar sein', 'info');
+                });
+            }
+            
+            if (micBtn) {
+                micBtn.addEventListener('click', () => {
+                    showMessage('Spracheingabe wird bald verfügbar sein', 'info');
+                });
+            }
+            
+            console.log('✅ Chat setup complete');
+        }
+        
+        // Send suggestion message
+        function sendSuggestion(message) {
+            console.log('💬 Sending suggestion:', message);
+            addMessage(message, 'user');
+            processMessage(message);
+        }
+        
+        // Send message
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput ? messageInput.value.trim() : '';
+            
+            if (!message) {
+                console.log('⚠️ No message to send');
+                return;
+            }
+            
+            console.log('📤 Sending message:', message);
+            
+            // Clear input
+            if (messageInput) {
+                messageInput.value = '';
+            }
+            
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Process message
+            processMessage(message);
+        }
+        
+        // Add message to chat
+        function addMessage(content, sender) {
+            console.log('💬 Adding message:', content, sender);
+            
+            const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages) {
+                console.error('❌ chatMessages element not found');
+                return;
+            }
+            
+            // Hide welcome message
+            const welcomeMessage = chatMessages.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.style.display = 'none';
+            }
+            
+            // Update classes
+            chatMessages.classList.remove('empty');
+            chatMessages.classList.add('has-messages');
+            
+            // Create message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <div class="user-question">${content}</div>
+                    </div>
+                `;
+            } else {
+                // Format AI response with markdown
+                const formattedContent = formatMessage(content);
+                messageDiv.innerHTML = `
+                    <div class="message-content">${formattedContent}</div>
+                `;
+            }
+            
+            // Add to chat
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            console.log('✅ Message added successfully');
+        }
+        
+        // Process message with AI
+        async function processMessage(message) {
+            if (isProcessing) {
+                console.log('⚠️ Already processing a message');
+                return;
+            }
+            
+            isProcessing = true;
+            console.log('🤖 Processing message:', message);
+            
+            try {
+                // Show typing indicator
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) {
+                    typingIndicator.style.display = 'flex';
+                }
+                
+                // Call API
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/generateChatResponse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        knowledgeBase: true,
+                        technicalContext: true,
+                        chatId: 'working-chat',
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ API response received:', data);
+                
+                // Hide typing indicator
+                if (typingIndicator) {
+                    typingIndicator.style.display = 'none';
+                }
+                
+                // Add AI response
+                if (data.response) {
+                    addMessage(data.response, 'assistant');
+                } else {
+                    addMessage('Entschuldigung, ich konnte keine Antwort generieren.', 'assistant');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error processing message:', error);
+                
+                // Hide typing indicator
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) {
+                    typingIndicator.style.display = 'none';
+                }
+                
+                // Add error message
+                addMessage('Entschuldigung, es gab einen Fehler beim Verarbeiten Ihrer Nachricht.', 'assistant');
+            } finally {
+                isProcessing = false;
+            }
+        }
+        
+        // Format message with markdown
+        function formatMessage(content) {
+            if (typeof marked !== 'undefined') {
+                try {
+                    return marked.parse(content);
+                } catch (error) {
+                    console.error('Error formatting message:', error);
+                    return content;
+                }
+            }
+            return content;
+        }
+        
+        // Show message notification
+        function showMessage(message, type = 'info') {
+            console.log(`📢 ${type.toUpperCase()}: ${message}`);
+            // You can implement a proper notification system here
+            alert(message);
+        }
+        
+        // Make functions globally accessible
+        window.sendSuggestion = sendSuggestion;
+        window.sendMessage = sendMessage;
+        window.addMessage = addMessage;
+        window.processMessage = processMessage;
+        window.formatMessage = formatMessage;
+        window.showMessage = showMessage;
+        
+        console.log('✅ Working chat system initialized');
+    </script>
+</body>
+</html>

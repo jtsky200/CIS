@@ -1,0 +1,26 @@
+# Cursor Rules for Cadillac EV App Development
+
+## CRITICAL DEPLOYMENT RULE
+**NEVER deploy changes without explicit user confirmation!**
+
+### Deployment Process:
+1. Make code changes
+2. Show changes to user
+3. **WAIT for user to confirm with words like "confirmed", "deploy", "yes", "go ahead", or similar**
+4. Only THEN run `firebase deploy --only hosting`
+
+### Important:
+- DO NOT assume user wants to deploy
+- DO NOT deploy automatically after making changes
+- DO NOT deploy just because changes look good
+- ALWAYS wait for explicit confirmation
+- User will say "confirmed", "deploy it", "yes deploy", or similar phrases when ready
+
+## Other Development Guidelines
+- Always use professional, consistent design
+- Keep button sizes normal and proportional
+- Maintain font weights for readability
+- Ensure dark/light theme works across all pages
+- Test functionality before showing to user
+- Keep code clean and well-commented
+

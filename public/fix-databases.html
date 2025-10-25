@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Databases - Cadillac EV Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js?v=1736001234"></script>
+</head>
+<body>
+    <div style="padding: 20px; margin-top: 20px;">
+        <h1>Database Fix Page</h1>
+        <div id="debugOutput"></div>
+        
+        <h2>Test Database Loading:</h2>
+        <button onclick="testDirectAPI()">Test Direct API Calls</button>
+        <button onclick="testLoadFunctions()">Test Load Functions</button>
+        <button onclick="testDisplayFunctions()">Test Display Functions</button>
+        <button onclick="fixDatabases()">Fix All Databases</button>
+        
+        <h2>Knowledge Base Test:</h2>
+        <div id="kbTestResults"></div>
+        
+        <h2>Technical Database Test:</h2>
+        <div id="techTestResults"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://us-central1-cis-de.cloudfunctions.net';
+        
+        function log(message) {
+            const output = document.getElementById('debugOutput');
+            output.innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+            console.log(message);
+        }
+        
+        async function testDirectAPI() {
+            log('🔍 Testing direct API calls...');
+            
+            try {
+                // Test Knowledge Base API
+                const kbResponse = await fetch(`${API_BASE}/knowledgebase?t=${Date.now()}`);
+                log('Knowledge Base API Status: ' + kbResponse.status);
+                
+                if (kbResponse.ok) {
+                    const kbData = await kbResponse.json();
+                    log('✅ Knowledge Base API Success: ' + (kbData.documents ? kbData.documents.length : 0) + ' documents');
+                    document.getElementById('kbTestResults').innerHTML = '<p>✅ KB API: ' + (kbData.documents ? kbData.documents.length : 0) + ' documents</p>';
+                } else {
+                    log('❌ Knowledge Base API Error: ' + kbResponse.status);
+                }
+                
+                // Test Technical Database API
+                const techResponse = await fetch(`${API_BASE}/technicalDatabase?t=${Date.now()}`);
+                log('Technical Database API Status: ' + techResponse.status);
+                
+                if (techResponse.ok) {
+                    const techData = await techResponse.json();
+                    log('✅ Technical Database API Success: ' + (techData.documents ? techData.documents.length : 0) + ' documents');
+                    document.getElementById('techTestResults').innerHTML = '<p>✅ Tech API: ' + (techData.documents ? techData.documents.length : 0) + ' documents</p>';
+                } else {
+                    log('❌ Technical Database API Error: ' + techResponse.status);
+                }
+                
+            } catch (error) {
+                log('❌ API Test Error: ' + error.message);
+            }
+        }
+        
+        async function testLoadFunctions() {
+            log('🔧 Testing load functions...');
+            
+            // Test if functions exist
+            log('loadKnowledgeBase exists: ' + (typeof loadKnowledgeBase === 'function'));
+            log('loadTechnicalDatabase exists: ' + (typeof loadTechnicalDatabase === 'function'));
+            log('displayKnowledgeBase exists: ' + (typeof displayKnowledgeBase === 'function'));
+            log('displayTechnicalDatabase exists: ' + (typeof displayTechnicalDatabase === 'function'));
+            
+            // Test calling the functions
+            if (typeof loadKnowledgeBase === 'function') {
+                try {
+                    log('Calling loadKnowledgeBase...');
+                    await loadKnowledgeBase();
+                    log('✅ loadKnowledgeBase completed');
+                } catch (error) {
+                    log('❌ loadKnowledgeBase error: ' + error.message);
+                }
+            }
+            
+            if (typeof loadTechnicalDatabase === 'function') {
+                try {
+                    log('Calling loadTechnicalDatabase...');
+                    await loadTechnicalDatabase();
+                    log('✅ loadTechnicalDatabase completed');
+                } catch (error) {
+                    log('❌ loadTechnicalDatabase error: ' + error.message);
+                }
+            }
+        }
+        
+        function testDisplayFunctions() {
+            log('📊 Testing display functions...');
+            
+            // Create test elements
+            const testContainer = document.createElement('div');
+            testContainer.innerHTML = `
+                <div id="kbList"></div>
+                <div id="techList"></div>
+                <div id="kbDocCount"></div>
+                <div id="kbTotalSize"></div>
+                <div id="kbLastUpdate"></div>
+                <div id="techDocCount"></div>
+                <div id="techTotalSize"></div>
+                <div id="techLastUpdate"></div>
+            `;
+            document.body.appendChild(testContainer);
+            
+            // Test display functions
+            if (typeof displayKnowledgeBase === 'function') {
+                try {
+                    displayKnowledgeBase([]);
+                    log('✅ displayKnowledgeBase works with empty array');
+                } catch (error) {
+                    log('❌ displayKnowledgeBase error: ' + error.message);
+                }
+            }
+            
+            if (typeof displayTechnicalDatabase === 'function') {
+                try {
+                    displayTechnicalDatabase([]);
+                    log('✅ displayTechnicalDatabase works with empty array');
+                } catch (error) {
+                    log('❌ displayTechnicalDatabase error: ' + error.message);
+                }
+            }
+            
+            // Clean up
+            document.body.removeChild(testContainer);
+        }
+        
+        async function fixDatabases() {
+            log('🚀 Starting database fix...');
+            
+            // Step 1: Test APIs
+            await testDirectAPI();
+            
+            // Step 2: Test functions
+            await testLoadFunctions();
+            
+            // Step 3: Test display
+            testDisplayFunctions();
+            
+            // Step 4: Try to load and display data
+            try {
+                log('Loading knowledge base data...');
+                const kbResponse = await fetch(`${API_BASE}/knowledgebase?t=${Date.now()}`);
+                if (kbResponse.ok) {
+                    const kbData = await kbResponse.json();
+                    log('Knowledge base data loaded: ' + (kbData.documents ? kbData.documents.length : 0) + ' documents');
+                    
+                    // Try to display it
+                    if (typeof displayKnowledgeBase === 'function') {
+                        displayKnowledgeBase(kbData.documents || []);
+                        log('✅ Knowledge base displayed');
+                    }
+                }
+                
+                log('Loading technical database data...');
+                const techResponse = await fetch(`${API_BASE}/technicalDatabase?t=${Date.now()}`);
+                if (techResponse.ok) {
+                    const techData = await techResponse.json();
+                    log('Technical database data loaded: ' + (techData.documents ? techData.documents.length : 0) + ' documents');
+                    
+                    // Try to display it
+                    if (typeof displayTechnicalDatabase === 'function') {
+                        displayTechnicalDatabase(techData.documents || []);
+                        log('✅ Technical database displayed');
+                    }
+                }
+                
+            } catch (error) {
+                log('❌ Error in fixDatabases: ' + error.message);
+            }
+            
+            log('✅ Database fix completed');
+        }
+        
+        // Auto-run on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('📋 Database Fix Page Loaded');
+            fixDatabases();
+        });
+    </script>
+</body>
+</html>

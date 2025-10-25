@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einstellungen - Cadillac EV Assistant</title>
+    <link rel="stylesheet" href="styles.css?v=1736001234">
+    <link rel="stylesheet" href="settings-redesign.css?v=1736001234">
+    <style>
+        .settings-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 70px;
+        }
+        
+        .settings-header {
+            margin-bottom: 30px;
+        }
+        
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+        }
+        
+        .settings-tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        
+        .settings-tab:hover {
+            color: #3b82f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .branding-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 200;
+            color: #2d2d2d;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .logo-preview {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #9ca3af;
+            margin-bottom: 15px;
+        }
+        
+        .logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 200;
+            transition: all 0.3s ease;
+            display: inline-flex !important;
+            width: auto !important;
+            white-space: nowrap;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 200;
+            color: #2d2d2d;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 200;
+        }
+        
+        .stat-description {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+            font-weight: 200;
+        }
+        
+        .kb-search {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        
+        .kb-search-input {
+            flex: 1;
+            min-width: 200px;
+            height: 44px;
+            padding: 0 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            box-sizing: border-box;
+            line-height: normal;
+        }
+        
+        .kb-filter, .kb-sort {
+            height: 44px;
+            padding: 0 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            background: white;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        
+        .kb-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .kb-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .kb-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .kb-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .kb-item-title {
+            font-weight: 200;
+            color: #2d2d2d;
+            font-size: 16px;
+        }
+        
+        .kb-item-date {
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 200;
+        }
+        
+        .kb-tools {
+            display: flex !important;
+            gap: 8px !important;
+            align-items: center !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            flex-shrink: 0;
+        }
+        
+        .kb-tool-btn {
+            padding: 8px 12px !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            min-width: 32px !important;
+            height: 32px !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            background: #f3f4f6 !important;
+        }
+        
+        .kb-tool-btn.primary {
+            background: #3b82f6 !important;
+            border-color: #2563eb !important;
+            color: white !important;
+        }
+        
+        .kb-tool-btn.primary:hover {
+            background: #2563eb !important;
+            border-color: #1d4ed8 !important;
+        }
+        
+        
+        .kb-tool-btn.danger {
+            background: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: white !important;
+        }
+        
+        .kb-tool-btn.danger:hover {
+            background: #dc2626 !important;
+            border-color: #b91c1c !important;
+        }
+        
+        .kb-item-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .file-type-badge, .file-size-badge, .kb-item-category {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 200;
+        }
+        
+        .file-type-badge {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .file-size-badge {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .kb-item-category {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .kb-checkbox {
+            margin-right: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 0;
+            border: none;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 200;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <div class="nav-brand-icon" id="navLogo">C</div>
+            <span id="navBrandText">Cadillac EV</span>
+        </div>
+        <div class="nav-menu">
+            <a class="nav-item" href="dashboard.html" data-page="dashboard">Dashboard</a>
+            <a class="nav-item" href="chat.html" data-page="chat">Chat</a>
+            <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting">Troubleshooting</a>
+            <a class="nav-item active" href="settings.html" data-page="settings">Einstellungen</a>
+            <button class="theme-toggle" id="themeToggle" title="Theme wechseln">
+                <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg class="theme-icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+            <div class="settings-header">
+            <h1 style="font-weight: 200; color: #2d2d2d;">Einstellungen</h1>
+            <p style="color: #6b7280; font-weight: 200;">Verwalten Sie Ihre Anwendungseinstellungen</p>
+            </div>
+            
+            <div class="settings-tabs">
+            <button class="settings-tab active" data-tab="branding" onclick="switchSettingsTab('branding')">Branding</button>
+            <button class="settings-tab" data-tab="knowledge" onclick="switchSettingsTab('knowledge')">Wissensdatenbank</button>
+            <button class="settings-tab" data-tab="technical" onclick="switchSettingsTab('technical')">Technische Datenbank</button>
+            </div>
+            
+        <!-- Branding Tab -->
+        <div id="branding" class="tab-content active">
+            <div class="branding-section">
+                <h2 style="font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Branding & Anpassung</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 200;">Passe Logo, Texte, Farben und Willkommensnachricht an.</p>
+                
+                <!-- Logo Section -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Logo & Branding</h3>
+                    
+                    <div class="logo-preview" id="logoPreview">C</div>
+                    
+                    <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center;">
+                                <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUploadDirect(this)" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('logoUpload').click()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Logo hochladen</button>
+                        <button class="btn btn-secondary" onclick="resetLogoDirect()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Logo zurücksetzen</button>
+                        <button class="btn btn-info" onclick="testLogoUpload()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Test Logo</button>
+                        <button class="btn btn-warning" onclick="loadBrandingSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Load Now</button>
+                            </div>
+                    <div class="form-hint">Empfohlene Größe: 64×64px (wird automatisch angepasst)</div>
+                        </div>
+                        
+                <!-- Text Customization -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Text-Anpassungen</h3>
+                    
+                    <!-- Navigation Text -->
+                    <div style="margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                        <div style="margin-bottom: 12px;">
+                            <span style="font-size: 14px; font-weight: 600; color: #374151;">Navigation</span>
+                    </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Markentext</label>
+                            <input type="text" id="brandText" placeholder="Cadillac EV" value="Cadillac EV" style="max-width: 400px;">
+                            <div class="form-hint">Erscheint in der oberen Navigation</div>
+                </div>
+            </div>
+                    
+                    <!-- Welcome Message -->
+                    <div style="margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                        <div style="margin-bottom: 12px;">
+                            <span style="font-size: 14px; font-weight: 600; color: #374151;">Willkommensnachricht</span>
+                    </div>
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Haupttitel</label>
+                                <input type="text" id="welcomeTitle" placeholder="Cadillac EV Assistant" value="Cadillac EV Assistant" style="max-width: 500px;">
+                                <div class="form-hint">Haupttitel auf der Startseite</div>
+                </div>
+                
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Untertitel</label>
+                                <input type="text" id="welcomeSubtitle" placeholder="Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge" value="Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge" style="max-width: 600px;">
+                                <div class="form-hint">Untertitel auf der Startseite</div>
+                    </div>
+                </div>
+                    </div>
+                    
+                    <!-- Browser Settings -->
+                    <div style="padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                        <div style="margin-bottom: 12px;">
+                            <span style="font-size: 14px; font-weight: 600; color: #374151;">Browser</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Seitentitel</label>
+                            <input type="text" id="pageTitle" placeholder="Cadillac EV Assistant" value="Cadillac EV Assistant" style="max-width: 400px;">
+                            <div class="form-hint">Titel im Browser-Tab</div>
+                    </div>
+                </div>
+            </div>
+                
+                <!-- Color Scheme -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Farbschema</h3>
+                    
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div class="form-group" style="width: 200px;">
+                            <label>Primärfarbe</label>
+                            <input type="color" id="primaryColor" value="#3b82f6" style="width: 100%;">
+                            <div class="form-hint">Hauptfarbe für Buttons und Links</div>
+                </div>
+
+                        <div class="form-group" style="width: 200px;">
+                            <label>Sekundärfarbe</label>
+                            <input type="color" id="secondaryColor" value="#6b7280" style="width: 100%;">
+                            <div class="form-hint">Farbe für sekundäre Elemente</div>
+                    </div>
+                        </div>
+                    </div>
+                    
+                <!-- Advanced Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Erweiterte Einstellungen</h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 200;">
+                            <input type="checkbox" id="showLogoInNav" checked>
+                            Logo in Navigation anzeigen
+                        </label>
+                        
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 200;">
+                            <input type="checkbox" id="showWelcomeMessage" checked>
+                            Willkommensnachricht anzeigen
+                        </label>
+                        
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 200;">
+                            <input type="checkbox" id="enableAnimations" checked>
+                            Animationen aktivieren
+                        </label>
+                        </div>
+                    </div>
+                    
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 12px; margin-top: 32px; align-items: center;">
+                    <button class="btn btn-primary" onclick="saveBrandingSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Änderungen speichern</button>
+                    <button class="btn btn-secondary" onclick="resetAllBranding()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Alles zurücksetzen</button>
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Knowledge Base Tab -->
+        <div id="knowledge" class="tab-content">
+            <div class="branding-section">
+                <h2 style="font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Wissensdatenbank</h2>
+                
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="kbDocCount">0</div>
+                        <div class="stat-label">Dokumente</div>
+                        <div class="stat-description">Wissensdatenbank</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="kbTotalSize">0 MB</div>
+                        <div class="stat-label">Gesamtgröße</div>
+                        <div class="stat-description">Alle Dateien</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="kbLastUpdate">-</div>
+                        <div class="stat-label">Letzte Aktualisierung</div>
+                        <div class="stat-description">Wissensdatenbank</div>
+                    </div>
+                </div>
+                
+                <script>
+                // FORCE LOAD KNOWLEDGE BASE IMMEDIATELY - INLINE SCRIPT
+                (function() {
+                    fetch('https://us-central1-cis-de.cloudfunctions.net/knowledgebase?t=' + Date.now())
+                        .then(r => r.json())
+                        .then(data => {
+                            const docs = data.documents || [];
+                            document.getElementById('kbDocCount').textContent = docs.length;
+                            const size = docs.reduce((sum, doc) => sum + (doc.size || 0), 0);
+                            document.getElementById('kbTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
+                            console.log('✅ KB Inline: Loaded ' + docs.length + ' documents');
+                        })
+                        .catch(e => console.error('KB Inline Error:', e));
+                })();
+                </script>
+                    
+                <!-- Toolbar -->
+                <div class="kb-toolbar">
+                    <!-- Search Row -->
+                    <div class="kb-search">
+                        <input type="text" id="kbSearch" class="kb-search-input" placeholder="Dokumente durchsuchen...">
+                        <select id="kbFilter" class="kb-filter">
+                            <option value="">Alle Kategorien</option>
+                            <option value="PDF">PDF</option>
+                            <option value="TXT">TXT</option>
+                            <option value="MD">Markdown</option>
+                            <option value="XLSX">Excel</option>
+                        </select>
+                        <select id="kbSort" class="kb-sort">
+                            <option value="newest">Neueste zuerst</option>
+                            <option value="oldest">Älteste zuerst</option>
+                            <option value="name">Nach Name</option>
+                            <option value="size">Nach Größe</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="refreshKnowledgeBase()">Aktualisieren</button>
+                </div>
+
+                    <!-- Bulk Actions Bar -->
+                    <div class="kb-bulk-actions">
+                        <div class="kb-select-all">
+                            <input type="checkbox" id="selectAllKb">
+                            <label for="selectAllKb">Alle auswählen</label>
+                        </div>
+                        <div class="kb-bulk-actions-right">
+                            <span class="kb-selected-count"><span id="selectedCount">0</span> ausgewählt</span>
+                            <button class="btn btn-secondary" id="bulkDeleteKbBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Ausgewählte löschen</button>
+                            <button class="btn btn-secondary" id="exportKbBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Exportieren</button>
+                            <button class="btn btn-secondary" id="importKbBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Importieren</button>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Document List -->
+                <div id="kbList">
+                    <!-- Documents will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Technical Database Tab -->
+        <div id="technical" class="tab-content">
+            <div class="branding-section">
+                <h2 style="font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Technische Datenbank</h2>
+                
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="techDocCount">0</div>
+                        <div class="stat-label">Dokumente</div>
+                        <div class="stat-description">Technische Datenbank</div>
+                            </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="techTotalSize">0 KB</div>
+                        <div class="stat-label">Gesamtgröße</div>
+                        <div class="stat-description">Alle Dateien</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="techLastUpdate">-</div>
+                        <div class="stat-label">Letzte Aktualisierung</div>
+                        <div class="stat-description">Technische Datenbank</div>
+                    </div>
+                </div>
+                
+                <script>
+                // FORCE LOAD TECHNICAL DATABASE IMMEDIATELY - INLINE SCRIPT
+                (function() {
+                    fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase?t=' + Date.now())
+                        .then(r => r.json())
+                        .then(data => {
+                            const docs = data.documents || [];
+                            document.getElementById('techDocCount').textContent = docs.length;
+                            const size = docs.reduce((sum, doc) => sum + (doc.size || 0), 0);
+                            document.getElementById('techTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
+                            console.log('✅ Tech Inline: Loaded ' + docs.length + ' documents');
+                        })
+                        .catch(e => console.error('Tech Inline Error:', e));
+                })();
+                </script>
+
+                <!-- Toolbar -->
+                <div class="kb-toolbar">
+                    <!-- Search Row -->
+                    <div class="kb-search">
+                        <input type="text" id="techSearch" class="kb-search-input" placeholder="Technische Dokumente durchsuchen...">
+                        <select id="techFilter" class="kb-filter">
+                            <option value="">Alle Kategorien</option>
+                            <option value="PDF">PDF</option>
+                            <option value="TXT">TXT</option>
+                            <option value="MD">Markdown</option>
+                            <option value="XLSX">Excel</option>
+                        </select>
+                        <select id="techSort" class="kb-sort">
+                            <option value="newest">Neueste zuerst</option>
+                            <option value="oldest">Älteste zuerst</option>
+                            <option value="name">Nach Name</option>
+                            <option value="size">Nach Größe</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="refreshTechnicalDatabase()">Aktualisieren</button>
+                        </div>
+
+                    <!-- Bulk Actions Bar -->
+                    <div class="kb-bulk-actions">
+                        <div class="kb-select-all">
+                            <input type="checkbox" id="selectAllTech">
+                            <label for="selectAllTech">Alle auswählen</label>
+                            </div>
+                        <div class="kb-bulk-actions-right">
+                            <span class="kb-selected-count"><span id="selectedTechCount">0</span> ausgewählt</span>
+                            <button class="btn btn-secondary" id="bulkDeleteTechBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Ausgewählte löschen</button>
+                            <button class="btn btn-secondary" id="exportTechBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Exportieren</button>
+                            <button class="btn btn-secondary" id="importTechBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Importieren</button>
+                        </div>
+                            </div>
+                        </div>
+
+                <!-- Document List -->
+                <div id="techList">
+                    <!-- Documents will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Dokument löschen</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+                    </div>
+            <div class="modal-body">
+                <p>Möchten Sie dieses Dokument wirklich löschen?</p>
+                <p><strong id="deleteDocName"></strong></p>
+                <div style="display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; align-items: center;">
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Abbrechen</button>
+                    <button class="btn btn-danger" onclick="confirmDelete()">Löschen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=1736001234"></script>
+    <script>
+        // IMMEDIATE logo loading - no delays, no events
+        (function() {
+            console.log('🔄 IMMEDIATE: Loading branding settings...');
+            fetch('https://us-central1-cis-de.cloudfunctions.net/branding')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('🔄 IMMEDIATE: Got branding data:', data);
+                    if (data.branding && data.branding.logo) {
+                        const logoPreview = document.getElementById('logoPreview');
+                        if (logoPreview) {
+                            logoPreview.innerHTML = `<img src="${data.branding.logo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">`;
+                            console.log('✅ IMMEDIATE: Logo loaded successfully');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ IMMEDIATE: Error loading branding:', error);
+                });
+        })();
+    </script>
+    <script>
+        // Load branding settings function - Define at the very top
+        window.loadBrandingSettings = async function() {
+            try {
+                console.log('🔄 loadBrandingSettings function called - Loading branding settings from database...');
+                
+                // Try to load from database first
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding');
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const settings = result.branding;
+                    console.log('Loaded branding settings from database:', settings);
+                    
+                    // Load form values
+                    const brandText = document.getElementById('brandText');
+                    if (brandText) brandText.value = settings.brandText || 'Cadillac EV';
+                    
+                    const welcomeTitle = document.getElementById('welcomeTitle');
+                    if (welcomeTitle) welcomeTitle.value = settings.welcomeTitle || 'Cadillac EV Assistant';
+                    
+                    const welcomeSubtitle = document.getElementById('welcomeSubtitle');
+                    if (welcomeSubtitle) welcomeSubtitle.value = settings.welcomeSubtitle || 'Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge';
+                    
+                    const pageTitle = document.getElementById('pageTitle');
+                    if (pageTitle) pageTitle.value = settings.pageTitle || 'Cadillac EV Assistant';
+                    
+                    const primaryColor = document.getElementById('primaryColor');
+                    if (primaryColor) primaryColor.value = settings.primaryColor || '#3b82f6';
+                    
+                    const secondaryColor = document.getElementById('secondaryColor');
+                    if (secondaryColor) secondaryColor.value = settings.secondaryColor || '#6b7280';
+                    
+                    // Load checkboxes
+                    const showLogoInNav = document.getElementById('showLogoInNav');
+                    if (showLogoInNav) showLogoInNav.checked = settings.showLogoInNav !== false;
+                    
+                    const showWelcomeMessage = document.getElementById('showWelcomeMessage');
+                    if (showWelcomeMessage) showWelcomeMessage.checked = settings.showWelcomeMessage !== false;
+                    
+                    const enableAnimations = document.getElementById('enableAnimations');
+                    if (enableAnimations) enableAnimations.checked = settings.enableAnimations !== false;
+                    
+                    // Load logo
+                    const logoPreview = document.getElementById('logoPreview');
+                    console.log('🔄 Loading logo:', {
+                        logoPreview: !!logoPreview,
+                        hasLogo: !!settings.logo,
+                        logoLength: settings.logo ? settings.logo.length : 'null'
+                    });
+                    
+                    if (logoPreview && settings.logo) {
+                        logoPreview.innerHTML = `<img src="${settings.logo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">`;
+                        console.log('✅ Logo loaded and displayed in preview');
+                    } else if (logoPreview) {
+                        logoPreview.innerHTML = 'C';
+                        console.log('✅ Default logo "C" displayed (no saved logo)');
+                    } else {
+                        console.error('❌ Logo preview element not found');
+                    }
+                    
+                    // Apply branding immediately
+                    if (typeof window.applyBrandingToNavigation === 'function') {
+                        window.applyBrandingToNavigation();
+                    }
+                    
+                    console.log('Branding settings loaded from database successfully');
+                } else {
+                    throw new Error('Failed to load from database');
+                }
+            } catch (error) {
+                console.error('Error loading branding settings from database:', error);
+                
+                // Show error message
+                if (typeof window.showMessage === 'function') {
+                    window.showMessage('Fehler beim Laden der Einstellungen', 'error');
+                }
+            }
+        };
+
+        // Tab switching function - Define immediately
+        window.switchSettingsTab = function(tabName) {
+            console.log('🔄 Switching to tab:', tabName);
+            
+            // Remove active class from all tabs
+            const allTabs = document.querySelectorAll('.settings-tab');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Hide all tab content
+            const allContent = document.querySelectorAll('.tab-content');
+            allContent.forEach(content => {
+                content.classList.remove('active');
+                content.style.display = 'none';
+            });
+            
+            // Activate selected tab
+            const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Show selected content
+            const selectedContent = document.getElementById(tabName);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+                selectedContent.style.display = 'block';
+            }
+            
+            // Initialize tab-specific functionality
+            if (tabName === 'knowledge') {
+                console.log('📚 Initializing knowledge base...');
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    window.loadKnowledgeBase();
+                }
+            } else if (tabName === 'technical') {
+                console.log('🔧 Initializing technical database...');
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    window.loadTechnicalDatabase();
+                }
+            }
+            
+            console.log('✅ Tab switched to:', tabName);
+        };
+        
+        // Logo reset function - Define immediately
+        window.resetLogoDirect = async function() {
+            try {
+                const logoPreview = document.getElementById('logoPreview');
+                if (logoPreview) {
+                    logoPreview.innerHTML = 'C';
+                    logoPreview.style.backgroundImage = '';
+                    console.log('Logo reset successfully');
+                }
+                
+                // Update database to remove logo and set background to dark
+                const settings = await getCurrentBrandingSettings();
+                settings.logo = null;
+                settings.logoBackgroundTransparent = false;
+                
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    // Apply branding to navigation immediately
+                    applyBrandingToNavigation();
+                    console.log('✅ Logo reset saved to database');
+                }
+            } catch (error) {
+                console.error('Error resetting logo:', error);
+            }
+        };
+        
+        // Get current branding settings from database
+        async function getCurrentBrandingSettings() {
+            try {
+                console.log('🔄 Loading current branding settings from database...');
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding');
+                console.log('📡 GET response status:', response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ Loaded branding settings:', {
+                        hasLogo: !!result.branding?.logo,
+                        logoLength: result.branding?.logo ? result.branding.logo.length : 'null',
+                        keys: Object.keys(result.branding || {})
+                    });
+                    return result.branding || {};
+                } else {
+                    const errorText = await response.text();
+                    console.error('❌ Failed to load branding settings:', response.status, errorText);
+                    throw new Error(`Failed to load branding settings: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('❌ Error loading branding settings:', error);
+                return {};
+            }
+        }
+
+        // Logo upload function - Define immediately
+        window.handleLogoUploadDirect = async function(input) {
+            console.log('🔄 Logo upload started...');
+            const file = input.files[0];
+            if (!file) {
+                console.log('❌ No file selected');
+                return;
+            }
+
+            console.log('📁 File selected:', file.name, 'Size:', file.size, 'Type:', file.type);
+
+            if (!file.type.startsWith('image/')) {
+                console.error('❌ Invalid file type:', file.type);
+                if (typeof window.showMessage === 'function') {
+                    window.showMessage('Bitte wählen Sie eine Bilddatei aus', 'error');
+                } else {
+                    console.error('Bitte wählen Sie eine Bilddatei aus');
+                }
+                return;
+            }
+
+            // Check file size (limit to 5MB for base64 encoding)
+            if (file.size > 5 * 1024 * 1024) {
+                console.error('❌ File too large:', file.size, 'bytes');
+                if (typeof window.showMessage === 'function') {
+                    window.showMessage('Datei ist zu groß. Bitte wählen Sie eine kleinere Datei (< 5MB)', 'error');
+                } else {
+                    console.error('Datei ist zu groß');
+                }
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const dataURL = e.target.result;
+                    console.log('📖 File read successfully, dataURL length:', dataURL.length);
+                    
+                    // Update logo preview
+                    const logoPreview = document.getElementById('logoPreview');
+                    if (logoPreview) {
+                        logoPreview.innerHTML = `<img src="${dataURL}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">`;
+                        console.log('✅ Logo preview updated');
+                    }
+                    
+                    // Get current branding settings from database
+                    const settings = await getCurrentBrandingSettings();
+                    settings.logo = dataURL;
+                    settings.logoBackgroundTransparent = true; // Save background state
+                    console.log('💾 Logo set in settings, length:', settings.logo ? settings.logo.length : 'null');
+                    
+                    // Save to database
+                    try {
+                        console.log('🔄 Sending logo to database...', {
+                            logoLength: settings.logo ? settings.logo.length : 'null',
+                            logoBackgroundTransparent: settings.logoBackgroundTransparent,
+                            settingsKeys: Object.keys(settings)
+                        });
+                        
+                        const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(settings)
+                        });
+                        
+                        console.log('📡 Database response status:', response.status);
+                        console.log('📡 Database response ok:', response.ok);
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            console.log('✅ Logo saved to database successfully:', result);
+                            
+                            // Verify the logo was actually saved by fetching it back
+                            console.log('🔄 Verifying logo was saved...');
+                            const verifyResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding');
+                            if (verifyResponse.ok) {
+                                const verifyResult = await verifyResponse.json();
+                                console.log('✅ Logo verification:', {
+                                    hasLogo: !!verifyResult.branding?.logo,
+                                    logoLength: verifyResult.branding?.logo ? verifyResult.branding.logo.length : 'null'
+                                });
+                            }
+                            
+                            // Apply branding immediately to navigation
+                            console.log('🔄 Applying branding to navigation...');
+                            await applyBrandingToNavigation();
+                            
+                            if (typeof window.showMessage === 'function') {
+                                window.showMessage('Logo erfolgreich hochgeladen', 'success');
+                            }
+                        } else {
+                            const errorText = await response.text();
+                            console.error('❌ Database response error:', response.status, errorText);
+                            throw new Error(`Failed to save logo to database: ${response.status} ${errorText}`);
+                        }
+                    } catch (dbError) {
+                        console.error('❌ Error saving logo to database:', dbError);
+                        
+                        if (typeof window.showMessage === 'function') {
+                            window.showMessage('Fehler beim Speichern des Logos', 'error');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error handling logo upload:', error);
+                    if (typeof window.showMessage === 'function') {
+                        window.showMessage('Fehler beim Hochladen des Logos', 'error');
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+        
+        // Save branding settings function - Define immediately
+        window.saveBrandingSettings = async function() {
+            try {
+                const settings = {
+                    brandText: document.getElementById('brandText').value,
+                    welcomeTitle: document.getElementById('welcomeTitle').value,
+                    welcomeSubtitle: document.getElementById('welcomeSubtitle').value,
+                    pageTitle: document.getElementById('pageTitle').value,
+                    primaryColor: document.getElementById('primaryColor').value,
+                    secondaryColor: document.getElementById('secondaryColor').value,
+                    showLogoInNav: document.getElementById('showLogoInNav').checked,
+                    showWelcomeMessage: document.getElementById('showWelcomeMessage').checked,
+                    enableAnimations: document.getElementById('enableAnimations').checked
+                };
+                
+                // Get existing logo from database if it exists
+                const existingSettings = await getCurrentBrandingSettings();
+                if (existingSettings.logo) {
+                    settings.logo = existingSettings.logo;
+                }
+                
+                // Save to database
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Branding settings saved to database:', result);
+                    
+                    // Apply branding immediately
+                    applyBrandingToNavigation();
+                    
+                    if (typeof window.showMessage === 'function') {
+                        window.showMessage('Branding-Einstellungen gespeichert', 'success');
+                    } else {
+                        console.log('Branding-Einstellungen gespeichert');
+                    }
+                } else {
+                    throw new Error('Failed to save branding settings');
+                }
+            } catch (error) {
+                console.error('Error saving branding settings:', error);
+                if (typeof window.showMessage === 'function') {
+                    window.showMessage('Fehler beim Speichern der Einstellungen', 'error');
+                } else {
+                    console.error('Fehler beim Speichern der Einstellungen');
+                }
+            }
+        };
+        
+        // Reset all branding function - Define immediately
+        window.resetAllBranding = function() {
+            try {
+                // Reset all form fields to default values
+                const brandText = document.getElementById('brandText');
+                if (brandText) brandText.value = 'Cadillac EV';
+                
+                const welcomeTitle = document.getElementById('welcomeTitle');
+                if (welcomeTitle) welcomeTitle.value = 'Cadillac EV Assistant';
+                
+                const welcomeSubtitle = document.getElementById('welcomeSubtitle');
+                if (welcomeSubtitle) welcomeSubtitle.value = 'Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge';
+                
+                const pageTitle = document.getElementById('pageTitle');
+                if (pageTitle) pageTitle.value = 'Cadillac EV Assistant';
+                
+                const primaryColor = document.getElementById('primaryColor');
+                if (primaryColor) primaryColor.value = '#2a2a3a';
+                
+                const secondaryColor = document.getElementById('secondaryColor');
+                if (secondaryColor) secondaryColor.value = '#6b7280';
+                
+                // Reset checkboxes
+                const showLogoInNav = document.getElementById('showLogoInNav');
+                if (showLogoInNav) showLogoInNav.checked = true;
+                
+                const showWelcomeMessage = document.getElementById('showWelcomeMessage');
+                if (showWelcomeMessage) showWelcomeMessage.checked = true;
+                
+                const enableAnimations = document.getElementById('enableAnimations');
+                if (enableAnimations) enableAnimations.checked = true;
+                
+                // Reset logo
+                resetLogoDirect();
+                
+                console.log('All branding settings reset to defaults');
+            } catch (error) {
+                console.error('Error resetting branding settings:', error);
+            }
+        };
+        
+        // Apply branding to navigation function - Define immediately
+        window.applyBrandingToNavigation = async function() {
+            try {
+                console.log('🔄 Starting applyBrandingToNavigation...');
+                const settings = await getCurrentBrandingSettings();
+                console.log('📦 Loaded branding settings:', settings);
+                
+                // Apply brand text to navigation - look for the actual navigation structure
+                const navBrand = document.querySelector('.nav-brand');
+                if (navBrand && settings.brandText) {
+                    // Find the text element within nav-brand
+                    const textElement = navBrand.querySelector('span') || navBrand;
+                    if (textElement) {
+                        textElement.textContent = settings.brandText;
+                        console.log('✅ Applied brand text to navigation:', settings.brandText);
+                    }
+                }
+                
+                // Apply logo to navigation - look for the actual logo element
+                const navLogo = document.querySelector('.nav-brand-icon');
+                console.log('🔍 Found nav logo element:', navLogo);
+                console.log('🖼️ Settings logo exists:', !!settings.logo);
+                
+                if (navLogo && settings.logo) {
+                    navLogo.innerHTML = `<img src="${settings.logo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">`;
+                    navLogo.style.background = settings.logoBackgroundTransparent ? 'transparent' : '#2d2d2d';
+                    console.log('✅ Applied custom logo to navigation');
+                } else if (navLogo) {
+                    navLogo.innerHTML = 'C';
+                    navLogo.style.background = '#2d2d2d';
+                    console.log('✅ Applied default logo to navigation');
+                } else {
+                    console.error('❌ Navigation logo element not found');
+                }
+                
+                // Apply page title
+                if (settings.pageTitle) {
+                    document.title = settings.pageTitle;
+                    console.log('✅ Applied page title:', settings.pageTitle);
+                }
+                
+                // Apply colors to the interface
+                if (settings.primaryColor) {
+                    document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+                    console.log('✅ Applied primary color:', settings.primaryColor);
+                }
+                
+                if (settings.secondaryColor) {
+                    document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
+                    console.log('✅ Applied secondary color:', settings.secondaryColor);
+                }
+                
+                console.log('✅ Branding applied to navigation successfully');
+            } catch (error) {
+                console.error('❌ Error applying branding to navigation:', error);
+            }
+        };
+        
+        // Test logo upload function
+        window.testLogoUpload = async function() {
+            console.log('🧪 Testing logo upload...');
+            
+            // Create a test logo using canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw a test logo
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(0, 0, 64, 64);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('T', 32, 32);
+            
+            // Convert to data URL
+            const dataURL = canvas.toDataURL('image/png');
+            console.log('📷 Created test logo, dataURL length:', dataURL.length);
+            
+            // Update logo preview
+            const logoPreview = document.getElementById('logoPreview');
+            if (logoPreview) {
+                logoPreview.innerHTML = `<img src="${dataURL}" alt="Test Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">`;
+                console.log('✅ Test logo preview updated');
+            }
+            
+            // Get current branding settings from database
+            const settings = await getCurrentBrandingSettings();
+            settings.logo = dataURL;
+            console.log('💾 Test logo set in settings');
+            
+            // Save to database
+            try {
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Test logo saved to database');
+                    
+                    // Apply branding immediately to navigation
+                    console.log('🔄 Applying test logo to navigation...');
+                    await applyBrandingToNavigation();
+                    
+                    if (typeof window.showMessage === 'function') {
+                        window.showMessage('Test Logo erfolgreich hochgeladen!', 'success');
+                    }
+                } else {
+                    throw new Error('Failed to save test logo to database');
+                }
+            } catch (error) {
+                console.error('❌ Error saving test logo:', error);
+                if (typeof window.showMessage === 'function') {
+                    window.showMessage('Fehler beim Speichern des Test-Logos', 'error');
+                }
+            }
+        };
+
+    </script>
+    <script>
+        let currentDeleteId = null;
+        let currentDeleteType = null;
+
+        // Tab switching
+        function setupTabNavigation() {
+            const tabs = document.querySelectorAll('.settings-tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+
+                    // Show corresponding content
+                    const targetTab = tab.getAttribute('data-tab');
+                    const targetContent = document.getElementById(targetTab);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+
+                    // Initialize specific tab functionality
+                    if (targetTab === 'knowledge') {
+                        setTimeout(() => {
+                            initKnowledgeBase();
+                        }, 100);
+                    } else if (targetTab === 'technical') {
+                        setTimeout(() => {
+                            initTechnicalDatabase();
+                        }, 100);
+                    }
+                });
+            });
+        }
+        
+        // Branding functions - now handled by database version above
+
+        // Old functions removed - now using database version above
+
+        // Make functions globally accessible
+        window.resetLogoDirect = function() {
+            try {
+                const logoPreview = document.getElementById('logoPreview');
+                if (logoPreview) {
+                    logoPreview.innerHTML = 'C';
+                    logoPreview.style.backgroundImage = '';
+                    console.log('Logo reset successfully');
+                }
+            } catch (error) {
+                console.error('Error resetting logo:', error);
+            }
+        }
+        
+        // Old logo upload function removed - now using database version above
+        
+        function resetAllBranding() {
+            try {
+                // Reset all form fields to default values
+                const brandText = document.getElementById('brandText');
+                if (brandText) brandText.value = 'Cadillac EV';
+                
+                const welcomeTitle = document.getElementById('welcomeTitle');
+                if (welcomeTitle) welcomeTitle.value = 'Cadillac EV Assistant';
+                
+                const welcomeSubtitle = document.getElementById('welcomeSubtitle');
+                if (welcomeSubtitle) welcomeSubtitle.value = 'Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge';
+                
+                const pageTitle = document.getElementById('pageTitle');
+                if (pageTitle) pageTitle.value = 'Cadillac EV Assistant';
+                
+                const primaryColor = document.getElementById('primaryColor');
+                if (primaryColor) primaryColor.value = '#2a2a3a';
+                
+                const secondaryColor = document.getElementById('secondaryColor');
+                if (secondaryColor) secondaryColor.value = '#6b7280';
+                
+                // Reset checkboxes
+                const showLogoInNav = document.getElementById('showLogoInNav');
+                if (showLogoInNav) showLogoInNav.checked = true;
+                
+                const showWelcomeMessage = document.getElementById('showWelcomeMessage');
+                if (showWelcomeMessage) showWelcomeMessage.checked = true;
+                
+                const enableAnimations = document.getElementById('enableAnimations');
+                if (enableAnimations) enableAnimations.checked = true;
+                
+                // Reset logo
+                resetLogoDirect();
+                
+                console.log('All branding settings reset to defaults');
+            } catch (error) {
+                console.error('Error resetting branding settings:', error);
+            }
+        }
+                
+                // Reset logo in database
+                const settings = await getCurrentBrandingSettings();
+                settings.logo = null;
+                
+                // Save to database
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    // Apply branding to navigation immediately
+                    applyBrandingToNavigation();
+                    
+                    if (typeof window.showMessage === 'function') {
+                        window.showMessage('Logo zurückgesetzt!', 'success');
+                    }
+                } else {
+                    throw new Error('Failed to reset logo in database');
+                }
+            } catch (error) {
+                console.error('Error resetting logo:', error);
+                if (typeof window.showMessage === 'function') {
+                    window.showMessage('Fehler beim Zurücksetzen des Logos', 'error');
+                }
+            }
+        }
+
+
+        // Modal functions
+        function showDeleteModal(docId, docName, docType) {
+            currentDeleteId = docId;
+            currentDeleteType = docType;
+            document.getElementById('deleteDocName').textContent = docName;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            currentDeleteId = null;
+            currentDeleteType = null;
+        }
+
+        function confirmDelete() {
+            if (currentDeleteId && currentDeleteType) {
+                if (currentDeleteType === 'knowledge') {
+                    deleteKnowledgeDocument(currentDeleteId);
+                } else if (currentDeleteType === 'technical') {
+                    deleteTechnicalDocument(currentDeleteId);
+                }
+            }
+            closeDeleteModal();
+        }
+
+        // Notification functions
+        function showMessage(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        // Refresh technical database function
+        function refreshTechnicalDatabase() {
+            console.log('🔄 Refreshing technical database...');
+            if (typeof loadTechnicalDatabase === 'function') {
+                loadTechnicalDatabase();
+                } else {
+                console.error('loadTechnicalDatabase function not found');
+            }
+        }
+
+        // Old applyBrandingToNavigation function removed - now using database version above
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Settings page loaded');
+            
+            // Initialize theme FIRST
+            if (typeof initializeTheme === 'function') {
+                console.log('✅ Initializing theme...');
+                initializeTheme();
+            } else {
+                console.log('⚠️ initializeTheme not found, applying default theme');
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.body.setAttribute('data-theme', 'light');
+            }
+            
+            // Apply branding to navigation
+            applyBrandingToNavigation();
+            
+            // Setup tab navigation
+            setupTabNavigation();
+            
+            // Load branding settings with proper timing
+            console.log('🔄 DOMContentLoaded: About to call loadBrandingSettings()');
+            // Call immediately after DOM is ready
+            if (typeof window.loadBrandingSettings === 'function') {
+                console.log('✅ loadBrandingSettings function exists, calling immediately...');
+                window.loadBrandingSettings();
+            } else {
+                console.error('❌ loadBrandingSettings function not found');
+            }
+            
+            // Additional call after a short delay to ensure all elements are ready
+            setTimeout(() => {
+                console.log('🔄 setTimeout: Calling loadBrandingSettings() after delay');
+                if (typeof window.loadBrandingSettings === 'function') {
+                    window.loadBrandingSettings();
+                }
+            }, 500);
+            
+            // Final call when page is fully loaded
+            window.addEventListener('load', () => {
+                console.log('🔄 Window load event: Calling loadBrandingSettings()');
+                if (typeof window.loadBrandingSettings === 'function') {
+                    window.loadBrandingSettings();
+                }
+            });
+            
+            // LOAD DATABASES IMMEDIATELY - MULTIPLE ATTEMPTS
+            console.log('🔄 Loading databases on DOMContentLoaded...');
+            
+            // Attempt 1: Try immediately
+            setTimeout(function() {
+                console.log('🔄 Attempt 1: Executing database load...');
+                
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    console.log('✅ Calling loadKnowledgeBase...');
+                    window.loadKnowledgeBase().catch(error => {
+                        console.error('❌ Error loading knowledge base:', error);
+                    });
+                } else {
+                    console.error('❌ loadKnowledgeBase not available');
+                }
+                
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    console.log('✅ Calling loadTechnicalDatabase...');
+                    window.loadTechnicalDatabase().catch(error => {
+                        console.error('❌ Error loading technical database:', error);
+                    });
+                } else {
+                    console.error('❌ loadTechnicalDatabase not available');
+                }
+            }, 500);
+            
+            // Attempt 2: Try again after 2 seconds
+            setTimeout(function() {
+                console.log('🔄 Attempt 2: Retrying database load...');
+                
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    window.loadKnowledgeBase();
+                }
+                
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    window.loadTechnicalDatabase();
+                }
+            }, 2000);
+            
+            // Attempt 3: Try again after 4 seconds
+            setTimeout(function() {
+                console.log('🔄 Attempt 3: Final retry...');
+                
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    window.loadKnowledgeBase();
+                }
+                
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    window.loadTechnicalDatabase();
+                }
+            }, 4000);
+            
+            // Setup event listeners
+            const logoUpload = document.getElementById('logoUpload');
+            if (logoUpload) {
+                logoUpload.addEventListener('change', function() {
+                    handleLogoUploadDirect(this);
+                });
+            }
+            
+            const saveBtn = document.getElementById('saveBrandingBtn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveBrandingSettings);
+            }
+            
+            // Initialize technical database function
+            function initTechnicalDatabase() {
+                console.log('🔧 Initializing technical database...');
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    console.log('✅ Loading technical database...');
+                    window.loadTechnicalDatabase();
+                } else {
+                    console.error('❌ loadTechnicalDatabase function not found');
+                }
+            }
+            
+            // Initialize knowledge base function
+            function initKnowledgeBase() {
+                console.log('🔧 Initializing knowledge base...');
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    console.log('✅ Loading knowledge base...');
+                    window.loadKnowledgeBase();
+                } else {
+                    console.error('❌ loadKnowledgeBase function not found');
+                }
+            }
+            
+            // Initialize enhanced databases function
+            function initEnhancedDatabases() {
+                console.log('🔧 Initializing enhanced databases...');
+                // This function will be called by the existing code
+            }
+            
+        // Initialize autocomplete function
+        function initAutocomplete() {
+            console.log('🔧 Initializing autocomplete...');
+            // This function will be called by the existing code
+        }
+        
+        // Initialize enhanced databases functionality
+            setTimeout(function() {
+                console.log('🔄 Starting database initialization...');
+                
+                // Initialize enhanced database features
+                if (typeof initEnhancedDatabases === 'function') {
+                    console.log('✅ Initializing enhanced database features...');
+                    try {
+                        initEnhancedDatabases();
+                        console.log('✅ Enhanced database features initialized');
+                    } catch (error) {
+                        console.error('❌ Error initializing enhanced database features:', error);
+                    }
+                } else {
+                    console.error('❌ initEnhancedDatabases function not found');
+                }
+                
+                // Initialize autocomplete
+                if (typeof initAutocomplete === 'function') {
+                    console.log('✅ Initializing autocomplete...');
+                    try {
+                        initAutocomplete();
+                        console.log('✅ Autocomplete initialized');
+                    } catch (error) {
+                        console.error('❌ Error initializing autocomplete:', error);
+                    }
+                } else {
+                    console.error('❌ initAutocomplete function not found');
+                }
+                
+                // Load databases with additional delay to ensure DOM is ready
+                setTimeout(function() {
+                    console.log('🔄 Loading databases...');
+                    
+                    // Load knowledge base
+                    if (typeof loadKnowledgeBase === 'function') {
+                        console.log('✅ Loading knowledge base on page load...');
+                        try {
+                            loadKnowledgeBase().then(() => {
+                                console.log('✅ Knowledge base loaded successfully');
+                            }).catch(error => {
+                                console.error('❌ Error loading knowledge base:', error);
+                            });
+                        } catch (error) {
+                            console.error('❌ Error calling loadKnowledgeBase:', error);
+                        }
+                    } else {
+                        console.error('❌ loadKnowledgeBase function not found');
+                    }
+                    
+                    // Load technical database
+                    if (typeof loadTechnicalDatabase === 'function') {
+                        console.log('✅ Loading technical database on page load...');
+                        try {
+                            loadTechnicalDatabase().then(() => {
+                                console.log('✅ Technical database loaded successfully');
+                            }).catch(error => {
+                                console.error('❌ Error loading technical database:', error);
+                            });
+                        } catch (error) {
+                            console.error('❌ Error calling loadTechnicalDatabase:', error);
+                        }
+                    } else {
+                        console.error('❌ loadTechnicalDatabase function not found');
+                    }
+                }, 1000); // Additional 1 second delay for database loading
+            }, 500);
+        });
+        
+        // Tab switching function - Make globally accessible
+        window.switchSettingsTab = function(tabName) {
+            console.log('🔄 Switching to tab:', tabName);
+            
+            try {
+                // Remove active class from all tabs
+                const allTabs = document.querySelectorAll('.settings-tab');
+                allTabs.forEach(tab => tab.classList.remove('active'));
+                
+                // Hide all tab content
+                const allContent = document.querySelectorAll('.tab-content');
+                allContent.forEach(content => {
+                    content.classList.remove('active');
+                    content.style.display = 'none';
+                });
+                
+                // Activate selected tab
+                const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+                if (selectedTab) {
+                    selectedTab.classList.add('active');
+                }
+                
+                // Show selected content
+                const selectedContent = document.getElementById(tabName);
+                if (selectedContent) {
+                    selectedContent.classList.add('active');
+                    selectedContent.style.display = 'block';
+                }
+                
+                // Initialize tab-specific functionality
+                if (tabName === 'knowledge') {
+                    console.log('📚 Initializing knowledge base...');
+                    if (typeof window.loadKnowledgeBase === 'function') {
+                        window.loadKnowledgeBase();
+                    } else {
+                        console.error('❌ loadKnowledgeBase function not found');
+                    }
+                } else if (tabName === 'technical') {
+                    console.log('🔧 Initializing technical database...');
+                    if (typeof window.loadTechnicalDatabase === 'function') {
+                        window.loadTechnicalDatabase();
+                    } else {
+                        console.error('❌ loadTechnicalDatabase function not found');
+                    }
+                }
+                
+                console.log('✅ Tab switched to:', tabName);
+            } catch (error) {
+                console.error('❌ Error switching tab:', error);
+            }
+        };
+        
+        // Navigation function
+        function switchPage(page) {
+            console.log('Switching to page:', page);
+            switch(page) {
+                case 'dashboard':
+                    window.location.href = 'dashboard.html';
+                    break;
+                case 'chat':
+                    window.location.href = 'chat.html';
+                    break;
+                case 'troubleshooting':
+                    window.location.href = 'troubleshooting.html';
+                    break;
+                case 'settings':
+                    window.location.href = 'settings.html';
+                    break;
+                default:
+                    console.log('Unknown page:', page);
+            }
+        }
+        
+        // Make switchPage globally accessible
+        window.switchPage = switchPage;
+        
+        // Call loadBrandingSettings immediately when script loads
+        console.log('🔄 Script loaded: Calling loadBrandingSettings() immediately');
+        if (typeof window.loadBrandingSettings === 'function') {
+            window.loadBrandingSettings();
+        }
+        
+        // Force call after page is fully loaded
+        window.addEventListener('load', function() {
+            console.log('🔄 Window load event: Force calling loadBrandingSettings()');
+            setTimeout(function() {
+                if (typeof window.loadBrandingSettings === 'function') {
+                    window.loadBrandingSettings();
+                }
+            }, 1000);
+        });
+        
+        // Additional immediate call with longer delay
+        setTimeout(function() {
+            console.log('🔄 Additional timeout: Calling loadBrandingSettings()');
+            if (typeof window.loadBrandingSettings === 'function') {
+                window.loadBrandingSettings();
+            }
+        }, 2000);
+        
+        // Final call with even longer delay
+        setTimeout(function() {
+            console.log('🔄 Final timeout: Calling loadBrandingSettings()');
+            if (typeof window.loadBrandingSettings === 'function') {
+                window.loadBrandingSettings();
+            }
+        }, 5000);
+        
+        // Call when page becomes visible
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                console.log('🔄 Page visible: Calling loadBrandingSettings()');
+                if (typeof window.loadBrandingSettings === 'function') {
+                    window.loadBrandingSettings();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

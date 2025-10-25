@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Debug - Cadillac EV Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js?v=1736001234"></script>
+</head>
+<body>
+    <div style="padding: 20px; margin-top: 20px;">
+        <h1>Console Debug Page</h1>
+        <div id="consoleOutput"></div>
+        
+        <h2>Function Tests:</h2>
+        <button onclick="testFunctions()">Test All Functions</button>
+        <button onclick="testAPIs()">Test APIs</button>
+        <button onclick="loadDatabases()">Load Databases</button>
+    </div>
+
+    <script>
+        // Override console.log to capture output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function captureLog(message, type = 'log') {
+            const output = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'warn' ? 'orange' : 'black';
+            output.innerHTML += `<p style="color: ${color}">[${timestamp}] ${message}</p>`;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            captureLog(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            captureLog('ERROR: ' + args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            captureLog('WARN: ' + args.join(' '), 'warn');
+        };
+        
+        function testFunctions() {
+            console.log('=== Testing Functions ===');
+            console.log('loadKnowledgeBase:', typeof loadKnowledgeBase);
+            console.log('loadTechnicalDatabase:', typeof loadTechnicalDatabase);
+            console.log('displayKnowledgeBase:', typeof displayKnowledgeBase);
+            console.log('displayTechnicalDatabase:', typeof displayTechnicalDatabase);
+            console.log('showKnowledgeBaseLoading:', typeof showKnowledgeBaseLoading);
+            console.log('showTechnicalDatabaseLoading:', typeof showTechnicalDatabaseLoading);
+            console.log('updateKnowledgeBaseStats:', typeof updateKnowledgeBaseStats);
+        }
+        
+        async function testAPIs() {
+            console.log('=== Testing APIs ===');
+            try {
+                const kbResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/knowledgebase?t=' + Date.now());
+                console.log('Knowledge Base API Status:', kbResponse.status);
+                if (kbResponse.ok) {
+                    const data = await kbResponse.json();
+                    console.log('Knowledge Base Documents:', data.documents ? data.documents.length : 0);
+                }
+                
+                const techResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase?t=' + Date.now());
+                console.log('Technical Database API Status:', techResponse.status);
+                if (techResponse.ok) {
+                    const data = await techResponse.json();
+                    console.log('Technical Database Documents:', data.documents ? data.documents.length : 0);
+                }
+            } catch (error) {
+                console.error('API Test Error:', error.message);
+            }
+        }
+        
+        async function loadDatabases() {
+            console.log('=== Loading Databases ===');
+            
+            // Create test elements
+            const testContainer = document.createElement('div');
+            testContainer.innerHTML = `
+                <div id="kbList"></div>
+                <div id="techList"></div>
+                <div id="kbDocCount"></div>
+                <div id="kbTotalSize"></div>
+                <div id="kbLastUpdate"></div>
+                <div id="techDocCount"></div>
+                <div id="techTotalSize"></div>
+                <div id="techLastUpdate"></div>
+            `;
+            document.body.appendChild(testContainer);
+            
+            try {
+                if (typeof loadKnowledgeBase === 'function') {
+                    console.log('Loading Knowledge Base...');
+                    await loadKnowledgeBase();
+                    console.log('Knowledge Base loaded');
+                } else {
+                    console.error('loadKnowledgeBase function not found');
+                }
+                
+                if (typeof loadTechnicalDatabase === 'function') {
+                    console.log('Loading Technical Database...');
+                    await loadTechnicalDatabase();
+                    console.log('Technical Database loaded');
+                } else {
+                    console.error('loadTechnicalDatabase function not found');
+                }
+            } catch (error) {
+                console.error('Database loading error:', error.message);
+            }
+            
+            // Clean up
+            document.body.removeChild(testContainer);
+        }
+        
+        // Auto-run on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Debug page loaded');
+            testFunctions();
+            testAPIs();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firestore-debug.log
+ui-debug.log
+
+# Environment
+.env
+.env.local
+.env.production
+serviceAccountKey.json
+functions/serviceAccountKey.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test files
+test-*.js
+test-*.html
+automated-test-suite.js
+simulate-browser-load.js
+*-test.html
+*-debug.html
+*-analysis.html
+*-analysis.js
+*-check.js
+
+# Python/Backend
+advanced-troubleshooting-backend/
+*.pyc
+__pycache__/
+.venv/
+venv/
+*.py[cod]
+*$py.class
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Documentation/Notes
+*.txt
+!requirements.txt
+!package*.txt
+
+# Public test files
+public/test-*.html
+public/*-test.html
+public/*-debug.html
+public/test-*.js
+
+# Optimized duplicates
+public-optimized/

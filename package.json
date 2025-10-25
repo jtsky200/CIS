@@ -1,0 +1,19 @@
+{
+  "name": "cadillac-ev-app",
+  "version": "1.0.0",
+  "main": "scrape-cadillac-data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "firebase-admin": "^13.5.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "util": "^0.12.5"
+  }
+}

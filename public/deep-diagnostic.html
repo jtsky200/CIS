@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Diagnostic - Cadillac EV Assistant</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .log { font-family: monospace; font-size: 12px; padding: 5px; margin: 2px 0; border-left: 3px solid #333; }
+        .log.info { border-color: #333; background: #f0f0f0; }
+        .log.success { border-color: #28a745; background: #d4edda; color: #155724; }
+        .log.error { border-color: #dc3545; background: #f8d7da; color: #721c24; }
+        .log.warning { border-color: #ffc107; background: #fff3cd; color: #856404; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        h2 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Deep Diagnostic Tool</h1>
+        <div>
+            <button onclick="runFullDiagnostic()">Run Full Diagnostic</button>
+            <button onclick="testAPI()">Test API Only</button>
+            <button onclick="testFunctions()">Test Functions Only</button>
+            <button onclick="forceLoadAndDisplay()">Force Load & Display</button>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+        
+        <div class="section">
+            <h2>Diagnostic Logs</h2>
+            <div id="logs"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Test Display Area</h2>
+            <h3>Knowledge Base:</h3>
+            <div id="kbList" style="border: 1px solid #ddd; padding: 10px; min-height: 100px; background: #fafafa;"></div>
+            <div>Count: <span id="kbDocCount">0</span> | Size: <span id="kbTotalSize">0</span> | Updated: <span id="kbLastUpdate">-</span></div>
+            
+            <h3>Technical Database:</h3>
+            <div id="techList" style="border: 1px solid #ddd; padding: 10px; min-height: 100px; background: #fafafa;"></div>
+            <div>Count: <span id="techDocCount">0</span> | Size: <span id="techTotalSize">0</span> | Updated: <span id="techLastUpdate">-</span></div>
+        </div>
+    </div>
+
+    <script src="app.js?v=1736001234"></script>
+    <script>
+        let logCount = 0;
+        
+        function log(message, type = 'info') {
+            logCount++;
+            const logs = document.getElementById('logs');
+            const time = new Date().toLocaleTimeString();
+            logs.innerHTML += `<div class="log ${type}">[${logCount}] ${time} - ${message}</div>`;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            logs.scrollTop = logs.scrollHeight;
+        }
+        
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            logCount = 0;
+        }
+        
+        async function testAPI() {
+            log('=== TESTING API CONNECTIVITY ===', 'info');
+            
+            try {
+                log('Calling Knowledge Base API...', 'info');
+                const kbResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/knowledgebase?t=' + Date.now());
+                log(`KB API Status: ${kbResponse.status}`, kbResponse.ok ? 'success' : 'error');
+                
+                if (kbResponse.ok) {
+                    const kbData = await kbResponse.json();
+                    log(`KB API returned: ${JSON.stringify(kbData).substring(0, 100)}...`, 'info');
+                    log(`KB Documents count: ${kbData.documents ? kbData.documents.length : 'NO DOCUMENTS'}`, kbData.documents && kbData.documents.length > 0 ? 'success' : 'error');
+                    
+                    if (kbData.documents && kbData.documents.length > 0) {
+                        log(`First document: ${JSON.stringify(kbData.documents[0])}`, 'info');
+                    }
+                }
+            } catch (error) {
+                log(`KB API Error: ${error.message}`, 'error');
+                log(`KB API Error Stack: ${error.stack}`, 'error');
+            }
+            
+            try {
+                log('Calling Technical Database API...', 'info');
+                const techResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase?t=' + Date.now());
+                log(`Tech API Status: ${techResponse.status}`, techResponse.ok ? 'success' : 'error');
+                
+                if (techResponse.ok) {
+                    const techData = await techResponse.json();
+                    log(`Tech API returned: ${JSON.stringify(techData).substring(0, 100)}...`, 'info');
+                    log(`Tech Documents count: ${techData.documents ? techData.documents.length : 'NO DOCUMENTS'}`, techData.documents && techData.documents.length > 0 ? 'success' : 'error');
+                    
+                    if (techData.documents && techData.documents.length > 0) {
+                        log(`First document: ${JSON.stringify(techData.documents[0])}`, 'info');
+                    }
+                }
+            } catch (error) {
+                log(`Tech API Error: ${error.message}`, 'error');
+                log(`Tech API Error Stack: ${error.stack}`, 'error');
+            }
+        }
+        
+        function testFunctions() {
+            log('=== TESTING FUNCTION AVAILABILITY ===', 'info');
+            
+            const functions = [
+                'loadKnowledgeBase', 'loadTechnicalDatabase',
+                'displayKnowledgeBase', 'displayTechnicalDatabase',
+                'updateKnowledgeBaseStats', 'setupSelectAll',
+                'initEnhancedDatabases', 'initAutocomplete'
+            ];
+            
+            functions.forEach(func => {
+                const exists = typeof window[func] === 'function';
+                log(`${func}: ${exists ? 'EXISTS' : 'MISSING'}`, exists ? 'success' : 'error');
+            });
+            
+            log('Checking global variables...', 'info');
+            log(`window.knowledgeBase: ${typeof window.knowledgeBase} (${Array.isArray(window.knowledgeBase) ? window.knowledgeBase.length + ' items' : 'not an array'})`, 'info');
+            log(`window.technicalDatabase: ${typeof window.technicalDatabase} (${Array.isArray(window.technicalDatabase) ? window.technicalDatabase.length + ' items' : 'not an array'})`, 'info');
+            
+            log('Checking DOM elements...', 'info');
+            const elements = ['kbList', 'techList', 'kbDocCount', 'techDocCount', 'kbTotalSize', 'techTotalSize'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                log(`${id}: ${element ? 'FOUND' : 'MISSING'}`, element ? 'success' : 'error');
+            });
+        }
+        
+        async function forceLoadAndDisplay() {
+            log('=== FORCE LOADING AND DISPLAYING ===', 'info');
+            
+            try {
+                // Step 1: Call API directly
+                log('Step 1: Calling API directly...', 'info');
+                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/knowledgebase?t=' + Date.now());
+                
+                if (!response.ok) {
+                    log(`API returned error status: ${response.status}`, 'error');
+                    return;
+                }
+                
+                const data = await response.json();
+                log(`API returned ${data.documents ? data.documents.length : 0} documents`, 'success');
+                
+                if (!data.documents || data.documents.length === 0) {
+                    log('API returned no documents!', 'error');
+                    return;
+                }
+                
+                // Step 2: Display manually
+                log('Step 2: Displaying documents manually...', 'info');
+                const kbList = document.getElementById('kbList');
+                if (!kbList) {
+                    log('kbList element not found!', 'error');
+                    return;
+                }
+                
+                kbList.innerHTML = '';
+                data.documents.slice(0, 20).forEach((doc, index) => {
+                    const div = document.createElement('div');
+                    div.style.padding = '8px';
+                    div.style.borderBottom = '1px solid #eee';
+                    div.innerHTML = `
+                        <strong>${index + 1}.</strong> ${doc.filename || doc.name || 'Unnamed'} 
+                        <span style="color: #666;">(${doc.fileType || 'unknown'})</span>
+                        <span style="color: #999; font-size: 0.9em;">${doc.size ? Math.round(doc.size/1024) + ' KB' : 'unknown size'}</span>
+                    `;
+                    kbList.appendChild(div);
+                });
+                
+                document.getElementById('kbDocCount').textContent = data.documents.length;
+                document.getElementById('kbTotalSize').textContent = (data.documents.reduce((sum, doc) => sum + (doc.size || 0), 0) / (1024 * 1024)).toFixed(2) + ' MB';
+                
+                log(`Displayed ${data.documents.length} documents manually`, 'success');
+                
+                // Step 3: Try using the function
+                log('Step 3: Testing loadKnowledgeBase function...', 'info');
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    await window.loadKnowledgeBase();
+                    log('loadKnowledgeBase function executed', 'success');
+                } else {
+                    log('loadKnowledgeBase function not available', 'error');
+                }
+                
+                // Step 4: Load technical database
+                log('Step 4: Loading technical database...', 'info');
+                const techResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase?t=' + Date.now());
+                const techData = await techResponse.json();
+                
+                const techList = document.getElementById('techList');
+                if (techList && techData.documents) {
+                    techList.innerHTML = '';
+                    techData.documents.slice(0, 20).forEach((doc, index) => {
+                        const div = document.createElement('div');
+                        div.style.padding = '8px';
+                        div.style.borderBottom = '1px solid #eee';
+                        div.innerHTML = `
+                            <strong>${index + 1}.</strong> ${doc.name || doc.filename || 'Unnamed'} 
+                            <span style="color: #666;">(${doc.fileType || 'unknown'})</span>
+                        `;
+                        techList.appendChild(div);
+                    });
+                    
+                    document.getElementById('techDocCount').textContent = techData.documents.length;
+                    log(`Displayed ${techData.documents.length} technical documents`, 'success');
+                }
+                
+            } catch (error) {
+                log(`Force load error: ${error.message}`, 'error');
+                log(`Error stack: ${error.stack}`, 'error');
+            }
+        }
+        
+        async function runFullDiagnostic() {
+            clearLogs();
+            log('=== STARTING FULL DIAGNOSTIC ===', 'info');
+            log(`Timestamp: ${new Date().toISOString()}`, 'info');
+            log(`User Agent: ${navigator.userAgent}`, 'info');
+            
+            await testFunctions();
+            await testAPI();
+            await forceLoadAndDisplay();
+            
+            log('=== DIAGNOSTIC COMPLETE ===', 'success');
+        }
+        
+        // Auto-run on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(runFullDiagnostic, 1000);
+        });
+    </script>
+</body>
+</html>

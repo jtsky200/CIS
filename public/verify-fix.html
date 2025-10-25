@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Database Fix - Cadillac EV Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js?v=1736001234"></script>
+</head>
+<body>
+    <div style="padding: 20px; margin-top: 20px;">
+        <h1>🔍 Database Fix Verification</h1>
+        <div id="results"></div>
+        
+        <h2>Knowledge Base Test:</h2>
+        <div id="kbList"></div>
+        <div id="kbDocCount">0</div>
+        <div id="kbTotalSize">0 MB</div>
+        <div id="kbLastUpdate">-</div>
+        
+        <h2>Technical Database Test:</h2>
+        <div id="techList"></div>
+        <div id="techDocCount">0</div>
+        <div id="techTotalSize">0 MB</div>
+        <div id="techLastUpdate">-</div>
+        
+        <button onclick="runFullVerification()">Run Full Verification</button>
+        <button onclick="testSettingsPage()">Test Settings Page</button>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                'info': 'black',
+                'success': 'green',
+                'error': 'red',
+                'warning': 'orange'
+            };
+            output.innerHTML += `<p style="color: ${colors[type]}">[${timestamp}] ${message}</p>`;
+            console.log(message);
+        }
+        
+        async function runFullVerification() {
+            log('🚀 Starting Full Database Verification...', 'info');
+            
+            // Test 1: Function Availability
+            log('=== Testing Function Availability ===', 'info');
+            const functions = [
+                'loadKnowledgeBase', 'loadTechnicalDatabase', 'displayKnowledgeBase', 
+                'displayTechnicalDatabase', 'updateKnowledgeBaseStats', 'initEnhancedDatabases',
+                'setupSelectAll', 'showKnowledgeBaseLoading', 'showTechnicalDatabaseLoading',
+                'showKnowledgeBaseError', 'showTechnicalDatabaseError'
+            ];
+            
+            let allFunctionsAvailable = true;
+            functions.forEach(func => {
+                const available = typeof window[func] === 'function';
+                log(`${func}: ${available ? '✅ Available' : '❌ Missing'}`, available ? 'success' : 'error');
+                if (!available) allFunctionsAvailable = false;
+            });
+            
+            // Test 2: API Connectivity
+            log('=== Testing API Connectivity ===', 'info');
+            try {
+                const kbResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/knowledgebase?t=' + Date.now());
+                const kbData = await kbResponse.json();
+                log(`Knowledge Base API: ✅ ${kbData.documents ? kbData.documents.length : 0} documents`, 'success');
+            } catch (error) {
+                log(`Knowledge Base API: ❌ ${error.message}`, 'error');
+            }
+            
+            try {
+                const techResponse = await fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase?t=' + Date.now());
+                const techData = await techResponse.json();
+                log(`Technical Database API: ✅ ${techData.documents ? techData.documents.length : 0} documents`, 'success');
+            } catch (error) {
+                log(`Technical Database API: ❌ ${error.message}`, 'error');
+            }
+            
+            // Test 3: Database Loading
+            log('=== Testing Database Loading ===', 'info');
+            if (typeof loadKnowledgeBase === 'function') {
+                try {
+                    log('Loading Knowledge Base...', 'info');
+                    await loadKnowledgeBase();
+                    log('Knowledge Base: ✅ Loaded successfully', 'success');
+                } catch (error) {
+                    log(`Knowledge Base: ❌ ${error.message}`, 'error');
+                }
+            }
+            
+            if (typeof loadTechnicalDatabase === 'function') {
+                try {
+                    log('Loading Technical Database...', 'info');
+                    await loadTechnicalDatabase();
+                    log('Technical Database: ✅ Loaded successfully', 'success');
+                } catch (error) {
+                    log(`Technical Database: ❌ ${error.message}`, 'error');
+                }
+            }
+            
+            // Test 4: Global Variables
+            log('=== Testing Global Variables ===', 'info');
+            log(`window.knowledgeBase: ${typeof window.knowledgeBase} (${Array.isArray(window.knowledgeBase) ? window.knowledgeBase.length : 'N/A'} items)`, 
+                typeof window.knowledgeBase === 'object' ? 'success' : 'warning');
+            log(`window.technicalDatabase: ${typeof window.technicalDatabase} (${Array.isArray(window.technicalDatabase) ? window.technicalDatabase.length : 'N/A'} items)`, 
+                typeof window.technicalDatabase === 'object' ? 'success' : 'warning');
+            
+            // Test 5: DOM Elements
+            log('=== Testing DOM Elements ===', 'info');
+            const elements = ['kbList', 'techList', 'kbDocCount', 'techDocCount', 'kbTotalSize', 'techTotalSize'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                log(`${id}: ${element ? '✅ Found' : '❌ Missing'}`, element ? 'success' : 'error');
+            });
+            
+            // Summary
+            log('=== Verification Summary ===', 'info');
+            if (allFunctionsAvailable) {
+                log('🎉 ALL FUNCTIONS AVAILABLE - Database system should be working!', 'success');
+            } else {
+                log('⚠️ Some functions missing - Database system may have issues', 'warning');
+            }
+        }
+        
+        async function testSettingsPage() {
+            log('🔍 Testing Settings Page Functionality...', 'info');
+            
+            // Simulate settings page initialization
+            if (typeof initEnhancedDatabases === 'function') {
+                try {
+                    log('Initializing Enhanced Databases...', 'info');
+                    initEnhancedDatabases();
+                    log('Enhanced Databases: ✅ Initialized', 'success');
+                } catch (error) {
+                    log(`Enhanced Databases: ❌ ${error.message}`, 'error');
+                }
+            }
+            
+            if (typeof initAutocomplete === 'function') {
+                try {
+                    log('Initializing Autocomplete...', 'info');
+                    initAutocomplete();
+                    log('Autocomplete: ✅ Initialized', 'success');
+                } catch (error) {
+                    log(`Autocomplete: ❌ ${error.message}`, 'error');
+                }
+            }
+            
+            // Test tab switching simulation
+            if (typeof switchSettingsTab === 'function') {
+                try {
+                    log('Testing Tab Switching...', 'info');
+                    // This would normally be called by clicking tabs
+                    log('Tab Switching: ✅ Function available', 'success');
+                } catch (error) {
+                    log(`Tab Switching: ❌ ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Auto-run verification on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('📋 Verification page loaded', 'info');
+            setTimeout(() => {
+                runFullVerification();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
