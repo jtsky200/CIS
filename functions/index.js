@@ -23,8 +23,7 @@ const openai = new OpenAI({
 
 // Initialize Google Cloud Vision API
 const visionClient = new vision.ImageAnnotatorClient({
-    keyFilename: 'serviceAccountKey.json',
-    apiKey: 'AQ.Ab8RN6KkXwnlhzzq3RFFIy3B7WDUQNGViqQS90hLWb03LK00Fw'
+    keyFilename: 'serviceAccountKey.json'
 });
 
 // Gemini API configuration
