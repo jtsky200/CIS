@@ -648,11 +648,24 @@
             }
         };
         
-        // Initialize when page loads
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initTroubleshooting);
-        } else {
-            initTroubleshooting();
+        // Wait for app.js to fully load, then initialize
+        function waitForAppJs(callback, maxAttempts = 20) {
+            let attempts = 0;
+            
+            const checkInterval = setInterval(() => {
+                attempts++;
+                console.log(`🔄 Checking for app.js functions... (Attempt ${attempts}/${maxAttempts})`);
+                
+                if (typeof loadTechnicalDatabase === 'function' && 
+                    typeof displayTechnicalDatabase === 'function') {
+                    console.log('✅ app.js loaded successfully!');
+                    clearInterval(checkInterval);
+                    callback();
+                } else if (attempts >= maxAttempts) {
+                    console.error('❌ Timeout waiting for app.js');
+                    clearInterval(checkInterval);
+                }
+            }, 200);
         }
         
         function initTroubleshooting() {
@@ -665,16 +678,16 @@
             
             // Load Technical Database
             console.log('📚 Loading Technical Database...');
-            if (typeof loadTechnicalDatabase === 'function') {
-                loadTechnicalDatabase();
-            } else {
-                console.warn('loadTechnicalDatabase function not found, waiting for app.js...');
-                setTimeout(() => {
-                    if (typeof loadTechnicalDatabase === 'function') {
-                        loadTechnicalDatabase();
-                    }
-                }, 500);
-            }
+            loadTechnicalDatabase();
+        }
+        
+        // Start initialization after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                waitForAppJs(initTroubleshooting);
+            });
+        } else {
+            waitForAppJs(initTroubleshooting);
         }
     </script>
 </body>
