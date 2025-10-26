@@ -117,16 +117,16 @@
                         <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input type="text" id="techSearchInput" data-i18n-placeholder="settings.technicalDb.searchPlaceholder" placeholder="Technische Dokumente durchsuchen..." 
+                        <input type="text" id="techSearch" data-i18n-placeholder="settings.technicalDb.searchPlaceholder" placeholder="Technische Dokumente durchsuchen..." 
                             style="width: 100%; padding: 12px 14px 12px 44px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; transition: all 0.2s;"
                             onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
                             onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
                             onkeyup="window.searchTechnicalDatabase()">
                     </div>
-                    <select id="techFilterCategory" style="padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; background: white;" onchange="window.filterTechnicalDatabase()">
+                    <select id="techFilter" style="padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; background: white;" onchange="window.filterTechnicalDatabase()">
                         <option value="" data-i18n="settings.technicalDb.allCategories">Alle Kategorien</option>
                     </select>
-                    <select id="techSortBy" style="padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; background: white;" onchange="window.sortTechnicalDatabase()">
+                    <select id="techSort" style="padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; background: white;" onchange="window.sortTechnicalDatabase()">
                         <option value="newest" data-i18n="settings.technicalDb.sortNewest">Neueste zuerst</option>
                         <option value="oldest" data-i18n="settings.technicalDb.sortOldest">Älteste zuerst</option>
                         <option value="name-asc" data-i18n="settings.technicalDb.nameAZ">Name (A-Z)</option>
@@ -137,7 +137,7 @@
                 </div>
 
                 <!-- Documents List -->
-                <div id="technicalDocumentsList" style="border: 1px solid #e5e7eb; border-radius: 12px; background: white; min-height: 200px;">
+                <div id="techList" style="border: 1px solid #e5e7eb; border-radius: 12px; background: white; min-height: 200px;">
                     <div style="padding: 40px; text-align: center; color: #9ca3af;">
                         <svg style="width: 64px; height: 64px; margin: 0 auto 16px; opacity: 0.4;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
