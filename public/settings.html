@@ -970,7 +970,7 @@
                     
                     <div class="form-group">
                         <label>Sprache</label>
-                        <select id="languageSetting" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                        <select id="languageSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="de">Deutsch</option>
                             <option value="en">English</option>
                         </select>
@@ -978,7 +978,7 @@
                     
                     <div class="form-group">
                         <label>Zeitzone</label>
-                        <select id="timezoneSetting" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                        <select id="timezoneSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="Europe/Berlin">Europe/Berlin (GMT+1)</option>
                             <option value="Europe/London">Europe/London (GMT+0)</option>
                             <option value="America/New_York">America/New_York (GMT-5)</option>
@@ -988,7 +988,7 @@
                     
                     <div class="form-group">
                         <label>Datumsformat</label>
-                        <select id="dateFormatSetting" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                        <select id="dateFormatSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="DD.MM.YYYY">DD.MM.YYYY (26.10.2025)</option>
                             <option value="MM/DD/YYYY">MM/DD/YYYY (10/26/2025)</option>
                             <option value="YYYY-MM-DD">YYYY-MM-DD (2025-10-26)</option>
@@ -1008,12 +1008,12 @@
                     <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Datenbank-Verwaltung</h3>
                     
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
-                        <button class="btn btn-secondary" onclick="createBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📥 Backup erstellen</button>
-                        <button class="btn btn-secondary" onclick="restoreBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📤 Backup wiederherstellen</button>
-                        <button class="btn btn-secondary" onclick="clearCache()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">🔄 Cache leeren</button>
-                        <button class="btn" onclick="deleteAllData()" style="background: #ef4444; color: white; height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">🗑️ Alle Daten löschen</button>
+                        <button class="btn btn-secondary" onclick="window.createBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Backup erstellen</button>
+                        <button class="btn btn-secondary" onclick="window.restoreBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Backup wiederherstellen</button>
+                        <button class="btn btn-secondary" onclick="window.clearCache()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Cache leeren</button>
+                        <button class="btn" onclick="window.deleteAllData()" style="background: #ef4444; color: white; height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Alle Daten löschen</button>
                     </div>
-                    <p style="color: #6b7280; font-size: 14px;">⚠️ Achtung: Das Löschen aller Daten kann nicht rückgängig gemacht werden!</p>
+                    <p style="color: #6b7280; font-size: 14px;">Achtung: Das Löschen aller Daten kann nicht rückgängig gemacht werden!</p>
                 </div>
                 
                 <!-- Advanced Tools -->
@@ -1035,16 +1035,16 @@
                     </div>
                     
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
-                        <button class="btn btn-secondary" onclick="viewLogs()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📊 Logs anzeigen</button>
-                        <button class="btn btn-secondary" onclick="exportSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">💾 Einstellungen exportieren</button>
-                        <button class="btn btn-secondary" onclick="importSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📂 Einstellungen importieren</button>
+                        <button class="btn btn-secondary" onclick="window.viewLogs()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Logs anzeigen</button>
+                        <button class="btn btn-secondary" onclick="window.exportSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Einstellungen exportieren</button>
+                        <button class="btn btn-secondary" onclick="window.importSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Einstellungen importieren</button>
                     </div>
                 </div>
                 
                 <!-- Save Button -->
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn btn-primary" onclick="saveGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Änderungen speichern</button>
-                    <button class="btn btn-secondary" onclick="resetGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Zurücksetzen</button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn btn-primary" onclick="window.saveGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Änderungen speichern</button>
+                    <button class="btn btn-secondary" onclick="window.resetGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Zurücksetzen</button>
                 </div>
             </div>
         </div>
