@@ -703,17 +703,17 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value" id="kbDocCount">0</div>
-                        <div class="stat-label">Dokumente</div>
+                        <div class="stat-label" data-i18n="settings.knowledgeDb.documents">Dokumente</div>
                         <div class="stat-description">Wissensdatenbank</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="kbTotalSize">0 MB</div>
-                        <div class="stat-label">Gesamtgröße</div>
-                        <div class="stat-description">Alle Dateien</div>
+                        <div class="stat-label" data-i18n="settings.knowledgeDb.totalSize">Gesamtgröße</div>
+                        <div class="stat-description" data-i18n="settings.knowledgeDb.allFiles">Alle Dateien</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="kbLastUpdate">-</div>
-                        <div class="stat-label">Letzte Aktualisierung</div>
+                        <div class="stat-label" data-i18n="settings.knowledgeDb.lastUpdate">Letzte Aktualisierung</div>
                         <div class="stat-description">Wissensdatenbank</div>
                     </div>
                 </div>
@@ -773,7 +773,7 @@
                             }
                             
                             if (docs.length === 0) {
-                                kbList.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Keine Dokumente gefunden</div>';
+                                kbList.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><span data-i18n="settings.knowledgeDb.noDocuments">Keine Dokumente gefunden</span></div>';
                                 return;
                             }
                             
@@ -812,34 +812,34 @@
                 <div class="kb-toolbar">
                     <!-- Search Row -->
                     <div class="kb-search">
-                        <input type="text" id="kbSearch" class="kb-search-input" placeholder="Dokumente durchsuchen...">
+                        <input type="text" id="kbSearch" class="kb-search-input" data-i18n-placeholder="settings.knowledgeDb.searchPlaceholder" placeholder="Dokumente durchsuchen...">
                         <select id="kbFilter" class="kb-filter">
-                            <option value="">Alle Kategorien</option>
+                            <option value="" data-i18n="settings.knowledgeDb.allCategories">Alle Kategorien</option>
                             <option value="PDF">PDF</option>
                             <option value="TXT">TXT</option>
                             <option value="MD">Markdown</option>
                             <option value="XLSX">Excel</option>
                         </select>
                         <select id="kbSort" class="kb-sort">
-                            <option value="newest">Neueste zuerst</option>
-                            <option value="oldest">Älteste zuerst</option>
-                            <option value="name">Nach Name</option>
-                            <option value="size">Nach Größe</option>
+                            <option value="newest" data-i18n="settings.knowledgeDb.sortNewest">Neueste zuerst</option>
+                            <option value="oldest" data-i18n="settings.knowledgeDb.sortOldest">Älteste zuerst</option>
+                            <option value="name" data-i18n="settings.knowledgeDb.sortName">Nach Name</option>
+                            <option value="size" data-i18n="settings.knowledgeDb.sortSize">Nach Größe</option>
                         </select>
-                        <button class="btn btn-primary" onclick="refreshKnowledgeBase()">Aktualisieren</button>
+                        <button class="btn btn-primary" onclick="refreshKnowledgeBase()" data-i18n="settings.knowledgeDb.refresh">Aktualisieren</button>
                 </div>
 
                     <!-- Bulk Actions Bar -->
                     <div class="kb-bulk-actions">
                         <div class="kb-select-all">
                             <input type="checkbox" id="selectAllKb">
-                            <label for="selectAllKb">Alle auswählen</label>
+                            <label for="selectAllKb" data-i18n="settings.knowledgeDb.selectAll">Alle auswählen</label>
                         </div>
                         <div class="kb-bulk-actions-right">
-                            <span class="kb-selected-count"><span id="selectedCount">0</span> ausgewählt</span>
-                            <button class="btn btn-secondary" id="bulkDeleteKbBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Ausgewählte löschen</button>
-                            <button class="btn btn-secondary" id="exportKbBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Exportieren</button>
-                            <button class="btn btn-secondary" id="importKbBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Importieren</button>
+                            <span class="kb-selected-count"><span id="selectedCount">0</span> <span data-i18n="settings.knowledgeDb.selected">ausgewählt</span></span>
+                            <button class="btn btn-secondary" id="bulkDeleteKbBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.knowledgeDb.deleteSelected">Ausgewählte löschen</button>
+                            <button class="btn btn-secondary" id="exportKbBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.knowledgeDb.export">Exportieren</button>
+                            <button class="btn btn-secondary" id="importKbBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.knowledgeDb.import">Importieren</button>
                     </div>
                     </div>
                 </div>
@@ -860,18 +860,18 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value" id="tdDocCount">0</div>
-                        <div class="stat-label">Dokumente</div>
-                        <div class="stat-description">Technische Datenbank</div>
+                        <div class="stat-label" data-i18n="settings.technicalDb.documents">Dokumente</div>
+                        <div class="stat-description" data-i18n="settings.technicalDb.technicalDatabase">Technische Datenbank</div>
                             </div>
                     <div class="stat-card">
                         <div class="stat-value" id="tdTotalSize">0 KB</div>
-                        <div class="stat-label">Gesamtgröße</div>
-                        <div class="stat-description">Alle Dateien</div>
+                        <div class="stat-label" data-i18n="settings.technicalDb.totalSize">Gesamtgröße</div>
+                        <div class="stat-description" data-i18n="settings.technicalDb.allFiles">Alle Dateien</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="tdLastUpdated">-</div>
-                        <div class="stat-label">Letzte Aktualisierung</div>
-                        <div class="stat-description">Technische Datenbank</div>
+                        <div class="stat-label" data-i18n="settings.technicalDb.lastUpdate">Letzte Aktualisierung</div>
+                        <div class="stat-description" data-i18n="settings.technicalDb.technicalDatabase">Technische Datenbank</div>
                     </div>
                 </div>
                 
@@ -915,34 +915,34 @@
                 <div class="kb-toolbar">
                     <!-- Search Row -->
                     <div class="kb-search">
-                        <input type="text" id="tdSearch" class="kb-search-input" placeholder="Technische Dokumente durchsuchen...">
+                        <input type="text" id="tdSearch" class="kb-search-input" data-i18n-placeholder="settings.technicalDb.searchPlaceholder" placeholder="Technische Dokumente durchsuchen...">
                         <select id="tdFilter" class="kb-filter">
-                            <option value="">Alle Kategorien</option>
+                            <option value="" data-i18n="settings.technicalDb.allCategories">Alle Kategorien</option>
                             <option value="PDF">PDF</option>
                             <option value="TXT">TXT</option>
                             <option value="MD">Markdown</option>
                             <option value="XLSX">Excel</option>
                         </select>
                         <select id="tdSort" class="kb-sort">
-                            <option value="newest">Neueste zuerst</option>
-                            <option value="oldest">Älteste zuerst</option>
-                            <option value="name">Nach Name</option>
-                            <option value="size">Nach Größe</option>
+                            <option value="newest" data-i18n="settings.technicalDb.sortNewest">Neueste zuerst</option>
+                            <option value="oldest" data-i18n="settings.technicalDb.sortOldest">Älteste zuerst</option>
+                            <option value="name" data-i18n="settings.technicalDb.sortName">Nach Name</option>
+                            <option value="size" data-i18n="settings.technicalDb.sortSize">Nach Größe</option>
                         </select>
-                        <button class="btn btn-primary" onclick="refreshTechnicalDatabase()">Aktualisieren</button>
+                        <button class="btn btn-primary" onclick="refreshTechnicalDatabase()" data-i18n="settings.technicalDb.refresh">Aktualisieren</button>
                         </div>
 
                     <!-- Bulk Actions Bar -->
                     <div class="kb-bulk-actions">
                         <div class="kb-select-all">
                             <input type="checkbox" id="selectAllTd">
-                            <label for="selectAllTd">Alle auswählen</label>
+                            <label for="selectAllTd" data-i18n="settings.technicalDb.selectAll">Alle auswählen</label>
                             </div>
                         <div class="kb-bulk-actions-right">
-                            <span class="kb-selected-count"><span id="tdSelectedCount">0</span> ausgewählt</span>
-                            <button class="btn btn-secondary" id="bulkDeleteTdBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Ausgewählte löschen</button>
-                            <button class="btn btn-secondary" id="exportTdBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Exportieren</button>
-                            <button class="btn btn-secondary" id="importTdBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Importieren</button>
+                            <span class="kb-selected-count"><span id="tdSelectedCount">0</span> <span data-i18n="settings.technicalDb.selected">ausgewählt</span></span>
+                            <button class="btn btn-secondary" id="bulkDeleteTdBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.technicalDb.deleteSelected">Ausgewählte löschen</button>
+                            <button class="btn btn-secondary" id="exportTdBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.technicalDb.export">Exportieren</button>
+                            <button class="btn btn-secondary" id="importTdBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.technicalDb.import">Importieren</button>
                         </div>
                             </div>
                         </div>
