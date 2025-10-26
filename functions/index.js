@@ -3203,7 +3203,7 @@ exports.downloadDocument = functions.https.onRequest((req, res) => {
             console.log('📥 Download request:', { docId, type });
             
             // Determine collection based on type
-            const collection = type === 'technical' ? 'technicalDatabase' : 'knowledgeBase';
+            const collection = type === 'technical' ? 'technicalDatabase' : 'knowledgebase';
             
             // Get document from Firestore
             const docRef = db.collection(collection).doc(docId);
@@ -3263,14 +3263,18 @@ exports.viewDocument = functions.https.onRequest((req, res) => {
             console.log('👁️ View request:', { docId, type });
             
             // Determine collection based on type
-            const collection = type === 'technical' ? 'technicalDatabase' : 'knowledgeBase';
+            const collection = type === 'technical' ? 'technicalDatabase' : 'knowledgebase';
+            console.log('📂 Collection:', collection);
             
             // Get document from Firestore
             const docRef = db.collection(collection).doc(docId);
             const docSnap = await docRef.get();
             
+            console.log('📝 Document exists:', docSnap.exists);
+            
             if (!docSnap.exists) {
-                return res.status(404).json({ error: 'Document not found' });
+                console.error('❌ Document not found in collection:', collection, 'with ID:', docId);
+                return res.status(404).json({ error: 'Document not found', collection, docId });
             }
             
             const docData = docSnap.data();
