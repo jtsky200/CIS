@@ -166,7 +166,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20250126-001"></script>
     <script>
         // Global variables are handled by app.js
         
@@ -693,14 +693,39 @@
             loadTechnicalDatabase();
         }
         
-        // Start initialization after DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                waitForAppJs(initTroubleshooting);
-            });
-        } else {
-            waitForAppJs(initTroubleshooting);
+        // AGGRESSIVE DOM-ready check - ensure EVERYTHING is loaded
+        function ensureDOMReady(callback) {
+            console.log('🔄 Checking DOM readiness...', document.readyState);
+            
+            if (document.readyState === 'complete') {
+                console.log('✅ DOM already complete');
+                callback();
+            } else if (document.readyState === 'interactive') {
+                console.log('⏳ DOM interactive, waiting for complete...');
+                window.addEventListener('load', () => {
+                    console.log('✅ Window load event fired');
+                    callback();
+                });
+            } else {
+                console.log('⏳ DOM still loading...');
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('✅ DOMContentLoaded event fired');
+                    window.addEventListener('load', () => {
+                        console.log('✅ Window load event fired');
+                        callback();
+                    });
+                });
+            }
         }
+        
+        // Start initialization
+        console.log('🚀 Starting Troubleshooting Page initialization...');
+        console.log('📍 Current DOM state:', document.readyState);
+        
+        ensureDOMReady(() => {
+            console.log('✅ DOM is FULLY ready, starting init...');
+            waitForAppJs(initTroubleshooting);
+        });
     </script>
 </body>
 </html>
