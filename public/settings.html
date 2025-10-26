@@ -1003,17 +1003,214 @@
                     </div>
                 </div>
                 
-                <!-- Database Management -->
+                <!-- Chat Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Datenbank-Verwaltung</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Chat-Einstellungen</h3>
                     
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label>KI-Modell</label>
+                        <select id="chatModelSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="gpt-4">GPT-4 (Empfohlen)</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="claude-3">Claude 3</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Temperatur (Kreativität)</label>
+                        <input type="range" id="chatTemperatureSetting" min="0" max="2" step="0.1" value="0.7" style="max-width: 400px; width: 100%;">
+                        <span id="temperatureValue" style="color: #6b7280; font-size: 14px;">0.7</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Max Tokens</label>
+                        <input type="number" id="chatMaxTokensSetting" value="2000" min="100" max="8000" step="100" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>System Prompt</label>
+                        <textarea id="chatSystemPromptSetting" rows="3" placeholder="Du bist ein hilfreicher Assistent..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="chatStreamingSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Streaming aktivieren (Echtzeit-Antworten)
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="chatHistorySetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Chat-Verlauf speichern
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Database Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Datenbank-Einstellungen</h3>
+                    
+                    <div class="form-group">
+                        <label>Auto-Backup Intervall</label>
+                        <select id="dbAutoBackupSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="never">Nie</option>
+                            <option value="daily">Täglich</option>
+                            <option value="weekly">Wöchentlich</option>
+                            <option value="monthly">Monatlich</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Maximale Dateigröße (MB)</label>
+                        <input type="number" id="dbMaxFileSizeSetting" value="50" min="1" max="500" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Erlaubte Dateitypen</label>
+                        <input type="text" id="dbAllowedTypesSetting" value="pdf,txt,md,docx,xlsx" placeholder="pdf,txt,md,docx" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="dbDuplicateDetectionSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Duplikat-Erkennung aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="dbAutoCategorySetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Automatische Kategorisierung
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
                         <button class="btn btn-secondary" onclick="window.createBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Backup erstellen</button>
                         <button class="btn btn-secondary" onclick="window.restoreBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Backup wiederherstellen</button>
                         <button class="btn btn-secondary" onclick="window.clearCache()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Cache leeren</button>
                         <button class="btn" onclick="window.deleteAllData()" style="background: #ef4444; color: white; height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Alle Daten löschen</button>
                     </div>
-                    <p style="color: #6b7280; font-size: 14px;">Achtung: Das Löschen aller Daten kann nicht rückgängig gemacht werden!</p>
+                </div>
+                
+                <!-- API Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">API-Einstellungen</h3>
+                    
+                    <div class="form-group">
+                        <label>OpenAI API Key</label>
+                        <input type="password" id="apiOpenAIKeySetting" placeholder="sk-..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>API Timeout (Sekunden)</label>
+                        <input type="number" id="apiTimeoutSetting" value="30" min="5" max="120" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Rate Limit (Anfragen pro Minute)</label>
+                        <input type="number" id="apiRateLimitSetting" value="60" min="1" max="1000" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Retry-Versuche bei Fehler</label>
+                        <input type="number" id="apiRetryCountSetting" value="3" min="0" max="10" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                </div>
+                
+                <!-- Security Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Sicherheit & Benutzer</h3>
+                    
+                    <div class="form-group">
+                        <label>Sitzungs-Timeout (Minuten)</label>
+                        <input type="number" id="securitySessionTimeoutSetting" value="60" min="5" max="1440" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="security2FASetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Zwei-Faktor-Authentifizierung aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="securityActivityLogSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Aktivitäts-Log aktivieren
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="window.changePassword()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Passwort ändern</button>
+                        <button class="btn btn-secondary" onclick="window.viewActivityLog()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Aktivitäts-Log anzeigen</button>
+                    </div>
+                </div>
+                
+                <!-- Performance Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Performance & Optimierung</h3>
+                    
+                    <div class="form-group">
+                        <label>Cache-Größe (MB)</label>
+                        <input type="number" id="perfCacheSizeSetting" value="100" min="10" max="1000" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="perfLazyLoadingSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Lazy Loading aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="perfImageCompressionSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            Bildkompression aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="perfPrefetchingSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Prefetching aktivieren
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Notification Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Benachrichtigungen</h3>
+                    
+                    <div class="form-group">
+                        <label>E-Mail-Adresse für Benachrichtigungen</label>
+                        <input type="email" id="notifEmailSetting" placeholder="ihre@email.de" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="notifEmailEnabledSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            E-Mail-Benachrichtigungen aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="notifPushEnabledSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Push-Benachrichtigungen aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Benachrichtigungs-Frequenz</label>
+                        <select id="notifFrequencySetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="instant">Sofort</option>
+                            <option value="hourly">Stündlich</option>
+                            <option value="daily">Täglich</option>
+                            <option value="weekly">Wöchentlich</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <!-- Advanced Tools -->
@@ -1034,17 +1231,35 @@
                         </label>
                     </div>
                     
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="webhookEnabledSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Webhook-Integration aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Webhook URL</label>
+                        <input type="url" id="webhookUrlSetting" placeholder="https://..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Custom CSS</label>
+                        <textarea id="customCSSSetting" rows="4" placeholder="/* Ihr eigenes CSS */" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: 'Courier New', monospace;"></textarea>
+                    </div>
+                    
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
                         <button class="btn btn-secondary" onclick="window.viewLogs()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Logs anzeigen</button>
                         <button class="btn btn-secondary" onclick="window.exportSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Einstellungen exportieren</button>
                         <button class="btn btn-secondary" onclick="window.importSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Einstellungen importieren</button>
+                        <button class="btn btn-secondary" onclick="window.testWebhook()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Webhook testen</button>
                     </div>
                 </div>
                 
-                <!-- Save Button -->
-                <div style="display: flex; gap: 12px; align-items: center;">
-                    <button class="btn btn-primary" onclick="window.saveGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Änderungen speichern</button>
-                    <button class="btn btn-secondary" onclick="window.resetGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Zurücksetzen</button>
+                <!-- Save Buttons - ALIGNED -->
+                <div style="display: flex; gap: 12px; align-items: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="window.saveGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 24px !important; font-size: 16px;">Änderungen speichern</button>
+                    <button class="btn btn-secondary" onclick="window.resetGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 24px !important; font-size: 16px;">Zurücksetzen</button>
                 </div>
             </div>
         </div>
