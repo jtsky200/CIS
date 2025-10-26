@@ -104,7 +104,22 @@ class I18n {
                 }
             } else {
                 // For other elements, update text content
-                element.textContent = translation;
+                // Use a safer method that preserves child elements
+                if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
+                    // Only one text node - safe to replace
+                    element.textContent = translation;
+                } else if (element.childNodes.length === 0) {
+                    // Empty element - safe to set
+                    element.textContent = translation;
+                } else {
+                    // Has multiple children or complex structure - update only first text node
+                    for (let i = 0; i < element.childNodes.length; i++) {
+                        if (element.childNodes[i].nodeType === Node.TEXT_NODE) {
+                            element.childNodes[i].textContent = translation;
+                            break;
+                        }
+                    }
+                }
             }
         });
 
