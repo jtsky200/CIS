@@ -172,13 +172,13 @@
                         
                         <!-- Action buttons -->
                         <button class="kb-action-btn kb-view-btn" data-doc-id="${doc.id}" title="Ansehen" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
-                            👁️ Ansehen
+                            Ansehen
                         </button>
                         <button class="kb-action-btn kb-download-btn" data-doc-id="${doc.id}" title="Herunterladen" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
-                            ⬇️ Download
+                            Download
                         </button>
                         <button class="kb-action-btn kb-delete-btn" data-doc-id="${doc.id}" title="Löschen" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
-                            🗑️
+                            Löschen
                         </button>
                     </div>
                 </div>
@@ -336,11 +336,11 @@
             if (data.url) {
                 window.open(data.url, '_blank');
             } else {
-                alert('Dokument konnte nicht geöffnet werden.');
+                showNotification('Dokument konnte nicht geöffnet werden.', 'error');
             }
         } catch (error) {
             console.error('Error viewing document:', error);
-            alert('Fehler beim Öffnen des Dokuments.');
+            showNotification('Fehler beim Öffnen des Dokuments.', 'error');
         }
     }
     
@@ -361,7 +361,7 @@
             document.body.removeChild(a);
         } catch (error) {
             console.error('Error downloading document:', error);
-            alert('Fehler beim Herunterladen des Dokuments.');
+            showNotification('Fehler beim Herunterladen des Dokuments.', 'error');
         }
     }
     
@@ -385,13 +385,13 @@
                 window.kbState.allDocuments = window.kbState.allDocuments.filter(d => d.id !== docId);
                 applyFiltersAndSort();
                 renderDocuments();
-                alert('Dokument erfolgreich gelöscht.');
+                showNotification('Dokument erfolgreich gelöscht.', 'success');
             } else {
-                alert('Fehler beim Löschen des Dokuments.');
+                showNotification('Fehler beim Löschen des Dokuments.', 'error');
             }
         } catch (error) {
             console.error('Error deleting document:', error);
-            alert('Fehler beim Löschen des Dokuments.');
+            showNotification('Fehler beim Löschen des Dokuments.', 'error');
         }
     }
     
@@ -422,10 +422,10 @@
             applyFiltersAndSort();
             renderDocuments();
             updateSelectedCount();
-            alert(`${count} Dokument(e) erfolgreich gelöscht.`);
+            showNotification(`${count} Dokument(e) erfolgreich gelöscht.`, 'success');
         } catch (error) {
             console.error('Error bulk deleting documents:', error);
-            alert('Fehler beim Löschen der Dokumente.');
+            showNotification('Fehler beim Löschen der Dokumente.', 'error');
         }
     }
     
@@ -464,14 +464,14 @@
                 });
                 
                 if (response.ok) {
-                    alert(`${files.length} Datei(en) erfolgreich hochgeladen.`);
+                    showNotification(`${files.length} Datei(en) erfolgreich hochgeladen.`, 'success');
                     window.refreshKnowledgeBase();
                 } else {
-                    alert('Fehler beim Hochladen der Dateien.');
+                    showNotification('Fehler beim Hochladen der Dateien.', 'error');
                 }
             } catch (error) {
                 console.error('Error importing files:', error);
-                alert('Fehler beim Hochladen der Dateien.');
+                showNotification('Fehler beim Hochladen der Dateien.', 'error');
             }
         };
         input.click();
@@ -530,12 +530,55 @@
             // Load documents
             window.loadKbDocuments(docs);
             
-            alert('Wissensdatenbank erfolgreich aktualisiert.');
+            showNotification('Wissensdatenbank erfolgreich aktualisiert.', 'success');
         } catch (error) {
             console.error('Error refreshing knowledge base:', error);
-            alert('Fehler beim Aktualisieren der Wissensdatenbank.');
+            showNotification('Fehler beim Aktualisieren der Wissensdatenbank.', 'error');
         }
     };
+    
+    // Show notification function
+    function showNotification(message, type = 'success') {
+        // Remove existing notification
+        const existing = document.querySelector('.kb-notification');
+        if (existing) {
+            existing.remove();
+        }
+        
+        // Create new notification
+        const notification = document.createElement('div');
+        notification.className = 'kb-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: ${type === 'error' ? '#ef4444' : '#10b981'};
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.style.opacity = '1';
+        }, 10);
+        
+        // Hide and remove after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
     
     console.log('✅ KB Functions loaded');
 })();
