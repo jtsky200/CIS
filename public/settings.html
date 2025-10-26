@@ -669,11 +669,20 @@
                             console.log('✅ KB Inline: Loading ' + docs.length + ' documents into kb-functions...');
                             
                             // Update last updated
-                            const lastUpdated = docs.length > 0 ? Math.max(...docs.map(d => d.uploadedAt || 0)) : null;
-                            if (lastUpdated) {
-                                const lastUpdatedEl = document.getElementById('kbLastUpdated');
-                                if (lastUpdatedEl) {
-                                    lastUpdatedEl.textContent = formatDate(lastUpdated);
+                            if (docs.length > 0) {
+                                const timestamps = docs.map(d => {
+                                    const ts = d.uploadedAt;
+                                    if (typeof ts === 'number') return ts;
+                                    if (ts && ts.seconds) return ts.seconds * 1000;
+                                    if (ts && ts._seconds) return ts._seconds * 1000;
+                                    return 0;
+                                });
+                                const lastUpdated = Math.max(...timestamps);
+                                if (lastUpdated > 0) {
+                                    const lastUpdatedEl = document.getElementById('kbLastUpdate');
+                                    if (lastUpdatedEl) {
+                                        lastUpdatedEl.textContent = formatDate(lastUpdated);
+                                    }
                                 }
                             }
                             
@@ -859,6 +868,20 @@
 
     <script src="app.js?v=1730000010"></script>
     <script>
+        // Notification functions - Define FIRST to be available globally
+        window.showMessage = function(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        };
+        
         // IMMEDIATE logo loading - no delays, no events
         (function() {
             console.log('🔄 IMMEDIATE: Loading branding settings...');
@@ -1554,19 +1577,7 @@
             closeDeleteModal();
         }
 
-        // Notification functions
-        function showMessage(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 100);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => document.body.removeChild(notification), 300);
-            }, 3000);
-        }
+        // Notification functions (moved to top of script section)
 
         // Refresh technical database function
         function refreshTechnicalDatabase() {
