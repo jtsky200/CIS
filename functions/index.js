@@ -3250,6 +3250,15 @@ exports.downloadDocument = functions.https.onRequest((req, res) => {
     });
 });
 
+// Helper function to check if a string is base64
+function isBase64(str) {
+    if (!str || typeof str !== 'string') return false;
+    // Base64 strings should only contain these characters
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+    // Check if it matches base64 pattern and length is multiple of 4
+    return base64Regex.test(str) && str.length % 4 === 0 && str.length > 100;
+}
+
 // View document endpoint (for preview)
 exports.viewDocument = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
@@ -3310,17 +3319,39 @@ exports.viewDocument = functions.https.onRequest((req, res) => {
             
             // For PDFs, use originalFileData if available, otherwise use content
             let fileContent;
-            if (docData.fileType === 'pdf' && (docData.originalFileData || docData.originalPdfData)) {
+            const fileType = (docData.fileType || docData.type || '').toLowerCase();
+            
+            if (fileType === 'pdf' && (docData.originalFileData || docData.originalPdfData)) {
                 // Use original binary PDF data
                 const pdfData = docData.originalFileData || docData.originalPdfData;
-                fileContent = Buffer.from(pdfData, 'base64');
-                res.setHeader('Content-Length', fileContent.length);
-                console.log('✅ Sending PDF from originalFileData, size:', fileContent.length);
+                try {
+                    fileContent = Buffer.from(pdfData, 'base64');
+                    res.setHeader('Content-Length', fileContent.length);
+                    console.log('✅ Sending PDF from originalFileData, size:', fileContent.length);
+                } catch (error) {
+                    console.error('❌ Error decoding PDF data:', error);
+                    return res.status(500).json({ error: 'Failed to decode PDF data' });
+                }
             } else if (docData.content) {
-                // Use text content for other file types
-                fileContent = Buffer.from(docData.content, 'base64');
-                res.setHeader('Content-Length', fileContent.length);
-                console.log('✅ Sending content, size:', fileContent.length);
+                // Check if content is base64 or plain text
+                try {
+                    // Try to decode as base64 first
+                    if (isBase64(docData.content)) {
+                        fileContent = Buffer.from(docData.content, 'base64');
+                        console.log('✅ Sending base64-decoded content, size:', fileContent.length);
+                    } else {
+                        // It's plain text, send as-is
+                        fileContent = Buffer.from(docData.content, 'utf-8');
+                        console.log('✅ Sending plain text content, size:', fileContent.length);
+                    }
+                    res.setHeader('Content-Length', fileContent.length);
+                } catch (error) {
+                    console.error('❌ Error processing content:', error);
+                    // Fallback: send as plain text
+                    fileContent = Buffer.from(docData.content, 'utf-8');
+                    res.setHeader('Content-Length', fileContent.length);
+                    console.log('⚠️ Sending content as plain text fallback, size:', fileContent.length);
+                }
             } else {
                 console.error('❌ No valid content to send');
                 return res.status(404).json({ error: 'No valid content found' });
