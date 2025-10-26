@@ -17,7 +17,7 @@
     },
     "branding": {
       "title": "Branding & Anpassung",
-      "subtitle": "Passe Logo, Texte, Farben und Willkommensnachricht an.",
+      "subtitle": "Untertitel",
       "logoSection": "Logo & Branding",
       "uploadLogo": "Logo hochladen",
       "resetLogo": "Logo zurücksetzen",
@@ -29,7 +29,6 @@
       "welcomeMessage": "Willkommensnachricht",
       "mainTitle": "Haupttitel",
       "mainTitleHint": "Haupttitel auf der Startseite",
-      "subtitle": "Untertitel",
       "subtitleHint": "Untertitel auf der Startseite",
       "browser": "Browser",
       "pageTitle": "Seitentitel",
@@ -166,7 +165,6 @@
       "removeApiKey": "Entfernen",
       "providerName": "Provider Name",
       "aiModel": "KI-Modell",
-      "apiKey": "API Key",
       "apiTimeout": "API Timeout (Sekunden)",
       "rateLimit": "Rate Limit (Anfragen pro Minute)",
       "retryAttempts": "Retry-Versuche bei Fehler",
@@ -204,17 +202,48 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Willkommen beim Cadillac EV Assistenten",
-    "subtitle": "Ihr intelligenter Begleiter für alle Fragen rund um Cadillac Elektrofahrzeuge"
+    "subtitle": "Übersicht über Ihre Cadillac EV Assistant Aktivitäten",
+    "statistics": "Statistiken",
+    "documents": "Dokumente",
+    "totalSize": "Gesamtgröße",
+    "lastUpdate": "Letzte Aktualisierung",
+    "quickActions": "Schnellzugriff",
+    "startChat": "Chat starten",
+    "newConversation": "Neue Konversation",
+    "uploadFile": "Datei hochladen",
+    "expandKnowledgeBase": "Wissensdatenbank erweitern",
+    "cadillacWebsite": "Cadillac Website",
+    "visitOfficialSite": "Offizielle Seite besuchen",
+    "recentActivity": "Letzte Aktivitäten",
+    "noActivity": "Keine Aktivitäten vorhanden"
   },
   "chat": {
     "title": "Chat",
     "placeholder": "Stellen Sie eine Frage über Cadillac EVs...",
-    "send": "Senden"
+    "send": "Senden",
+    "welcomeTitle": "Cadillac EV Assistant",
+    "welcomeSubtitle": "Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge",
+    "question1": "Was kostet der Cadillac LYRIQ?",
+    "question2": "Wie hoch ist die Reichweite?",
+    "question3": "Lieferzeiten & Bestellung",
+    "question4": "Garantie & Service",
+    "inputPlaceholder": "Nachricht an Cadillac EV Assistant..."
   },
   "troubleshooting": {
     "title": "Troubleshooting",
     "placeholder": "Beschreiben Sie Ihr technisches Problem...",
-    "send": "Senden"
+    "send": "Senden",
+    "subtitle": "Hilfe bei Problemen mit Ihrem Cadillac EV",
+    "intelligentDiagnosis": "Intelligente Problemdiagnose",
+    "diagnosisDescription": "Laden Sie ein Bild des Problems hoch und erhalten Sie eine sofortige AI-gestützte Diagnose mit Lösungsvorschlägen aus unseren Fahrzeughandbüchern.",
+    "uploadImage": "Bild hochladen",
+    "clickOrDrag": "Klicken zum Auswählen oder Drag & Drop",
+    "fileFormats": "JPG, PNG, GIF - Max. 10MB",
+    "describeProblem": "Problem beschreiben (optional)",
+    "problemPlaceholder": "Beschreiben Sie das Problem genau oder lassen Sie das Feld leer für reine Bildanalyse...",
+    "vehicleModel": "Fahrzeugmodell",
+    "selectModel": "Modell auswählen...",
+    "analyzeProblem": "Problem analysieren"
   },
   "common": {
     "loading": "Lädt...",
@@ -228,4 +257,3 @@
     "close": "Schließen"
   }
 }
-

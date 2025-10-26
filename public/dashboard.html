@@ -39,7 +39,7 @@
             
             <!-- Statistics -->
             <div style="margin-bottom: 40px;">
-                <h2 class="section-title">Statistiken</h2>
+                <h2 class="section-title" data-i18n="dashboard.statistics">Statistiken</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="stat-value" id="dashDocCount">0</div>
-                            <div class="stat-label">Dokumente</div>
+                            <div class="stat-label" data-i18n="dashboard.documents">Dokumente</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -60,7 +60,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="stat-value" id="dashTotalSize">0 MB</div>
-                            <div class="stat-label">Gesamtgröße</div>
+                            <div class="stat-label" data-i18n="dashboard.totalSize">Gesamtgröße</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -71,7 +71,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="stat-value" id="dashLastUpdate">Nie</div>
-                            <div class="stat-label">Letzte Aktualisierung</div>
+                            <div class="stat-label" data-i18n="dashboard.lastUpdate">Letzte Aktualisierung</div>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             
             <!-- Quick Actions -->
             <div style="margin-bottom: 40px;">
-                <h2 class="section-title">Schnellzugriff</h2>
+                <h2 class="section-title" data-i18n="dashboard.quickActions">Schnellzugriff</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                     <button class="quick-action-btn" onclick="window.location.href='chat.html'">
                         <div class="quick-action-icon">
@@ -88,8 +88,8 @@
                             </svg>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Chat starten</div>
-                            <div class="quick-action-subtitle">Neue Konversation</div>
+                            <div class="quick-action-title" data-i18n="dashboard.startChat">Chat starten</div>
+                            <div class="quick-action-subtitle" data-i18n="dashboard.newConversation">Neue Konversation</div>
                         </div>
                     </button>
                     <button class="quick-action-btn" onclick="window.location.href='settings.html'">
@@ -99,8 +99,8 @@
                             </svg>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Datei hochladen</div>
-                            <div class="quick-action-subtitle">Wissensdatenbank erweitern</div>
+                            <div class="quick-action-title" data-i18n="dashboard.uploadFile">Datei hochladen</div>
+                            <div class="quick-action-subtitle" data-i18n="dashboard.expandKnowledgeBase">Wissensdatenbank erweitern</div>
                         </div>
                     </button>
                     <button class="quick-action-btn" onclick="window.open('https://www.cadillaceurope.com/ch-de', '_blank')">
@@ -110,8 +110,8 @@
                             </svg>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Cadillac Website</div>
-                            <div class="quick-action-subtitle">Offizielle Seite besuchen</div>
+                            <div class="quick-action-title" data-i18n="dashboard.cadillacWebsite">Cadillac Website</div>
+                            <div class="quick-action-subtitle" data-i18n="dashboard.visitOfficialSite">Offizielle Seite besuchen</div>
                         </div>
                     </button>
                 </div>
@@ -119,9 +119,9 @@
             
             <!-- Recent Activity -->
             <div>
-                <h2 class="section-title">Letzte Aktivitäten</h2>
+                <h2 class="section-title" data-i18n="dashboard.recentActivity">Letzte Aktivitäten</h2>
                 <div id="dashRecentActivity" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
-                    <div style="color: #6b7280; text-align: center; padding: 20px;">Keine Aktivitäten vorhanden</div>
+                    <div style="color: #6b7280; text-align: center; padding: 20px;" data-i18n="dashboard.noActivity">Keine Aktivitäten vorhanden</div>
                 </div>
             </div>
         </div>

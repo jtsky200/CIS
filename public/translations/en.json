@@ -194,17 +194,48 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Willkommen beim Cadillac EV Assistenten",
-    "subtitle": "Ihr intelligenter Begleiter für alle Fragen rund um Cadillac Elektrofahrzeuge"
+    "subtitle": "Overview of your Cadillac EV Assistant activities",
+    "statistics": "Statistics",
+    "documents": "Documents",
+    "totalSize": "Total Size",
+    "lastUpdate": "Last Update",
+    "quickActions": "Quick Actions",
+    "startChat": "Start Chat",
+    "newConversation": "New Conversation",
+    "uploadFile": "Upload File",
+    "expandKnowledgeBase": "Expand Knowledge Base",
+    "cadillacWebsite": "Cadillac Website",
+    "visitOfficialSite": "Visit Official Site",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activities available"
   },
   "chat": {
     "title": "Chat",
     "placeholder": "Stellen Sie eine Frage über Cadillac EVs...",
-    "send": "Senden"
+    "send": "Senden",
+    "welcomeTitle": "Cadillac EV Assistant",
+    "welcomeSubtitle": "Your personal assistant for Cadillac electric vehicles",
+    "question1": "How much does the Cadillac LYRIQ cost?",
+    "question2": "What is the range?",
+    "question3": "Delivery Times & Order",
+    "question4": "Warranty & Service",
+    "inputPlaceholder": "Message to Cadillac EV Assistant..."
   },
   "troubleshooting": {
     "title": "Troubleshooting",
     "placeholder": "Beschreiben Sie Ihr technisches Problem...",
-    "send": "Senden"
+    "send": "Senden",
+    "subtitle": "Help with problems for your Cadillac EV",
+    "intelligentDiagnosis": "Intelligent Problem Diagnosis",
+    "diagnosisDescription": "Upload an image of the problem and receive an instant AI-powered diagnosis with solutions from our vehicle manuals.",
+    "uploadImage": "Upload Image",
+    "clickOrDrag": "Click to select or Drag & Drop",
+    "fileFormats": "JPG, PNG, GIF - Max. 10MB",
+    "describeProblem": "Describe problem (optional)",
+    "problemPlaceholder": "Describe the problem in detail or leave blank for image analysis only...",
+    "vehicleModel": "Vehicle Model",
+    "selectModel": "Select model...",
+    "analyzeProblem": "Analyze Problem"
   },
   "common": {
     "loading": "Lädt...",

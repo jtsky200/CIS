@@ -192,19 +192,50 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "Tableau de bord",
     "welcome": "Willkommen beim Cadillac EV Assistenten",
-    "subtitle": "Ihr intelligenter Begleiter für alle Fragen rund um Cadillac Elektrofahrzeuge"
+    "subtitle": "Aperçu de vos activités avec l'Assistant Cadillac EV",
+    "statistics": "Statistiques",
+    "documents": "Documents",
+    "totalSize": "Taille totale",
+    "lastUpdate": "Dernière mise à jour",
+    "quickActions": "Actions rapides",
+    "startChat": "Démarrer le chat",
+    "newConversation": "Nouvelle conversation",
+    "uploadFile": "Télécharger un fichier",
+    "expandKnowledgeBase": "Élargir la base de connaissances",
+    "cadillacWebsite": "Site Web Cadillac",
+    "visitOfficialSite": "Visiter le site officiel",
+    "recentActivity": "Activités récentes",
+    "noActivity": "Aucune activité disponible"
   },
   "chat": {
     "title": "Chat",
     "placeholder": "Stellen Sie eine Frage über Cadillac EVs...",
-    "send": "Senden"
+    "send": "Senden",
+    "welcomeTitle": "Assistant Cadillac EV",
+    "welcomeSubtitle": "Votre assistant personnel pour les véhicules électriques Cadillac",
+    "question1": "Combien coûte le Cadillac LYRIQ ?",
+    "question2": "Quelle est l'autonomie ?",
+    "question3": "Délais de livraison & Commande",
+    "question4": "Garantie & Service",
+    "inputPlaceholder": "Message à l'Assistant Cadillac EV..."
   },
   "troubleshooting": {
-    "title": "Troubleshooting",
+    "title": "Dépannage",
     "placeholder": "Beschreiben Sie Ihr technisches Problem...",
-    "send": "Senden"
+    "send": "Senden",
+    "subtitle": "Aide pour les problèmes avec votre Cadillac EV",
+    "intelligentDiagnosis": "Diagnostic intelligent des problèmes",
+    "diagnosisDescription": "Téléchargez une image du problème et recevez un diagnostic instantané assisté par IA avec des solutions tirées de nos manuels de véhicules.",
+    "uploadImage": "Télécharger une image",
+    "clickOrDrag": "Cliquez pour sélectionner ou Glisser-Déposer",
+    "fileFormats": "JPG, PNG, GIF - Max. 10Mo",
+    "describeProblem": "Décrire le problème (facultatif)",
+    "problemPlaceholder": "Décrivez le problème en détail ou laissez vide pour une analyse d'image uniquement...",
+    "vehicleModel": "Modèle de véhicule",
+    "selectModel": "Sélectionner un modèle...",
+    "analyzeProblem": "Analyser le problème"
   },
   "common": {
     "loading": "Lädt...",
