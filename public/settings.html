@@ -1062,12 +1062,12 @@
                     
                     <div class="form-group">
                         <label>System Prompt (Chat-Seite)</label>
-                        <textarea id="chatSystemPromptSetting" rows="3" placeholder="Du bist ein hilfreicher Cadillac EV Assistent..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;"></textarea>
+                        <textarea id="chatSystemPromptSetting" rows="4" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">Du bist ein hilfreicher Cadillac EV Assistent mit Zugriff auf die Wissensdatenbank und technische Datenbank. Beantworte Fragen zu Cadillac Elektrofahrzeugen präzise, freundlich und professionell. Nutze die verfügbaren Dokumente, um genaue Informationen zu liefern. Wenn du etwas nicht weißt, sage es ehrlich.</textarea>
                     </div>
                     
                     <div class="form-group">
                         <label>System Prompt (Troubleshooting-Seite)</label>
-                        <textarea id="troubleshootingSystemPromptSetting" rows="3" placeholder="Du bist ein technischer Support-Assistent für Cadillac EVs..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;"></textarea>
+                        <textarea id="troubleshootingSystemPromptSetting" rows="4" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">Du bist ein technischer Support-Assistent für Cadillac Elektrofahrzeuge. Deine Aufgabe ist es, technische Probleme zu diagnostizieren und Lösungen bereitzustellen. Nutze die technische Datenbank für präzise Anleitungen. Frage systematisch nach Symptomen, prüfe mögliche Ursachen und biete Schritt-für-Schritt-Lösungen an.</textarea>
                     </div>
                     
                     <div class="form-group">
@@ -1140,11 +1140,31 @@
                 
                 <!-- API Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">API-Einstellungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">API-Einstellungen (Mehrere API Keys)</h3>
                     
                     <div class="form-group">
                         <label>OpenAI API Key</label>
                         <input type="password" id="apiOpenAIKeySetting" placeholder="sk-..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Google Gemini API Key</label>
+                        <input type="password" id="apiGeminiKeySetting" placeholder="AIza..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Anthropic Claude API Key</label>
+                        <input type="password" id="apiClaudeKeySetting" placeholder="sk-ant-..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Custom API Key 1</label>
+                        <input type="password" id="apiCustom1KeySetting" placeholder="Your custom API key" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Custom API Key 2</label>
+                        <input type="password" id="apiCustom2KeySetting" placeholder="Your custom API key" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
