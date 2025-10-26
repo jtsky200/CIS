@@ -151,10 +151,18 @@ class I18n {
      * Update language dropdown to show current language
      */
     updateLanguageDropdown() {
-        const dropdown = document.getElementById('languageSetting');
-        if (dropdown) {
-            dropdown.value = this.currentLanguage;
-            console.log(`✅ Updated language dropdown to: ${this.currentLanguage}`);
+        // Update settings page dropdown
+        const settingsDropdown = document.getElementById('languageSetting');
+        if (settingsDropdown) {
+            settingsDropdown.value = this.currentLanguage;
+            console.log(`✅ Updated settings language dropdown to: ${this.currentLanguage}`);
+        }
+        
+        // Update navigation language selector
+        const navSelector = document.getElementById('languageSelector');
+        if (navSelector) {
+            navSelector.value = this.currentLanguage;
+            console.log(`✅ Updated nav language selector to: ${this.currentLanguage}`);
         }
     }
 
