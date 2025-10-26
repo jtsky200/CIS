@@ -1140,31 +1140,27 @@
                 
                 <!-- API Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">API-Einstellungen (Mehrere API Keys)</h3>
-                    
-                    <div class="form-group">
-                        <label>OpenAI API Key</label>
-                        <input type="password" id="apiOpenAIKeySetting" placeholder="sk-..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin: 0;">API-Einstellungen (Mehrere API Keys)</h3>
+                        <button onclick="window.addApiKeyField()" style="background: #3b82f6; color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">+</button>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Google Gemini API Key</label>
-                        <input type="password" id="apiGeminiKeySetting" placeholder="AIza..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Anthropic Claude API Key</label>
-                        <input type="password" id="apiClaudeKeySetting" placeholder="sk-ant-..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Custom API Key 1</label>
-                        <input type="password" id="apiCustom1KeySetting" placeholder="Your custom API key" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Custom API Key 2</label>
-                        <input type="password" id="apiCustom2KeySetting" placeholder="Your custom API key" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                    <div id="apiKeysContainer">
+                        <div class="api-key-group" style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 6px; position: relative;">
+                            <button onclick="window.removeApiKeyField(this)" style="position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 14px;">×</button>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label>Provider Name</label>
+                                <input type="text" class="api-provider-name" placeholder="z.B. OpenAI, Gemini, Custom" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label>KI-Modell</label>
+                                <input type="text" class="api-model-name" placeholder="z.B. gpt-4.1-mini, gemini-2.5-flash" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            </div>
+                            <div class="form-group">
+                                <label>API Key</label>
+                                <input type="password" class="api-key-value" placeholder="Your API Key" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -1381,13 +1377,28 @@
             console.log('✅ Theme toggled to:', newTheme);
         };
         
-        // Language switching function
-        window.changeLanguage = function(lang) {
-            localStorage.setItem('language', lang);
-            window.showMessage(`Sprache wird auf ${lang === 'de' ? 'Deutsch' : lang === 'en' ? 'English' : 'Français'} gewechselt...`, 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+        // Language switching function - Save to Firestore
+        window.changeLanguage = async function(lang) {
+            try {
+                const user = firebase.auth().currentUser;
+                if (!user) {
+                    window.showMessage('Bitte melden Sie sich an, um die Sprache zu ändern', 'error');
+                    return;
+                }
+                
+                await firebase.firestore().collection('settings').doc(user.uid).set({
+                    language: lang,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                window.showMessage(`Sprache wird auf ${lang === 'de' ? 'Deutsch' : lang === 'en' ? 'English' : 'Français'} gewechselt...`, 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } catch (error) {
+                console.error('Language change error:', error);
+                window.showMessage('Fehler beim Ändern der Sprache', 'error');
+            }
         };
         
         // Model configuration function
@@ -1398,6 +1409,42 @@
             } else {
                 customConfig.style.display = 'none';
             }
+        };
+        
+        // Add API Key Field
+        window.addApiKeyField = function() {
+            const container = document.getElementById('apiKeysContainer');
+            const newField = document.createElement('div');
+            newField.className = 'api-key-group';
+            newField.style.cssText = 'margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 6px; position: relative;';
+            newField.innerHTML = `
+                <button onclick="window.removeApiKeyField(this)" style="position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 14px;">×</button>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Provider Name</label>
+                    <input type="text" class="api-provider-name" placeholder="z.B. OpenAI, Gemini, Custom" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>KI-Modell</label>
+                    <input type="text" class="api-model-name" placeholder="z.B. gpt-4.1-mini, gemini-2.5-flash" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                </div>
+                <div class="form-group">
+                    <label>API Key</label>
+                    <input type="password" class="api-key-value" placeholder="Your API Key" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                </div>
+            `;
+            container.appendChild(newField);
+            window.showMessage('API Key Feld hinzugefügt', 'success');
+        };
+        
+        // Remove API Key Field
+        window.removeApiKeyField = function(button) {
+            const container = document.getElementById('apiKeysContainer');
+            if (container.children.length <= 1) {
+                window.showMessage('Mindestens ein API Key Feld muss vorhanden sein', 'error');
+                return;
+            }
+            button.closest('.api-key-group').remove();
+            window.showMessage('API Key Feld entfernt', 'success');
         };
         
         // ===== GENERAL SETTINGS FUNCTIONS - Define early for global availability =====
