@@ -1159,7 +1159,7 @@ exports.upload = functions.https.onRequest((req, res) => {
                 }
 
                 // Upload to Firebase Storage
-                const bucket = admin.storage().bucket();
+                const bucket = admin.storage().bucket('cis-de.appspot.com');
                 const fileBuffer = Buffer.from(content, 'base64');
                 const storagePath = `knowledge-base/${Date.now()}_${filename}`;
                 const file = bucket.file(storagePath);
@@ -1253,7 +1253,7 @@ exports.upload = functions.https.onRequest((req, res) => {
                                 console.log('File processed:', filename, 'Size:', buffer.length);
 
                                 // Upload to Firebase Storage
-                                const bucket = admin.storage().bucket();
+                                const bucket = admin.storage().bucket('cis-de.appspot.com');
                                 const storagePath = `knowledge-base/${Date.now()}_${filename}`;
                                 const storageFile = bucket.file(storagePath);
                                 

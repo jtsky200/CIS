@@ -26,7 +26,7 @@ exports.migrateDocumentsToStorage = functions.https.onRequest((req, res) => {
             console.log('🔄 Starting migration of documents to Firebase Storage...');
             
             const db = admin.firestore();
-            const bucket = admin.storage().bucket();
+            const bucket = admin.storage().bucket('cis-de.appspot.com');
             
             // Get all documents from knowledgebase
             const snapshot = await db.collection('knowledgebase')
