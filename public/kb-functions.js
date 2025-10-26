@@ -330,14 +330,11 @@
         if (!doc) return;
         
         try {
-            const response = await fetch(`https://us-central1-cis-de.cloudfunctions.net/viewDocument?id=${docId}`);
-            const data = await response.json();
-            
-            if (data.url) {
-                window.open(data.url, '_blank');
-            } else {
-                showNotification('Dokument konnte nicht geöffnet werden.', 'error');
-            }
+            // Open the document directly in a new tab
+            // The backend will serve the file content with appropriate headers
+            const url = `https://us-central1-cis-de.cloudfunctions.net/viewDocument?docId=${docId}&type=knowledge`;
+            window.open(url, '_blank');
+            showNotification('Dokument wird geöffnet...', 'success');
         } catch (error) {
             console.error('Error viewing document:', error);
             showNotification('Fehler beim Öffnen des Dokuments.', 'error');
