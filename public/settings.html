@@ -70,7 +70,7 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 200;
+            font-weight: 500;
             color: #2d2d2d;
         }
         
@@ -79,7 +79,7 @@
             padding: 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 16px;
         }
         
         .form-group input:focus {
@@ -113,8 +113,8 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 200;
+            font-size: 16px;
+            font-weight: 500;
             transition: all 0.3s ease;
             display: inline-flex !important;
             width: auto !important;
@@ -168,22 +168,22 @@
         
         .stat-value {
             font-size: 24px;
-            font-weight: 200;
+            font-weight: 500;
             color: #2d2d2d;
             margin-bottom: 5px;
         }
         
         .stat-label {
-            font-size: 14px;
+            font-size: 16px;
             color: #6b7280;
-            font-weight: 200;
+            font-weight: 500;
         }
         
         .stat-description {
             font-size: 12px;
             color: #9ca3af;
             margin-top: 4px;
-            font-weight: 200;
+            font-weight: 500;
         }
         
         .kb-search {
@@ -201,7 +201,7 @@
             padding: 0 15px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 500;
             box-sizing: border-box;
             line-height: normal;
@@ -212,7 +212,7 @@
             padding: 0 15px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 500;
             background: white;
             box-sizing: border-box;
@@ -247,7 +247,7 @@
         }
         
         .kb-item-title {
-            font-weight: 200;
+            font-weight: 500;
             color: #2d2d2d;
             font-size: 16px;
         }
@@ -255,7 +255,7 @@
         .kb-item-date {
             color: #6b7280;
             font-size: 12px;
-            font-weight: 200;
+            font-weight: 500;
         }
         
         .kb-tools {
@@ -323,7 +323,7 @@
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 11px;
-            font-weight: 200;
+            font-weight: 500;
         }
         
         .file-type-badge {
@@ -380,7 +380,7 @@
         .modal-title {
             margin: 0;
             font-size: 18px;
-            font-weight: 200;
+            font-weight: 500;
         }
         
         .modal-close {
@@ -422,6 +422,115 @@
         .notification.error {
             background: #ef4444;
         }
+        
+        /* Dark Mode Styles */
+        [data-theme="dark"] body,
+        body[data-theme="dark"] {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        [data-theme="dark"] .settings-container {
+            background: #1a1a1a;
+        }
+        
+        [data-theme="dark"] .branding-section,
+        [data-theme="dark"] .form-group,
+        [data-theme="dark"] .color-picker-group {
+            background: #2d2d2d;
+            border-color: #404040;
+        }
+        
+        [data-theme="dark"] .settings-tab {
+            background: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #404040;
+        }
+        
+        [data-theme="dark"] .settings-tab.active {
+            background: #3d3d3d;
+            border-bottom-color: #3d3d3d;
+        }
+        
+        [data-theme="dark"] input[type="text"],
+        [data-theme="dark"] input[type="color"],
+        [data-theme="dark"] select,
+        [data-theme="dark"] textarea {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #505050;
+        }
+        
+        [data-theme="dark"] input[type="text"]::placeholder,
+        [data-theme="dark"] textarea::placeholder {
+            color: #888;
+        }
+        
+        [data-theme="dark"] label {
+            color: #e0e0e0;
+        }
+        
+        [data-theme="dark"] .btn {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #505050;
+        }
+        
+        [data-theme="dark"] .btn:hover {
+            background: #4d4d4d;
+        }
+        
+        [data-theme="dark"] .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        [data-theme="dark"] .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] h4,
+        [data-theme="dark"] h5,
+        [data-theme="dark"] h6 {
+            color: #f0f0f0;
+        }
+        
+        [data-theme="dark"] p,
+        [data-theme="dark"] span {
+            color: #e0e0e0;
+        }
+        
+        /* Override inline styles for specific sections */
+        [data-theme="dark"] div[style*="background: #f9fafb"],
+        [data-theme="dark"] div[style*="background:#f9fafb"],
+        [data-theme="dark"] div[style*="background: white"],
+        [data-theme="dark"] div[style*="background:#fff"],
+        [data-theme="dark"] div[style*="background: #fff"] {
+            background: #2d2d2d !important;
+        }
+        
+        [data-theme="dark"] span[style*="color: #374151"],
+        [data-theme="dark"] span[style*="color:#374151"] {
+            color: #e0e0e0 !important;
+        }
+        
+        [data-theme="dark"] .nav {
+            background: #2d2d2d;
+            border-bottom-color: #404040;
+        }
+        
+        [data-theme="dark"] .nav-item {
+            color: #e0e0e0;
+        }
+        
+        [data-theme="dark"] .nav-item:hover,
+        [data-theme="dark"] .nav-item.active {
+            background: #3d3d3d;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -436,7 +545,7 @@
             <a class="nav-item" href="chat.html" data-page="chat">Chat</a>
             <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting">Troubleshooting</a>
             <a class="nav-item active" href="settings.html" data-page="settings">Einstellungen</a>
-            <button class="theme-toggle" id="themeToggle" title="Theme wechseln">
+            <button class="theme-toggle" id="themeToggle" title="Theme wechseln" onclick="window.toggleTheme()">
                 <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
@@ -449,8 +558,8 @@
 
     <div class="settings-container">
             <div class="settings-header">
-            <h1 style="font-weight: 200; color: #2d2d2d;">Einstellungen</h1>
-            <p style="color: #6b7280; font-weight: 200;">Verwalten Sie Ihre Anwendungseinstellungen</p>
+            <h1 style="font-weight: 500; color: #2d2d2d;">Einstellungen</h1>
+            <p style="color: #6b7280; font-weight: 500;">Verwalten Sie Ihre Anwendungseinstellungen</p>
             </div>
             
             <div class="settings-tabs">
@@ -462,12 +571,12 @@
         <!-- Branding Tab -->
         <div id="branding" class="tab-content active">
             <div class="branding-section">
-                <h2 style="font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Branding & Anpassung</h2>
-                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 200;">Passe Logo, Texte, Farben und Willkommensnachricht an.</p>
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Branding & Anpassung</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Passe Logo, Texte, Farben und Willkommensnachricht an.</p>
                 
                 <!-- Logo Section -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Logo & Branding</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Logo & Branding</h3>
                     
                     <div class="logo-preview" id="logoPreview">C</div>
                     
@@ -481,12 +590,12 @@
                         
                 <!-- Text Customization -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Text-Anpassungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Text-Anpassungen</h3>
                     
                     <!-- Navigation Text -->
                     <div style="margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                         <div style="margin-bottom: 12px;">
-                            <span style="font-size: 14px; font-weight: 600; color: #374151;">Navigation</span>
+                            <span style="font-size: 16px; font-weight: 600; color: #374151;">Navigation</span>
                     </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Markentext</label>
@@ -498,7 +607,7 @@
                     <!-- Welcome Message -->
                     <div style="margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                         <div style="margin-bottom: 12px;">
-                            <span style="font-size: 14px; font-weight: 600; color: #374151;">Willkommensnachricht</span>
+                            <span style="font-size: 16px; font-weight: 600; color: #374151;">Willkommensnachricht</span>
                     </div>
                         <div style="display: flex; flex-direction: column; gap: 16px;">
                             <div class="form-group" style="margin-bottom: 0;">
@@ -518,7 +627,7 @@
                     <!-- Browser Settings -->
                     <div style="padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                         <div style="margin-bottom: 12px;">
-                            <span style="font-size: 14px; font-weight: 600; color: #374151;">Browser</span>
+                            <span style="font-size: 16px; font-weight: 600; color: #374151;">Browser</span>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Seitentitel</label>
@@ -530,7 +639,7 @@
                 
                 <!-- Color Scheme -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Farbschema</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Farbschema</h3>
                     
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div class="form-group" style="width: 200px;">
@@ -555,20 +664,20 @@
                     
                 <!-- Advanced Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Erweiterte Einstellungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Erweiterte Einstellungen</h3>
                     
                     <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 200;">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="showLogoInNav" checked>
                             Logo in Navigation anzeigen
                         </label>
                         
-                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 200;">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="showWelcomeMessage" checked>
                             Willkommensnachricht anzeigen
                         </label>
                         
-                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 200;">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="enableAnimations" checked>
                             Animationen aktivieren
                         </label>
@@ -586,7 +695,7 @@
         <!-- Knowledge Base Tab -->
         <div id="knowledge" class="tab-content">
             <div class="branding-section">
-                <h2 style="font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Wissensdatenbank</h2>
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Wissensdatenbank</h2>
                 
                 <!-- Statistics -->
                 <div class="stats-grid">
@@ -743,7 +852,7 @@
         <!-- Technical Database Tab -->
         <div id="technical" class="tab-content">
             <div class="branding-section">
-                <h2 style="font-weight: 200; color: #2d2d2d; margin-bottom: 20px;">Technische Datenbank</h2>
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Technische Datenbank</h2>
                 
                 <!-- Statistics -->
                 <div class="stats-grid">
@@ -882,6 +991,25 @@
             }, 3000);
         };
         
+        // Theme toggle functions - Define early for global availability
+        window.initializeTheme = function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.setAttribute('data-theme', savedTheme);
+            console.log('✅ Theme initialized:', savedTheme);
+        };
+        
+        window.toggleTheme = function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            console.log('✅ Theme toggled to:', newTheme);
+        };
+        
         // IMMEDIATE logo loading - no delays, no events
         (function() {
             console.log('🔄 IMMEDIATE: Loading branding settings...');
@@ -934,6 +1062,9 @@
                     
                     const secondaryColor = document.getElementById('secondaryColor');
                     if (secondaryColor) secondaryColor.value = settings.secondaryColor || '#6b7280';
+                    
+                    const buttonColor = document.getElementById('buttonColor');
+                    if (buttonColor) buttonColor.value = settings.buttonColor || '#3b82f6';
                     
                     // Load checkboxes
                     const showLogoInNav = document.getElementById('showLogoInNav');
@@ -1209,6 +1340,7 @@
                     pageTitle: document.getElementById('pageTitle').value,
                     primaryColor: document.getElementById('primaryColor').value,
                     secondaryColor: document.getElementById('secondaryColor').value,
+                    buttonColor: document.getElementById('buttonColor').value,
                     showLogoInNav: document.getElementById('showLogoInNav').checked,
                     showWelcomeMessage: document.getElementById('showWelcomeMessage').checked,
                     enableAnimations: document.getElementById('enableAnimations').checked
@@ -1345,6 +1477,18 @@
                 if (settings.secondaryColor) {
                     document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
                     console.log('✅ Applied secondary color:', settings.secondaryColor);
+                }
+                
+                if (settings.buttonColor) {
+                    document.documentElement.style.setProperty('--button-color', settings.buttonColor);
+                    // Apply button color to all buttons
+                    const allButtons = document.querySelectorAll('button:not(.theme-toggle)');
+                    allButtons.forEach(btn => {
+                        if (!btn.classList.contains('theme-toggle')) {
+                            btn.style.backgroundColor = settings.buttonColor;
+                        }
+                    });
+                    console.log('✅ Applied button color:', settings.buttonColor);
                 }
                 
                 console.log('✅ Branding applied to navigation successfully');
@@ -1590,6 +1734,7 @@
         }
 
         // Old applyBrandingToNavigation function removed - now using database version above
+        // Theme functions are now defined in the first script tag for early loading
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -1603,6 +1748,15 @@
                 console.log('⚠️ initializeTheme not found, applying default theme');
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.body.setAttribute('data-theme', 'light');
+            }
+            
+            // Setup theme toggle button
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', window.toggleTheme);
+                console.log('✅ Theme toggle button event listener added');
+            } else {
+                console.error('❌ Theme toggle button not found');
             }
             
             // Apply branding to navigation

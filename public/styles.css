@@ -58,8 +58,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding-top: 81px; /* Account for fixed navigation */
-    font-size: 16px; /* Increased from default 14px */
-    font-weight: 450; /* Slightly bolder than 400 */
+    font-size: 17px; /* Increased for better readability */
+    font-weight: 500; /* Bolder for better readability */
 }
 
 .container {

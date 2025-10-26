@@ -76,10 +76,14 @@
     
     // Load and display documents with pagination
     window.loadKbDocuments = function(documents) {
+        console.log('📚 loadKbDocuments called with', documents.length, 'documents');
         window.kbState.allDocuments = documents || [];
         window.kbState.filteredDocuments = [...window.kbState.allDocuments];
         applyFiltersAndSort();
         renderDocuments();
+        
+        // Re-initialize event listeners after documents are loaded
+        setupEventListeners();
     };
     
     // Apply filters and sorting
@@ -171,6 +175,9 @@
                         <span style="background: #f3f4f6; color: #374151; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500;">${formatSize(doc.size)}</span>
                         
                         <!-- Action buttons -->
+                        <button class="kb-action-btn kb-view-btn" data-doc-id="${doc.id}" title="Ansehen" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
+                            Ansehen
+                        </button>
                         <button class="kb-action-btn kb-download-btn" data-doc-id="${doc.id}" title="Herunterladen" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
                             Download
                         </button>
