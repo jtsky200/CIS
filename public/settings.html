@@ -688,7 +688,7 @@
                     
                 <!-- Action Buttons -->
                 <div style="display: flex; gap: 12px; margin-top: 32px; align-items: center;">
-                    <button class="btn btn-primary" onclick="saveBrandingSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.saveChanges">Änderungen speichern</button>
+                    <button class="btn btn-primary" onclick="saveBrandingSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.saveChanges" data-i18n="settings.general.saveChanges">Änderungen speichern</button>
                     <button class="btn btn-secondary" onclick="resetAllBranding()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.resetAll">Alles zurücksetzen</button>
                         </div>
                     </div>
@@ -1021,84 +1021,84 @@
                     </div>
                     
                     <div id="customModelConfig" style="display: none; margin-top: 15px; padding: 15px; background: #f9fafb; border-radius: 6px;">
-                        <h4 style="font-size: 16px; font-weight: 500; margin-bottom: 10px;">Custom Model Konfiguration</h4>
+                        <h4 style="font-size: 16px; font-weight: 500; margin-bottom: 10px;" data-i18n="settings.general.customModelConfig">Custom Model Konfiguration</h4>
                         <div class="form-group">
-                            <label>Model Name</label>
-                            <input type="text" id="customModelName" placeholder="z.B. my-llama-3" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
+                            <label data-i18n="settings.general.modelName">Model Name</label>
+                            <input type="text" id="customModelName" data-i18n-placeholder="settings.general.modelNamePlaceholder" placeholder="z.B. my-llama-3" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
                         </div>
                         <div class="form-group">
-                            <label>API Endpoint</label>
-                            <input type="text" id="customModelEndpoint" placeholder="https://your-server.com/v1" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
+                            <label data-i18n="settings.general.apiEndpoint">API Endpoint</label>
+                            <input type="text" id="customModelEndpoint" data-i18n-placeholder="settings.general.apiEndpointPlaceholder" placeholder="https://your-server.com/v1" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
                         </div>
                         <div class="form-group">
-                            <label>API Key</label>
-                            <input type="password" id="customModelKey" placeholder="Your API Key" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
+                            <label data-i18n="settings.general.apiKey">API Key</label>
+                            <input type="password" id="customModelKey" data-i18n-placeholder="settings.general.apiKeyPlaceholder" placeholder="Your API Key" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>Datenbank-Zugriff</label>
+                        <label data-i18n="settings.general.databaseAccess">Datenbank-Zugriff</label>
                         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
                             <label style="display: flex; align-items: center; gap: 10px; font-weight: 400;">
                                 <input type="checkbox" id="accessKnowledgeDB" checked style="width: 18px; height: 18px; cursor: pointer;">
-                                Zugriff auf Wissensdatenbank
+                                <span data-i18n="settings.general.accessKnowledgeDb">Zugriff auf Wissensdatenbank</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 10px; font-weight: 400;">
                                 <input type="checkbox" id="accessTechnicalDB" checked style="width: 18px; height: 18px; cursor: pointer;">
-                                Zugriff auf Technische Datenbank
+                                <span data-i18n="settings.general.accessTechnicalDb">Zugriff auf Technische Datenbank</span>
                             </label>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>Temperatur (Kreativität)</label>
+                        <label data-i18n="settings.general.temperature">Temperatur (Kreativität)</label>
                         <input type="range" id="chatTemperatureSetting" min="0" max="2" step="0.1" value="0.7" oninput="document.getElementById('temperatureValue').textContent = this.value" style="max-width: 400px; width: 100%;">
                         <span id="temperatureValue" style="color: #6b7280; font-size: 14px;">0.7</span>
                     </div>
                     
                     <div class="form-group">
-                        <label>Max Tokens</label>
+                        <label data-i18n="settings.general.maxTokens">Max Tokens</label>
                         <input type="number" id="chatMaxTokensSetting" value="2000" min="100" max="8000" step="100" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
-                        <label>System Prompt (Chat-Seite)</label>
-                        <textarea id="chatSystemPromptSetting" rows="4" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">Du bist ein hilfreicher Cadillac EV Assistent mit Zugriff auf die Wissensdatenbank und technische Datenbank. Beantworte Fragen zu Cadillac Elektrofahrzeugen präzise, freundlich und professionell. Nutze die verfügbaren Dokumente, um genaue Informationen zu liefern. Wenn du etwas nicht weißt, sage es ehrlich.</textarea>
+                        <label data-i18n="settings.general.chatSystemPrompt">System Prompt (Chat-Seite)</label>
+                        <textarea id="chatSystemPromptSetting" rows="4" data-i18n-placeholder="settings.general.chatSystemPromptPlaceholder" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">Du bist ein hilfreicher Cadillac EV Assistent mit Zugriff auf die Wissensdatenbank und technische Datenbank. Beantworte Fragen zu Cadillac Elektrofahrzeugen präzise, freundlich und professionell. Nutze die verfügbaren Dokumente, um genaue Informationen zu liefern. Wenn du etwas nicht weißt, sage es ehrlich.</textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label>System Prompt (Troubleshooting-Seite)</label>
-                        <textarea id="troubleshootingSystemPromptSetting" rows="4" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">Du bist ein technischer Support-Assistent für Cadillac Elektrofahrzeuge. Deine Aufgabe ist es, technische Probleme zu diagnostizieren und Lösungen bereitzustellen. Nutze die technische Datenbank für präzise Anleitungen. Frage systematisch nach Symptomen, prüfe mögliche Ursachen und biete Schritt-für-Schritt-Lösungen an.</textarea>
+                        <label data-i18n="settings.general.troubleshootingSystemPrompt">System Prompt (Troubleshooting-Seite)</label>
+                        <textarea id="troubleshootingSystemPromptSetting" rows="4" data-i18n-placeholder="settings.general.troubleshootingSystemPromptPlaceholder" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">Du bist ein technischer Support-Assistent für Cadillac Elektrofahrzeuge. Deine Aufgabe ist es, technische Probleme zu diagnostizieren und Lösungen bereitzustellen. Nutze die technische Datenbank für präzise Anleitungen. Frage systematisch nach Symptomen, prüfe mögliche Ursachen und biete Schritt-für-Schritt-Lösungen an.</textarea>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="chatStreamingSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Streaming aktivieren (Echtzeit-Antworten)
+                            <span data-i18n="settings.general.enableStreaming">Streaming aktivieren (Echtzeit-Antworten)</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="chatHistorySetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Chat-Verlauf speichern
+                            <span data-i18n="settings.general.saveChatHistory">Chat-Verlauf speichern</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="unifiedWorkflowSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Einheitlicher Workflow (Alle Modelle zusammenarbeiten lassen)
+                            <span data-i18n="settings.general.unifiedWorkflow">Einheitlicher Workflow (Alle Modelle zusammenarbeiten lassen)</span>
                         </label>
                     </div>
                 </div>
                 
                 <!-- Database Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Datenbank-Einstellungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.databaseSettings">Datenbank-Einstellungen</h3>
                     
                     <div class="form-group">
-                        <label>Auto-Backup Intervall</label>
+                        <label data-i18n="settings.general.autoBackupInterval">Auto-Backup Intervall</label>
                         <select id="dbAutoBackupSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="never">Nie</option>
                             <option value="daily">Täglich</option>
@@ -1108,41 +1108,41 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Maximale Dateigröße (MB)</label>
+                        <label data-i18n="settings.general.maxFileSize">Maximale Dateigröße (MB)</label>
                         <input type="number" id="dbMaxFileSizeSetting" value="50" min="1" max="500" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
-                        <label>Erlaubte Dateitypen</label>
+                        <label data-i18n="settings.general.allowedFileTypes">Erlaubte Dateitypen</label>
                         <input type="text" id="dbAllowedTypesSetting" value="pdf,txt,md,docx,xlsx" placeholder="pdf,txt,md,docx" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="dbDuplicateDetectionSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Duplikat-Erkennung aktivieren
+                            <span data-i18n="settings.general.enableDuplicateDetection">Duplikat-Erkennung aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="dbAutoCategorySetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Automatische Kategorisierung
+                            <span data-i18n="settings.general.autoCategor">Automatische Kategorisierung</span>
                         </label>
                     </div>
                     
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
-                        <button class="btn btn-secondary" onclick="window.createBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Backup erstellen</button>
-                        <button class="btn btn-secondary" onclick="window.restoreBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Backup wiederherstellen</button>
-                        <button class="btn btn-secondary" onclick="window.clearCache()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Cache leeren</button>
-                        <button class="btn" onclick="window.deleteAllData()" style="background: #ef4444; color: white; height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Alle Daten löschen</button>
+                        <button class="btn btn-secondary" onclick="window.createBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.createBackup">Backup erstellen</button>
+                        <button class="btn btn-secondary" onclick="window.restoreBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.restoreBackup">Backup wiederherstellen</button>
+                        <button class="btn btn-secondary" onclick="window.clearCache()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.clearCache">Cache leeren</button>
+                        <button class="btn" onclick="window.deleteAllData()" style="background: #ef4444; color: white; height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.deleteAllData">Alle Daten löschen</button>
                     </div>
                 </div>
                 
                 <!-- API Settings -->
                 <div style="margin-bottom: 30px;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-                        <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin: 0;">API-Einstellungen (Mehrere API Keys)</h3>
+                        <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin: 0;" data-i18n="settings.general.apiSettings">API-Einstellungen (Mehrere API Keys)</h3>
                         <button onclick="window.addApiKeyField()" style="background: #3b82f6; color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">+</button>
                     </div>
                     
@@ -1165,106 +1165,106 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>API Timeout (Sekunden)</label>
+                        <label data-i18n="settings.general.apiTimeout">API Timeout (Sekunden)</label>
                         <input type="number" id="apiTimeoutSetting" value="30" min="5" max="120" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
-                        <label>Rate Limit (Anfragen pro Minute)</label>
+                        <label data-i18n="settings.general.rateLimit">Rate Limit (Anfragen pro Minute)</label>
                         <input type="number" id="apiRateLimitSetting" value="60" min="1" max="1000" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
-                        <label>Retry-Versuche bei Fehler</label>
+                        <label data-i18n="settings.general.retryAttempts">Retry-Versuche bei Fehler</label>
                         <input type="number" id="apiRetryCountSetting" value="3" min="0" max="10" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                 </div>
                 
                 <!-- Security Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Sicherheit & Benutzer</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.securitySettings">Sicherheit & Benutzer</h3>
                     
                     <div class="form-group">
-                        <label>Sitzungs-Timeout (Minuten)</label>
+                        <label data-i18n="settings.general.sessionTimeout">Sitzungs-Timeout (Minuten)</label>
                         <input type="number" id="securitySessionTimeoutSetting" value="60" min="5" max="1440" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="security2FASetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Zwei-Faktor-Authentifizierung aktivieren
+                            <span data-i18n="settings.general.enable2FA">Zwei-Faktor-Authentifizierung aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="securityActivityLogSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Aktivitäts-Log aktivieren
+                            <span data-i18n="settings.general.enableActivityLog">Aktivitäts-Log aktivieren</span>
                         </label>
                     </div>
                     
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
-                        <button class="btn btn-secondary" onclick="window.changePassword()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Passwort ändern</button>
-                        <button class="btn btn-secondary" onclick="window.viewActivityLog()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Aktivitäts-Log anzeigen</button>
+                        <button class="btn btn-secondary" onclick="window.changePassword()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.changePassword">Passwort ändern</button>
+                        <button class="btn btn-secondary" onclick="window.viewActivityLog()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.viewActivityLog">Aktivitäts-Log anzeigen</button>
                     </div>
                 </div>
                 
                 <!-- Performance Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Performance & Optimierung</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.performanceSettings">Performance & Optimierung</h3>
                     
                     <div class="form-group">
-                        <label>Cache-Größe (MB)</label>
+                        <label data-i18n="settings.general.cacheSize">Cache-Größe (MB)</label>
                         <input type="number" id="perfCacheSizeSetting" value="100" min="10" max="1000" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="perfLazyLoadingSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Lazy Loading aktivieren
+                            <span data-i18n="settings.general.enableLazyLoading">Lazy Loading aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="perfImageCompressionSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
-                            Bildkompression aktivieren
+                            <span data-i18n="settings.general.enableImageCompression">Bildkompression aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="perfPrefetchingSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Prefetching aktivieren
+                            <span data-i18n="settings.general.enablePrefetching">Prefetching aktivieren</span>
                         </label>
                     </div>
                 </div>
                 
                 <!-- Notification Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Benachrichtigungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.notificationSettings">Benachrichtigungen</h3>
                     
                     <div class="form-group">
-                        <label>E-Mail-Adresse für Benachrichtigungen</label>
+                        <label data-i18n="settings.general.notificationEmail">E-Mail-Adresse für Benachrichtigungen</label>
                         <input type="email" id="notifEmailSetting" placeholder="ihre@email.de" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="notifEmailEnabledSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            E-Mail-Benachrichtigungen aktivieren
+                            <span data-i18n="settings.general.enableEmailNotifications">E-Mail-Benachrichtigungen aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="notifPushEnabledSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Push-Benachrichtigungen aktivieren
+                            <span data-i18n="settings.general.enablePushNotifications">Push-Benachrichtigungen aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
-                        <label>Benachrichtigungs-Frequenz</label>
+                        <label data-i18n="settings.general.notificationFrequency">Benachrichtigungs-Frequenz</label>
                         <select id="notifFrequencySetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="instant">Sofort</option>
                             <option value="hourly">Stündlich</option>
@@ -1276,51 +1276,51 @@
                 
                 <!-- Advanced Tools -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Erweiterte Tools</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.advancedTools">Erweiterte Tools</h3>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="debugModeSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Debug-Modus aktivieren
+                            <span data-i18n="settings.general.enableDebugMode">Debug-Modus aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="analyticsSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Analytics aktivieren
+                            <span data-i18n="settings.general.enableAnalytics">Analytics aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="webhookEnabledSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Webhook-Integration aktivieren
+                            <span data-i18n="settings.general.enableWebhook">Webhook-Integration aktivieren</span>
                         </label>
                     </div>
                     
                     <div class="form-group">
-                        <label>Webhook URL</label>
+                        <label data-i18n="settings.general.webhookUrl">Webhook URL</label>
                         <input type="url" id="webhookUrlSetting" placeholder="https://..." style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
-                        <label>Custom CSS</label>
+                        <label data-i18n="settings.general.customCss">Custom CSS</label>
                         <textarea id="customCSSSetting" rows="4" placeholder="/* Ihr eigenes CSS */" style="max-width: 600px; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: 'Courier New', monospace;"></textarea>
                     </div>
                     
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
-                        <button class="btn btn-secondary" onclick="window.viewLogs()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Logs anzeigen</button>
-                        <button class="btn btn-secondary" onclick="window.exportSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Einstellungen exportieren</button>
-                        <button class="btn btn-secondary" onclick="window.importSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Einstellungen importieren</button>
-                        <button class="btn btn-secondary" onclick="window.testWebhook()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Webhook testen</button>
+                        <button class="btn btn-secondary" onclick="window.viewLogs()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.viewLogs">Logs anzeigen</button>
+                        <button class="btn btn-secondary" onclick="window.exportSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.exportSettings">Einstellungen exportieren</button>
+                        <button class="btn btn-secondary" onclick="window.importSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.importSettings">Einstellungen importieren</button>
+                        <button class="btn btn-secondary" onclick="window.testWebhook()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;" data-i18n="settings.general.testWebhook">Webhook testen</button>
                     </div>
                 </div>
                 
                 <!-- Save Buttons - ALIGNED -->
                 <div style="display: flex; gap: 12px; align-items: center; justify-content: flex-start; margin-top: 30px;">
                     <button class="btn btn-primary" onclick="window.saveGeneralSettings()" style="height: 44px; line-height: 44px; padding: 0 24px; font-size: 16px; display: inline-flex; align-items: center; justify-content: center;">Änderungen speichern</button>
-                    <button class="btn btn-secondary" onclick="window.resetGeneralSettings()" style="height: 44px; line-height: 44px; padding: 0 24px; font-size: 16px; display: inline-flex; align-items: center; justify-content: center;">Zurücksetzen</button>
+                    <button class="btn btn-secondary" onclick="window.resetGeneralSettings()" style="height: 44px; line-height: 44px; padding: 0 24px; font-size: 16px; display: inline-flex; align-items: center; justify-content: center;" data-i18n="settings.general.reset">Zurücksetzen</button>
                 </div>
             </div>
         </div>
