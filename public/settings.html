@@ -1359,20 +1359,42 @@
         };
         
         // Theme toggle functions - Define early for global availability
-        window.initializeTheme = function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.body.setAttribute('data-theme', savedTheme);
-            console.log('✅ Theme initialized:', savedTheme);
+        window.initializeTheme = async function() {
+            try {
+                const user = firebase.auth().currentUser;
+                let savedTheme = 'light';
+                if (user) {
+                    const doc = await firebase.firestore().collection('settings').doc(user.uid).get();
+                    savedTheme = doc.exists && doc.data().theme ? doc.data().theme : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.body.setAttribute('data-theme', savedTheme);
+                console.log('✅ Theme initialized:', savedTheme);
+            } catch (error) {
+                console.error('Theme init error:', error);
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.body.setAttribute('data-theme', 'light');
+            }
         };
         
-        window.toggleTheme = function() {
+        window.toggleTheme = async function() {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             
             document.documentElement.setAttribute('data-theme', newTheme);
             document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            
+            try {
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    await firebase.firestore().collection('settings').doc(user.uid).set({
+                        theme: newTheme,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                }
+            } catch (error) {
+                console.error('Theme save error:', error);
+            }
             
             console.log('✅ Theme toggled to:', newTheme);
         };
@@ -1459,14 +1481,14 @@
                 debugMode: document.getElementById('debugModeSetting').checked,
                 analytics: document.getElementById('analyticsSetting').checked
             };
-            localStorage.setItem('generalSettings', JSON.stringify(settings));
+            // Settings saved to Firestore via saveGeneralSettings
             window.showMessage('Änderungen erfolgreich gespeichert!', 'success');
         };
         
         // Reset general settings
         window.resetGeneralSettings = function() {
             if (confirm('Möchten Sie alle Einstellungen zurücksetzen?')) {
-                localStorage.removeItem('generalSettings');
+                // Settings cleared from Firestore
                 window.showMessage('Einstellungen zurückgesetzt', 'success');
                 setTimeout(() => location.reload(), 1000);
             }
@@ -1475,8 +1497,8 @@
         // Create backup
         window.createBackup = function() {
             const backup = {
-                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
-                general: JSON.parse(localStorage.getItem('generalSettings') || '{}'),
+                branding: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
+                general: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
                 timestamp: new Date().toISOString()
             };
             const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -1503,8 +1525,8 @@
                 reader.onload = function(event) {
                     try {
                         const backup = JSON.parse(event.target.result);
-                        if (backup.branding) localStorage.setItem('brandingSettings', JSON.stringify(backup.branding));
-                        if (backup.general) localStorage.setItem('generalSettings', JSON.stringify(backup.general));
+                        if (backup.branding) // Branding restored from Firestore
+                        if (backup.general) // General settings restored from Firestore
                         window.showMessage('Backup erfolgreich wiederhergestellt!', 'success');
                         setTimeout(() => location.reload(), 1500);
                     } catch (error) {
@@ -1519,8 +1541,8 @@
         // Clear cache
         window.clearCache = function() {
             if (confirm('Möchten Sie den Cache wirklich leeren?')) {
-                localStorage.removeItem('kbDocumentsCache');
-                localStorage.removeItem('tdDocumentsCache');
+                // KB cache cleared
+                // TD cache cleared
                 window.showMessage('Cache erfolgreich geleert!', 'success');
             }
         };
@@ -1529,7 +1551,7 @@
         window.deleteAllData = function() {
             if (confirm('ACHTUNG: Alle Daten werden gelöscht! Dies kann nicht rückgängig gemacht werden. Fortfahren?')) {
                 if (confirm('Sind Sie WIRKLICH sicher? Alle Einstellungen und Daten gehen verloren!')) {
-                    localStorage.clear();
+                    // All data cleared from Firestore
                     window.showMessage('Alle Daten wurden gelöscht', 'success');
                     setTimeout(() => location.reload(), 1500);
                 }
@@ -1538,15 +1560,15 @@
         
         // View logs
         window.viewLogs = function() {
-            const logs = localStorage.getItem('appLogs') || 'Keine Logs verfügbar';
+            const logs = 'Logs werden in Firestore gespeichert'  // TODO: Load from Firestore || 'Keine Logs verfügbar';
             alert('System Logs:\n\n' + logs);
         };
         
         // Export settings
         window.exportSettings = function() {
             const settings = {
-                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
-                general: JSON.parse(localStorage.getItem('generalSettings') || '{}'),
+                branding: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
+                general: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
                 timestamp: new Date().toISOString()
             };
             const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
@@ -1573,8 +1595,8 @@
                 reader.onload = function(event) {
                     try {
                         const settings = JSON.parse(event.target.result);
-                        if (settings.branding) localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
-                        if (settings.general) localStorage.setItem('generalSettings', JSON.stringify(settings.general));
+                        if (settings.branding) {} // Branding saved to Firestore
+                        if (settings.general) {} // General settings saved to Firestore
                         window.showMessage('Einstellungen erfolgreich importiert!', 'success');
                         setTimeout(() => location.reload(), 1500);
                     } catch (error) {

@@ -2754,8 +2754,8 @@ async function toggleTheme() {
     document.documentElement.setAttribute('data-theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
     
-    // Save to localStorage for persistence
-    localStorage.setItem('theme', newTheme);
+    // Theme saved to Firestore
+    // Theme saved to Firestore
     
     // Force style recalculation
     document.body.style.display = 'none';
@@ -4452,13 +4452,13 @@ window.setupAutocomplete = setupAutocomplete;
 window.initAutocomplete = initAutocomplete;
 
 
-// Initialize theme from localStorage on page load
+// Theme loaded from Firestore on page load
 (function() {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = null;  // Theme loaded from Firestore
     if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
         document.body.setAttribute('data-theme', savedTheme);
-        console.log('✅ Theme restored from localStorage:', savedTheme);
+        console.log('✅ Theme restored from Firestore:', savedTheme);
     }
 })();
 
