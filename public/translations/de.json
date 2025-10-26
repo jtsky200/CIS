@@ -254,6 +254,8 @@
     "save": "Speichern",
     "delete": "Löschen",
     "edit": "Bearbeiten",
-    "close": "Schließen"
+    "close": "Schließen",
+    "previous": "Zurück",
+    "next": "Weiter"
   }
 }

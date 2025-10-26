@@ -238,14 +238,16 @@
     "analyzeProblem": "Analyze Problem"
   },
   "common": {
-    "loading": "Lädt...",
-    "error": "Fehler",
-    "success": "Erfolg",
-    "cancel": "Abbrechen",
-    "confirm": "Bestätigen",
-    "save": "Speichern",
-    "delete": "Löschen",
-    "edit": "Bearbeiten",
-    "close": "Schließen"
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next"
   }
 }
