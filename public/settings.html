@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Cadillac EV Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=1730000004">
-    <link rel="stylesheet" href="settings-redesign.css?v=1730000004">
+    <link rel="stylesheet" href="styles.css?v=1730000005">
+    <link rel="stylesheet" href="settings-redesign.css?v=1730000005">
+    <script src="kb-functions.js?v=1730000005"></script>
     <style>
         .settings-container {
             max-width: 1200px;
@@ -659,25 +660,23 @@
                                 return;
                             }
                             
-                            console.log('✅ KB Inline: Rendering ' + docs.length + ' documents...');
+                            console.log('✅ KB Inline: Loading ' + docs.length + ' documents into kb-functions...');
                             
-                            kbList.innerHTML = docs.map((doc, index) => `
-                                <div class="kb-item" data-doc-id="${doc.id}" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; background: white;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                                            <input type="checkbox" class="kb-checkbox" data-doc-id="${doc.id}">
-                                            <div style="font-weight: 500; color: #1f2937;">${doc.filename || doc.name || 'Unbekannt'}</div>
-                                        </div>
-                                        <div style="display: flex; gap: 8px; align-items: center;">
-                                            <span style="font-size: 12px; color: #6b7280;">${formatDate(doc.uploadedAt)}</span>
-                                            <span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${doc.fileType ? doc.fileType.toUpperCase() : 'FILE'}</span>
-                                            <span style="background: #f3f4f6; color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 11px;">${formatSize(doc.size)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('');
+                            // Update last updated
+                            const lastUpdated = docs.length > 0 ? Math.max(...docs.map(d => d.uploadedAt || 0)) : null;
+                            if (lastUpdated) {
+                                const lastUpdatedEl = document.getElementById('kbLastUpdated');
+                                if (lastUpdatedEl) {
+                                    lastUpdatedEl.textContent = formatDate(lastUpdated);
+                                }
+                            }
                             
-                            console.log('✅ KB Inline: Documents rendered successfully');
+                            // Use the new kb-functions.js to render with pagination
+                            if (typeof window.loadKbDocuments === 'function') {
+                                window.loadKbDocuments(docs);
+                            } else {
+                                console.error('❌ loadKbDocuments function not found!');
+                            }
                         })
                         .catch(e => console.error('KB Inline Error:', e));
                 })();
@@ -843,7 +842,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=1730000004"></script>
+    <script src="app.js?v=1730000005"></script>
     <script>
         // IMMEDIATE logo loading - no delays, no events
         (function() {
