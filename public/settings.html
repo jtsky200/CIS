@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Cadillac EV Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=1730000003">
-    <link rel="stylesheet" href="settings-redesign.css?v=1730000003">
+    <link rel="stylesheet" href="styles.css?v=1730000004">
+    <link rel="stylesheet" href="settings-redesign.css?v=1730000004">
     <style>
         .settings-container {
             max-width: 1200px;
@@ -613,7 +613,25 @@
                     
                     const formatDate = (date) => {
                         if (!date) return '-';
-                        const d = new Date(date);
+                        
+                        // Handle Firestore Timestamp objects
+                        let timestamp;
+                        if (typeof date === 'object') {
+                            if (date._seconds) {
+                                timestamp = date._seconds * 1000;
+                            } else if (date.seconds) {
+                                timestamp = date.seconds * 1000;
+                            } else if (date.toDate) {
+                                timestamp = date.toDate().getTime();
+                            } else {
+                                timestamp = new Date(date).getTime();
+                            }
+                        } else {
+                            timestamp = new Date(date).getTime();
+                        }
+                        
+                        const d = new Date(timestamp);
+                        if (isNaN(d.getTime())) return '-';
                         return d.toLocaleDateString('de-DE');
                     };
                     
@@ -825,7 +843,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=1730000003"></script>
+    <script src="app.js?v=1730000004"></script>
     <script>
         // IMMEDIATE logo loading - no delays, no events
         (function() {

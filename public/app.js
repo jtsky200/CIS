@@ -2745,12 +2745,19 @@ function updateThemeToggle(theme) {
 
 // Toggle theme
 async function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    console.log('🎨 Theme toggle clicked! Current:', currentTheme, '→ New:', newTheme);
     
     // Apply theme to html and body
     document.documentElement.setAttribute('data-theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
+    
+    // Force style recalculation
+    document.body.style.display = 'none';
+    document.body.offsetHeight; // Trigger reflow
+    document.body.style.display = '';
     
     // Apply theme to all page containers
     const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
