@@ -1399,37 +1399,29 @@
             console.log('✅ Theme toggled to:', newTheme);
         };
         
-        // Language switching function - Save to Firestore (optional, works without auth)
-        window.changeLanguage = async function(lang) {
-            try {
-                // Try to save to Firestore if user is authenticated
-                const user = firebase.auth().currentUser;
-                if (user) {
-                    try {
-                        await firebase.firestore().collection('settings').doc(user.uid).set({
-                            language: lang,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }, { merge: true });
-                    } catch (firestoreError) {
-                        console.warn('Could not save language to Firestore:', firestoreError);
-                    }
+        // Language switching function - Cookie-based (robust, no auth required)
+        window.changeLanguage = function(lang) {
+            // Save to cookie (expires in 1 year)
+            const expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+            document.cookie = `app_language=${lang}; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
+            
+            window.showMessage(`Sprache wird auf ${lang === 'de' ? 'Deutsch' : lang === 'en' ? 'English' : 'Français'} gewechselt...`, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        };
+        
+        // Get language from cookie
+        window.getLanguage = function() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'app_language') {
+                    return value;
                 }
-                
-                // Set language as URL parameter for immediate effect
-                const url = new URL(window.location.href);
-                url.searchParams.set('lang', lang);
-                
-                window.showMessage(`Sprache wird auf ${lang === 'de' ? 'Deutsch' : lang === 'en' ? 'English' : 'Français'} gewechselt...`, 'success');
-                setTimeout(() => {
-                    window.location.href = url.toString();
-                }, 500);
-            } catch (error) {
-                console.error('Language change error:', error);
-                // Fallback: reload with lang parameter even if there's an error
-                const url = new URL(window.location.href);
-                url.searchParams.set('lang', lang);
-                window.location.href = url.toString();
             }
+            return 'de'; // Default to German
         };
         
         // Model configuration function
