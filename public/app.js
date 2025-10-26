@@ -2754,6 +2754,9 @@ async function toggleTheme() {
     document.documentElement.setAttribute('data-theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
     
+    // Save to localStorage for persistence
+    localStorage.setItem('theme', newTheme);
+    
     // Force style recalculation
     document.body.style.display = 'none';
     document.body.offsetHeight; // Trigger reflow
@@ -4447,3 +4450,15 @@ function initAutocomplete() {
 // Add to global scope
 window.setupAutocomplete = setupAutocomplete;
 window.initAutocomplete = initAutocomplete;
+
+
+// Initialize theme from localStorage on page load
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.body.setAttribute('data-theme', savedTheme);
+        console.log('✅ Theme restored from localStorage:', savedTheme);
+    }
+})();
+
