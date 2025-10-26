@@ -330,11 +330,22 @@
         if (!doc) return;
         
         try {
-            // Open the document directly in a new tab
-            // The backend will serve the file content with appropriate headers
+            // First, try to fetch the document data to check for errors
             const url = `https://us-central1-cis-de.cloudfunctions.net/viewDocument?docId=${docId}&type=knowledge`;
-            window.open(url, '_blank');
-            showNotification('Dokument wird geöffnet...', 'success');
+            const response = await fetch(url);
+            
+            // Check if response is JSON (error) or binary (success)
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                // It's an error response
+                const errorData = await response.json();
+                console.error('Backend error:', errorData);
+                showNotification(`Fehler: ${errorData.error}. Felder: ${errorData.availableFields ? errorData.availableFields.join(', ') : 'unbekannt'}`, 'error');
+            } else {
+                // It's a binary response (PDF), open in new tab
+                window.open(url, '_blank');
+                showNotification('Dokument wird geöffnet...', 'success');
+            }
         } catch (error) {
             console.error('Error viewing document:', error);
             showNotification('Fehler beim Öffnen des Dokuments.', 'error');
