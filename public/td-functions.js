@@ -142,7 +142,17 @@
         }
         
         container.innerHTML = pageDocs.map(doc => {
-            const fileType = (doc.fileType || doc.type || 'unknown').toUpperCase();
+            // Detect file type from filename extension
+            const filename = doc.filename || doc.name || '';
+            const ext = filename.split('.').pop().toLowerCase();
+            let fileType = 'UNKNOWN';
+            
+            if (ext === 'pdf') fileType = 'PDF';
+            else if (ext === 'txt') fileType = 'TXT';
+            else if (ext === 'md') fileType = 'MD';
+            else if (ext === 'xlsx' || ext === 'xls') fileType = 'EXCEL';
+            else fileType = ext.toUpperCase();
+            
             const category = getCategoryInfo(fileType);
             const isSelected = window.tdState.selectedDocs.has(doc.id);
             
@@ -445,12 +455,20 @@
     }
     
     function getCategoryInfo(fileType) {
-        const type = fileType.toLowerCase();
-        if (type.includes('pdf')) return { color: '#3b82f6', textColor: 'white' };
-        if (type.includes('txt')) return { color: '#6b7280', textColor: 'white' };
-        if (type.includes('md') || type.includes('markdown')) return { color: '#f59e0b', textColor: 'white' };
-        if (type.includes('xls') || type.includes('excel')) return { color: '#10b981', textColor: 'white' };
-        return { color: '#8b5cf6', textColor: 'white' };
+        const categories = {
+            'PDF': { color: '#e0e7ff', textColor: '#3730a3' },
+            'TXT': { color: '#dbeafe', textColor: '#1e40af' },
+            'TEXT': { color: '#dbeafe', textColor: '#1e40af' },
+            'MD': { color: '#fef3c7', textColor: '#92400e' },
+            'MARKDOWN': { color: '#fef3c7', textColor: '#92400e' },
+            'XLSX': { color: '#d1fae5', textColor: '#065f46' },
+            'EXCEL': { color: '#d1fae5', textColor: '#065f46' },
+            'DOCX': { color: '#e0e7ff', textColor: '#3730a3' },
+            'JPEG': { color: '#fce7f3', textColor: '#9f1239' },
+            'JPG': { color: '#fce7f3', textColor: '#9f1239' },
+            'PNG': { color: '#fce7f3', textColor: '#9f1239' }
+        };
+        return categories[fileType] || { color: '#f3f4f6', textColor: '#374151' };
     }
     
     function formatSize(bytes) {

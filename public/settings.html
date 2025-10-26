@@ -566,6 +566,7 @@
             <button class="settings-tab active" data-tab="branding" onclick="switchSettingsTab('branding')">Branding</button>
             <button class="settings-tab" data-tab="knowledge" onclick="switchSettingsTab('knowledge')">Wissensdatenbank</button>
             <button class="settings-tab" data-tab="technical" onclick="switchSettingsTab('technical')">Technische Datenbank</button>
+            <button class="settings-tab" data-tab="general" onclick="switchSettingsTab('general')">Allgemeine Einstellungen</button>
             </div>
             
         <!-- Branding Tab -->
@@ -953,6 +954,97 @@
                 <!-- Pagination -->
                 <div id="tdPagination">
                     <!-- Pagination will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- General Settings Tab -->
+        <div id="general" class="tab-content">
+            <div class="branding-section">
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Allgemeine Einstellungen</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Verwalten Sie System-Einstellungen und erweiterte Tools.</p>
+                
+                <!-- System Settings -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">System-Einstellungen</h3>
+                    
+                    <div class="form-group">
+                        <label>Sprache</label>
+                        <select id="languageSetting" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="de">Deutsch</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Zeitzone</label>
+                        <select id="timezoneSetting" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="Europe/Berlin">Europe/Berlin (GMT+1)</option>
+                            <option value="Europe/London">Europe/London (GMT+0)</option>
+                            <option value="America/New_York">America/New_York (GMT-5)</option>
+                            <option value="America/Los_Angeles">America/Los_Angeles (GMT-8)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Datumsformat</label>
+                        <select id="dateFormatSetting" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="DD.MM.YYYY">DD.MM.YYYY (26.10.2025)</option>
+                            <option value="MM/DD/YYYY">MM/DD/YYYY (10/26/2025)</option>
+                            <option value="YYYY-MM-DD">YYYY-MM-DD (2025-10-26)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="notificationsSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Benachrichtigungen aktivieren
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Database Management -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Datenbank-Verwaltung</h3>
+                    
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button class="btn btn-secondary" onclick="createBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📥 Backup erstellen</button>
+                        <button class="btn btn-secondary" onclick="restoreBackup()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📤 Backup wiederherstellen</button>
+                        <button class="btn btn-secondary" onclick="clearCache()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">🔄 Cache leeren</button>
+                        <button class="btn" onclick="deleteAllData()" style="background: #ef4444; color: white; height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">🗑️ Alle Daten löschen</button>
+                    </div>
+                    <p style="color: #6b7280; font-size: 14px;">⚠️ Achtung: Das Löschen aller Daten kann nicht rückgängig gemacht werden!</p>
+                </div>
+                
+                <!-- Advanced Tools -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Erweiterte Tools</h3>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="debugModeSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Debug-Modus aktivieren
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="analyticsSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            Analytics aktivieren
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="viewLogs()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📊 Logs anzeigen</button>
+                        <button class="btn btn-secondary" onclick="exportSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">💾 Einstellungen exportieren</button>
+                        <button class="btn btn-secondary" onclick="importSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">📂 Einstellungen importieren</button>
+                    </div>
+                </div>
+                
+                <!-- Save Button -->
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="saveGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Änderungen speichern</button>
+                    <button class="btn btn-secondary" onclick="resetGeneralSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important;">Zurücksetzen</button>
                 </div>
             </div>
         </div>
@@ -2076,6 +2168,175 @@
                 }
             }
         });
+        
+        // ===== GENERAL SETTINGS FUNCTIONS =====
+        
+        // Load general settings from localStorage
+        function loadGeneralSettings() {
+            const settings = JSON.parse(localStorage.getItem('generalSettings') || '{}');
+            
+            document.getElementById('languageSetting').value = settings.language || 'de';
+            document.getElementById('timezoneSetting').value = settings.timezone || 'Europe/Berlin';
+            document.getElementById('dateFormatSetting').value = settings.dateFormat || 'DD.MM.YYYY';
+            document.getElementById('notificationsSetting').checked = settings.notifications !== false;
+            document.getElementById('debugModeSetting').checked = settings.debugMode === true;
+            document.getElementById('analyticsSetting').checked = settings.analytics !== false;
+        }
+        
+        // Save general settings to localStorage
+        window.saveGeneralSettings = function() {
+            const settings = {
+                language: document.getElementById('languageSetting').value,
+                timezone: document.getElementById('timezoneSetting').value,
+                dateFormat: document.getElementById('dateFormatSetting').value,
+                notifications: document.getElementById('notificationsSetting').checked,
+                debugMode: document.getElementById('debugModeSetting').checked,
+                analytics: document.getElementById('analyticsSetting').checked
+            };
+            
+            localStorage.setItem('generalSettings', JSON.stringify(settings));
+            window.showMessage('Änderungen erfolgreich gespeichert!', 'success');
+        };
+        
+        // Reset general settings
+        window.resetGeneralSettings = function() {
+            if (confirm('Möchten Sie alle Einstellungen zurücksetzen?')) {
+                localStorage.removeItem('generalSettings');
+                loadGeneralSettings();
+                window.showMessage('Einstellungen zurückgesetzt', 'success');
+            }
+        };
+        
+        // Create backup
+        window.createBackup = function() {
+            const backup = {
+                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
+                general: JSON.parse(localStorage.getItem('generalSettings') || '{}'),
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cis-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            window.showMessage('Backup erfolgreich erstellt!', 'success');
+        };
+        
+        // Restore backup
+        window.restoreBackup = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const backup = JSON.parse(event.target.result);
+                        if (backup.branding) localStorage.setItem('brandingSettings', JSON.stringify(backup.branding));
+                        if (backup.general) localStorage.setItem('generalSettings', JSON.stringify(backup.general));
+                        
+                        window.showMessage('Backup erfolgreich wiederhergestellt!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } catch (error) {
+                        window.showMessage('Fehler beim Wiederherstellen des Backups', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        };
+        
+        // Clear cache
+        window.clearCache = function() {
+            if (confirm('Möchten Sie den Cache wirklich leeren?')) {
+                // Clear all cache except settings
+                const keysToKeep = ['brandingSettings', 'generalSettings', 'theme'];
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (!keysToKeep.includes(key)) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                
+                window.showMessage('Cache erfolgreich geleert!', 'success');
+            }
+        };
+        
+        // Delete all data
+        window.deleteAllData = function() {
+            const confirmation = prompt('Geben Sie "DELETE" ein, um alle Daten zu löschen:');
+            if (confirmation === 'DELETE') {
+                localStorage.clear();
+                window.showMessage('Alle Daten wurden gelöscht', 'success');
+                setTimeout(() => location.reload(), 1500);
+            }
+        };
+        
+        // View logs
+        window.viewLogs = function() {
+            alert('Logs-Funktion wird in einer zukünftigen Version implementiert.');
+        };
+        
+        // Export settings
+        window.exportSettings = function() {
+            const settings = {
+                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
+                general: JSON.parse(localStorage.getItem('generalSettings') || '{}')
+            };
+            
+            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cis-settings.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            window.showMessage('Einstellungen exportiert!', 'success');
+        };
+        
+        // Import settings
+        window.importSettings = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const settings = JSON.parse(event.target.result);
+                        if (settings.branding) localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
+                        if (settings.general) localStorage.setItem('generalSettings', JSON.stringify(settings.general));
+                        
+                        window.showMessage('Einstellungen importiert!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } catch (error) {
+                        window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        };
+        
+        // Load general settings on page load
+        if (document.getElementById('general')) {
+            loadGeneralSettings();
+        }
     </script>
 </body>
-</html>
+</html>>
