@@ -3278,10 +3278,26 @@ exports.viewDocument = functions.https.onRequest((req, res) => {
             }
             
             const docData = docSnap.data();
+            console.log('📊 Document data keys:', Object.keys(docData));
+            console.log('📊 File type:', docData.fileType || docData.type);
+            console.log('📊 Has content:', !!docData.content);
+            console.log('📊 Has originalFileData:', !!docData.originalFileData);
+            console.log('📊 Has downloadURL:', !!docData.downloadURL);
+            
+            // If document has a downloadURL, redirect to it
+            if (docData.downloadURL) {
+                console.log('✅ Redirecting to downloadURL:', docData.downloadURL);
+                return res.redirect(docData.downloadURL);
+            }
             
             // Check if document has file content
-            if (!docData.content && !docData.originalFileData) {
-                return res.status(404).json({ error: 'Document content not available' });
+            if (!docData.content && !docData.originalFileData && !docData.originalPdfData) {
+                console.error('❌ No content available. Document fields:', Object.keys(docData));
+                return res.status(404).json({ 
+                    error: 'Document content not available',
+                    availableFields: Object.keys(docData),
+                    filename: docData.filename || docData.name
+                });
             }
             
             // Set appropriate headers for viewing (inline)
@@ -3299,10 +3315,15 @@ exports.viewDocument = functions.https.onRequest((req, res) => {
                 const pdfData = docData.originalFileData || docData.originalPdfData;
                 fileContent = Buffer.from(pdfData, 'base64');
                 res.setHeader('Content-Length', fileContent.length);
-            } else {
+                console.log('✅ Sending PDF from originalFileData, size:', fileContent.length);
+            } else if (docData.content) {
                 // Use text content for other file types
                 fileContent = Buffer.from(docData.content, 'base64');
                 res.setHeader('Content-Length', fileContent.length);
+                console.log('✅ Sending content, size:', fileContent.length);
+            } else {
+                console.error('❌ No valid content to send');
+                return res.status(404).json({ error: 'No valid content found' });
             }
             
             // Send the file content
