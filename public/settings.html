@@ -9,6 +9,7 @@
     <script src="kb-functions.js?v=1730000014"></script>
     <script src="td-functions.js?v=1730000010"></script>
     <script src="branding-functions.js?v=1730000010"></script>
+    <script src="js/i18n.js?v=1730000020"></script>
     <style>
         .settings-container {
             max-width: 1200px;
@@ -541,10 +542,10 @@
             <span id="navBrandText">Cadillac EV</span>
         </div>
         <div class="nav-menu">
-            <a class="nav-item" href="dashboard.html" data-page="dashboard">Dashboard</a>
-            <a class="nav-item" href="chat.html" data-page="chat">Chat</a>
-            <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting">Troubleshooting</a>
-            <a class="nav-item active" href="settings.html" data-page="settings">Einstellungen</a>
+            <a class="nav-item" href="dashboard.html" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</a>
+            <a class="nav-item" href="chat.html" data-page="chat" data-i18n="nav.chat">Chat</a>
+            <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting" data-i18n="nav.troubleshooting">Troubleshooting</a>
+            <a class="nav-item active" href="settings.html" data-page="settings" data-i18n="nav.settings">Einstellungen</a>
             <button class="theme-toggle" id="themeToggle" title="Theme wechseln" onclick="window.toggleTheme()">
                 <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -558,69 +559,69 @@
 
     <div class="settings-container">
             <div class="settings-header">
-            <h1 style="font-weight: 500; color: #2d2d2d;">Einstellungen</h1>
-            <p style="color: #6b7280; font-weight: 500;">Verwalten Sie Ihre Anwendungseinstellungen</p>
+            <h1 style="font-weight: 500; color: #2d2d2d;" data-i18n="settings.title">Einstellungen</h1>
+            <p style="color: #6b7280; font-weight: 500;" data-i18n="settings.subtitle">Verwalten Sie Ihre Anwendungseinstellungen</p>
             </div>
             
             <div class="settings-tabs">
-            <button class="settings-tab active" data-tab="branding" onclick="switchSettingsTab('branding')">Branding</button>
-            <button class="settings-tab" data-tab="knowledge" onclick="switchSettingsTab('knowledge')">Wissensdatenbank</button>
-            <button class="settings-tab" data-tab="technical" onclick="switchSettingsTab('technical')">Technische Datenbank</button>
-            <button class="settings-tab" data-tab="general" onclick="switchSettingsTab('general')">Allgemeine Einstellungen</button>
+            <button class="settings-tab active" data-tab="branding" onclick="switchSettingsTab('branding')" data-i18n="settings.tabs.branding">Branding</button>
+            <button class="settings-tab" data-tab="knowledge" onclick="switchSettingsTab('knowledge')" data-i18n="settings.tabs.knowledgeDb">Wissensdatenbank</button>
+            <button class="settings-tab" data-tab="technical" onclick="switchSettingsTab('technical')" data-i18n="settings.tabs.technicalDb">Technische Datenbank</button>
+            <button class="settings-tab" data-tab="general" onclick="switchSettingsTab('general')" data-i18n="settings.tabs.general">Allgemeine Einstellungen</button>
             </div>
             
         <!-- Branding Tab -->
         <div id="branding" class="tab-content active">
             <div class="branding-section">
-                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Branding & Anpassung</h2>
-                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Passe Logo, Texte, Farben und Willkommensnachricht an.</p>
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.branding.title">Branding & Anpassung</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;" data-i18n="settings.branding.subtitle">Passe Logo, Texte, Farben und Willkommensnachricht an.</p>
                 
                 <!-- Logo Section -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Logo & Branding</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.branding.logoSection">Logo & Branding</h3>
                     
                     <div class="logo-preview" id="logoPreview">C</div>
                     
                     <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center;">
                         <input type="file" id="logoUpload" accept="image/*" style="display: none;">
-                        <button class="btn btn-primary" onclick="document.getElementById('logoUpload').click()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Logo hochladen</button>
-                        <button class="btn btn-secondary" onclick="window.resetBrandingLogo()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Logo zurücksetzen</button>
+                        <button class="btn btn-primary" onclick="document.getElementById('logoUpload').click()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.uploadLogo">Logo hochladen</button>
+                        <button class="btn btn-secondary" onclick="window.resetBrandingLogo()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.resetLogo">Logo zurücksetzen</button>
                     </div>
-                    <div class="form-hint">Empfohlene Größe: 64×64px (wird automatisch angepasst)</div>
+                    <div class="form-hint" data-i18n="settings.branding.logoHint">Empfohlene Größe: 64×64px (wird automatisch angepasst)</div>
                         </div>
                         
                 <!-- Text Customization -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Text-Anpassungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.branding.textCustomization">Text-Anpassungen</h3>
                     
                     <!-- Navigation Text -->
                     <div style="margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                         <div style="margin-bottom: 12px;">
-                            <span style="font-size: 16px; font-weight: 600; color: #374151;">Navigation</span>
+                            <span style="font-size: 16px; font-weight: 600; color: #374151;" data-i18n="settings.branding.navigation">Navigation</span>
                     </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label>Markentext</label>
+                            <label data-i18n="settings.branding.brandText">Markentext</label>
                             <input type="text" id="brandText" placeholder="Cadillac EV" value="Cadillac EV" style="max-width: 400px;">
-                            <div class="form-hint">Erscheint in der oberen Navigation</div>
+                            <div class="form-hint" data-i18n="settings.branding.brandTextHint">Erscheint in der oberen Navigation</div>
                 </div>
             </div>
                     
                     <!-- Welcome Message -->
                     <div style="margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                         <div style="margin-bottom: 12px;">
-                            <span style="font-size: 16px; font-weight: 600; color: #374151;">Willkommensnachricht</span>
+                            <span style="font-size: 16px; font-weight: 600; color: #374151;" data-i18n="settings.branding.welcomeMessage">Willkommensnachricht</span>
                     </div>
                         <div style="display: flex; flex-direction: column; gap: 16px;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Haupttitel</label>
+                                <label data-i18n="settings.branding.mainTitle">Haupttitel</label>
                                 <input type="text" id="welcomeTitle" placeholder="Cadillac EV Assistant" value="Cadillac EV Assistant" style="max-width: 500px;">
-                                <div class="form-hint">Haupttitel auf der Startseite</div>
+                                <div class="form-hint" data-i18n="settings.branding.mainTitleHint">Haupttitel auf der Startseite</div>
                 </div>
                 
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Untertitel</label>
+                                <label data-i18n="settings.branding.subtitle">Untertitel</label>
                                 <input type="text" id="welcomeSubtitle" placeholder="Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge" value="Ihr persönlicher Assistent für Cadillac Elektrofahrzeuge" style="max-width: 600px;">
-                                <div class="form-hint">Untertitel auf der Startseite</div>
+                                <div class="form-hint" data-i18n="settings.branding.subtitleHint">Untertitel auf der Startseite</div>
                     </div>
                 </div>
                     </div>
@@ -628,67 +629,67 @@
                     <!-- Browser Settings -->
                     <div style="padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                         <div style="margin-bottom: 12px;">
-                            <span style="font-size: 16px; font-weight: 600; color: #374151;">Browser</span>
+                            <span style="font-size: 16px; font-weight: 600; color: #374151;" data-i18n="settings.branding.browser">Browser</span>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label>Seitentitel</label>
+                            <label data-i18n="settings.branding.pageTitle">Seitentitel</label>
                             <input type="text" id="pageTitle" placeholder="Cadillac EV Assistant" value="Cadillac EV Assistant" style="max-width: 400px;">
-                            <div class="form-hint">Titel im Browser-Tab</div>
+                            <div class="form-hint" data-i18n="settings.branding.pageTitleHint">Titel im Browser-Tab</div>
                     </div>
                 </div>
             </div>
                 
                 <!-- Color Scheme -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Farbschema</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.branding.colorScheme">Farbschema</h3>
                     
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div class="form-group" style="width: 200px;">
-                            <label>Primärfarbe</label>
+                            <label data-i18n="settings.branding.primaryColor">Primärfarbe</label>
                             <input type="color" id="primaryColor" value="#3b82f6" style="width: 100%;">
-                            <div class="form-hint">Hauptfarbe für Buttons und Links</div>
+                            <div class="form-hint" data-i18n="settings.branding.primaryColorHint">Hauptfarbe für Buttons und Links</div>
                         </div>
 
                         <div class="form-group" style="width: 200px;">
-                            <label>Sekundärfarbe</label>
+                            <label data-i18n="settings.branding.secondaryColor">Sekundärfarbe</label>
                             <input type="color" id="secondaryColor" value="#6b7280" style="width: 100%;">
-                            <div class="form-hint">Farbe für sekundäre Elemente</div>
+                            <div class="form-hint" data-i18n="settings.branding.secondaryColorHint">Farbe für sekundäre Elemente</div>
                         </div>
                         
                         <div class="form-group" style="width: 200px;">
-                            <label>Button-Farbe</label>
+                            <label data-i18n="settings.branding.buttonColor">Button-Farbe</label>
                             <input type="color" id="buttonColor" value="#3b82f6" style="width: 100%;">
-                            <div class="form-hint">Farbe für ALLE Buttons</div>
+                            <div class="form-hint" data-i18n="settings.branding.buttonColorHint">Farbe für ALLE Buttons</div>
                         </div>
                     </div>
                     </div>
                     
                 <!-- Advanced Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Erweiterte Einstellungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.branding.advancedSettings">Erweiterte Einstellungen</h3>
                     
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="showLogoInNav" checked>
-                            Logo in Navigation anzeigen
+                            <span data-i18n="settings.branding.showLogoInNav">Logo in Navigation anzeigen</span>
                         </label>
                         
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="showWelcomeMessage" checked>
-                            Willkommensnachricht anzeigen
+                            <span data-i18n="settings.branding.showWelcomeMessage">Willkommensnachricht anzeigen</span>
                         </label>
                         
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="enableAnimations" checked>
-                            Animationen aktivieren
+                            <span data-i18n="settings.branding.enableAnimations">Animationen aktivieren</span>
                         </label>
                         </div>
                     </div>
                     
                 <!-- Action Buttons -->
                 <div style="display: flex; gap: 12px; margin-top: 32px; align-items: center;">
-                    <button class="btn btn-primary" onclick="saveBrandingSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Änderungen speichern</button>
-                    <button class="btn btn-secondary" onclick="resetAllBranding()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Alles zurücksetzen</button>
+                    <button class="btn btn-primary" onclick="saveBrandingSettings()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.saveChanges">Änderungen speichern</button>
+                    <button class="btn btn-secondary" onclick="resetAllBranding()" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;" data-i18n="settings.branding.resetAll">Alles zurücksetzen</button>
                         </div>
                     </div>
                 </div>
@@ -961,15 +962,15 @@
         <!-- General Settings Tab -->
         <div id="general" class="tab-content">
             <div class="branding-section">
-                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Allgemeine Einstellungen</h2>
-                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Verwalten Sie System-Einstellungen und erweiterte Tools.</p>
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.title">Allgemeine Einstellungen</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;" data-i18n="settings.general.subtitle">Verwalten Sie System-Einstellungen und erweiterte Tools.</p>
                 
                 <!-- System Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">System-Einstellungen</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.systemSettings">System-Einstellungen</h3>
                     
                     <div class="form-group">
-                        <label>Sprache</label>
+                        <label data-i18n="settings.general.language">Sprache</label>
                         <select id="languageSetting" onchange="window.changeLanguage(this.value)" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="de">Deutsch</option>
                             <option value="en">English</option>
@@ -978,7 +979,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Zeitzone</label>
+                        <label data-i18n="settings.general.timezone">Zeitzone</label>
                         <select id="timezoneSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="Europe/Zurich" selected>Europe/Zurich (GMT+1) - Schweiz</option>
                             <option value="Europe/Berlin">Europe/Berlin (GMT+1)</option>
@@ -989,7 +990,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Datumsformat</label>
+                        <label data-i18n="settings.general.dateFormat">Datumsformat</label>
                         <select id="dateFormatSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="DD.MM.YYYY">DD.MM.YYYY (26.10.2025)</option>
                             <option value="MM/DD/YYYY">MM/DD/YYYY (10/26/2025)</option>
@@ -1000,17 +1001,17 @@
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                             <input type="checkbox" id="notificationsSetting" style="width: 18px; height: 18px; cursor: pointer;">
-                            Benachrichtigungen aktivieren
+                            <span data-i18n="settings.general.enableNotifications">Benachrichtigungen aktivieren</span>
                         </label>
                     </div>
                 </div>
                 
                 <!-- Chat Settings -->
                 <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">KI-Modell Konfiguration</h3>
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 20px;" data-i18n="settings.general.aiModelConfig">KI-Modell Konfiguration</h3>
                     
                     <div class="form-group">
-                        <label>Primäres KI-Modell</label>
+                        <label data-i18n="settings.general.primaryModel">Primäres KI-Modell</label>
                         <select id="chatModelSetting" onchange="window.updateModelConfig(this.value)" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                             <option value="gpt-4.1-mini">GPT-4.1 Mini (Empfohlen)</option>
                             <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
@@ -1399,17 +1400,13 @@
             console.log('✅ Theme toggled to:', newTheme);
         };
         
-        // Language switching function - Cookie-based (robust, no auth required)
+        // Language switching function - Uses i18n system
         window.changeLanguage = function(lang) {
-            // Save to cookie (expires in 1 year)
-            const expiryDate = new Date();
-            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-            document.cookie = `app_language=${lang}; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
-            
-            window.showMessage(`Sprache wird auf ${lang === 'de' ? 'Deutsch' : lang === 'en' ? 'English' : 'Français'} gewechselt...`, 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            if (window.i18n) {
+                window.i18n.changeLanguage(lang);
+            } else {
+                console.error('i18n system not loaded');
+            }
         };
         
         // Get language from cookie
@@ -2356,6 +2353,19 @@
                 console.log('✅ Theme toggle button event listener added');
             } else {
                 console.error('❌ Theme toggle button not found');
+            }
+            
+            // Setup language dropdown event listener
+            const languageDropdown = document.getElementById('languageSetting');
+            if (languageDropdown) {
+                languageDropdown.addEventListener('change', function(e) {
+                    if (typeof window.changeLanguage === 'function') {
+                        window.changeLanguage(e.target.value);
+                    }
+                });
+                console.log('✅ Language dropdown event listener added');
+            } else {
+                console.error('❌ Language dropdown not found');
             }
             
             // Apply branding to navigation

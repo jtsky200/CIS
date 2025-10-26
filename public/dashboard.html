@@ -6,6 +6,7 @@
     <title>Cadillac EV Assistant - Dashboard</title>
     <link rel="stylesheet" href="styles.css?v=123456789">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/i18n.js?v=1730000020"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -15,10 +16,10 @@
             <span id="navBrandText">Cadillac EV</span>
         </div>
         <div class="nav-menu">
-            <a class="nav-item active" href="dashboard.html" data-page="dashboard">Dashboard</a>
-            <a class="nav-item" href="chat.html" data-page="chat">Chat</a>
-            <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting">Troubleshooting</a>
-            <a class="nav-item" href="settings.html" data-page="settings">Einstellungen</a>
+            <a class="nav-item active" href="dashboard.html" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</a>
+            <a class="nav-item" href="chat.html" data-page="chat" data-i18n="nav.chat">Chat</a>
+            <a class="nav-item" href="troubleshooting.html" data-page="troubleshooting" data-i18n="nav.troubleshooting">Troubleshooting</a>
+            <a class="nav-item" href="settings.html" data-page="settings" data-i18n="nav.settings">Einstellungen</a>
             <button class="theme-toggle" id="themeToggle" title="Theme wechseln">
                 <svg class="theme-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -33,8 +34,8 @@
     <!-- Dashboard Page -->
     <div class="page active" id="dashboardPage">
         <div class="dashboard-container">
-            <h1 class="page-title">Dashboard</h1>
-            <p class="page-description">Übersicht über Ihre Cadillac EV Assistant Aktivitäten</p>
+            <h1 class="page-title" data-i18n="dashboard.title">Dashboard</h1>
+            <p class="page-description" data-i18n="dashboard.subtitle">Übersicht über Ihre Cadillac EV Assistant Aktivitäten</p>
             
             <!-- Statistics -->
             <div style="margin-bottom: 40px;">
