@@ -611,6 +611,21 @@
                             const size = docs.reduce((sum, doc) => sum + (doc.size || 0), 0);
                             document.getElementById('kbTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
                             console.log('✅ KB Inline: Loaded ' + docs.length + ' documents');
+                            
+                            // Store documents globally and display them
+                            window.knowledgeBase = docs;
+                            
+                            // Wait for displayKnowledgeBase function to be available
+                            const displayDocs = function() {
+                                if (typeof window.displayKnowledgeBase === 'function') {
+                                    window.displayKnowledgeBase(docs);
+                                    console.log('✅ KB Inline: Displayed documents');
+                                } else {
+                                    console.log('⏳ KB Inline: Waiting for displayKnowledgeBase...');
+                                    setTimeout(displayDocs, 100);
+                                }
+                            };
+                            displayDocs();
                         })
                         .catch(e => console.error('KB Inline Error:', e));
                 })();
@@ -655,9 +670,9 @@
                 <!-- Document List -->
                 <div id="kbList">
                     <!-- Documents will be loaded here -->
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
 
         <!-- Technical Database Tab -->
         <div id="technical" class="tab-content">
@@ -694,6 +709,21 @@
                             const size = docs.reduce((sum, doc) => sum + (doc.size || 0), 0);
                             document.getElementById('techTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
                             console.log('✅ Tech Inline: Loaded ' + docs.length + ' documents');
+                            
+                            // Store documents globally and display them
+                            window.technicalDatabase = docs;
+                            
+                            // Wait for displayTechnicalDatabase function to be available
+                            const displayDocs = function() {
+                                if (typeof window.displayTechnicalDatabase === 'function') {
+                                    window.displayTechnicalDatabase(docs);
+                                    console.log('✅ Tech Inline: Displayed documents');
+                                } else {
+                                    console.log('⏳ Tech Inline: Waiting for displayTechnicalDatabase...');
+                                    setTimeout(displayDocs, 100);
+                                }
+                            };
+                            displayDocs();
                         })
                         .catch(e => console.error('Tech Inline Error:', e));
                 })();

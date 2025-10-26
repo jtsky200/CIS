@@ -2787,21 +2787,36 @@ async function toggleTheme() {
 
 // Setup theme toggle functionality
 function setupThemeToggle() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
-        console.log('✅ Theme toggle setup complete');
-        console.log('Theme toggle element:', themeToggle);
-        console.log('Theme toggle onclick property:', themeToggle.onclick);
-    } else {
-        console.log('⚠️ Theme toggle button not found');
-        // Try to find it by class name
-        const themeToggleByClass = document.querySelector('.theme-toggle');
-        console.log('Theme toggle by class:', themeToggleByClass);
-        if (themeToggleByClass) {
-            themeToggleByClass.addEventListener('click', toggleTheme);
-            console.log('✅ Theme toggle setup by class complete');
+    const attemptSetup = () => {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            // Remove any existing listeners to avoid duplicates
+            themeToggle.removeEventListener('click', toggleTheme);
+            themeToggle.addEventListener('click', toggleTheme);
+            console.log('✅ Theme toggle setup complete');
+            return true;
+        } else {
+            // Try to find it by class name
+            const themeToggleByClass = document.querySelector('.theme-toggle');
+            if (themeToggleByClass) {
+                themeToggleByClass.removeEventListener('click', toggleTheme);
+                themeToggleByClass.addEventListener('click', toggleTheme);
+                console.log('✅ Theme toggle setup by class complete');
+                return true;
+            }
         }
+        return false;
+    };
+    
+    // Try immediately
+    if (!attemptSetup()) {
+        console.log('⚠️ Theme toggle button not found, will retry...');
+        // Retry after a short delay
+        setTimeout(() => {
+            if (!attemptSetup()) {
+                console.error('❌ Theme toggle button not found after retry');
+            }
+        }, 500);
     }
 }
 
@@ -4060,6 +4075,7 @@ window.setupProblemReporting = setupProblemReporting;
 window.setupSupportChat = setupSupportChat;
 window.sendSupportMessage = sendSupportMessage;
 window.startNewChat = startNewChat;
+window.refreshKnowledgeBase = refreshKnowledgeBase;
 
 // Loading animation functions
 function showKnowledgeBaseLoading() {
