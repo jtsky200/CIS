@@ -1102,6 +1102,145 @@
             console.log('✅ Theme toggled to:', newTheme);
         };
         
+        // ===== GENERAL SETTINGS FUNCTIONS - Define early for global availability =====
+        
+        // Save general settings
+        window.saveGeneralSettings = function() {
+            const settings = {
+                language: document.getElementById('languageSetting').value,
+                timezone: document.getElementById('timezoneSetting').value,
+                dateFormat: document.getElementById('dateFormatSetting').value,
+                notifications: document.getElementById('notificationsSetting').checked,
+                debugMode: document.getElementById('debugModeSetting').checked,
+                analytics: document.getElementById('analyticsSetting').checked
+            };
+            localStorage.setItem('generalSettings', JSON.stringify(settings));
+            window.showMessage('Änderungen erfolgreich gespeichert!', 'success');
+        };
+        
+        // Reset general settings
+        window.resetGeneralSettings = function() {
+            if (confirm('Möchten Sie alle Einstellungen zurücksetzen?')) {
+                localStorage.removeItem('generalSettings');
+                window.showMessage('Einstellungen zurückgesetzt', 'success');
+                setTimeout(() => location.reload(), 1000);
+            }
+        };
+        
+        // Create backup
+        window.createBackup = function() {
+            const backup = {
+                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
+                general: JSON.parse(localStorage.getItem('generalSettings') || '{}'),
+                timestamp: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cis-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            window.showMessage('Backup erfolgreich erstellt!', 'success');
+        };
+        
+        // Restore backup
+        window.restoreBackup = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const backup = JSON.parse(event.target.result);
+                        if (backup.branding) localStorage.setItem('brandingSettings', JSON.stringify(backup.branding));
+                        if (backup.general) localStorage.setItem('generalSettings', JSON.stringify(backup.general));
+                        window.showMessage('Backup erfolgreich wiederhergestellt!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } catch (error) {
+                        window.showMessage('Fehler beim Wiederherstellen des Backups', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        };
+        
+        // Clear cache
+        window.clearCache = function() {
+            if (confirm('Möchten Sie den Cache wirklich leeren?')) {
+                localStorage.removeItem('kbDocumentsCache');
+                localStorage.removeItem('tdDocumentsCache');
+                window.showMessage('Cache erfolgreich geleert!', 'success');
+            }
+        };
+        
+        // Delete all data
+        window.deleteAllData = function() {
+            if (confirm('ACHTUNG: Alle Daten werden gelöscht! Dies kann nicht rückgängig gemacht werden. Fortfahren?')) {
+                if (confirm('Sind Sie WIRKLICH sicher? Alle Einstellungen und Daten gehen verloren!')) {
+                    localStorage.clear();
+                    window.showMessage('Alle Daten wurden gelöscht', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                }
+            }
+        };
+        
+        // View logs
+        window.viewLogs = function() {
+            const logs = localStorage.getItem('appLogs') || 'Keine Logs verfügbar';
+            alert('System Logs:\n\n' + logs);
+        };
+        
+        // Export settings
+        window.exportSettings = function() {
+            const settings = {
+                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
+                general: JSON.parse(localStorage.getItem('generalSettings') || '{}'),
+                timestamp: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cis-settings-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            window.showMessage('Einstellungen erfolgreich exportiert!', 'success');
+        };
+        
+        // Import settings
+        window.importSettings = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const settings = JSON.parse(event.target.result);
+                        if (settings.branding) localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
+                        if (settings.general) localStorage.setItem('generalSettings', JSON.stringify(settings.general));
+                        window.showMessage('Einstellungen erfolgreich importiert!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } catch (error) {
+                        window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        };
+        
         // IMMEDIATE logo loading - no delays, no events
         (function() {
             console.log('🔄 IMMEDIATE: Loading branding settings...');
@@ -2169,174 +2308,5 @@
             }
         });
         
-        // ===== GENERAL SETTINGS FUNCTIONS =====
-        
-        // Load general settings from localStorage
-        function loadGeneralSettings() {
-            const settings = JSON.parse(localStorage.getItem('generalSettings') || '{}');
-            
-            document.getElementById('languageSetting').value = settings.language || 'de';
-            document.getElementById('timezoneSetting').value = settings.timezone || 'Europe/Berlin';
-            document.getElementById('dateFormatSetting').value = settings.dateFormat || 'DD.MM.YYYY';
-            document.getElementById('notificationsSetting').checked = settings.notifications !== false;
-            document.getElementById('debugModeSetting').checked = settings.debugMode === true;
-            document.getElementById('analyticsSetting').checked = settings.analytics !== false;
-        }
-        
-        // Save general settings to localStorage
-        window.saveGeneralSettings = function() {
-            const settings = {
-                language: document.getElementById('languageSetting').value,
-                timezone: document.getElementById('timezoneSetting').value,
-                dateFormat: document.getElementById('dateFormatSetting').value,
-                notifications: document.getElementById('notificationsSetting').checked,
-                debugMode: document.getElementById('debugModeSetting').checked,
-                analytics: document.getElementById('analyticsSetting').checked
-            };
-            
-            localStorage.setItem('generalSettings', JSON.stringify(settings));
-            window.showMessage('Änderungen erfolgreich gespeichert!', 'success');
-        };
-        
-        // Reset general settings
-        window.resetGeneralSettings = function() {
-            if (confirm('Möchten Sie alle Einstellungen zurücksetzen?')) {
-                localStorage.removeItem('generalSettings');
-                loadGeneralSettings();
-                window.showMessage('Einstellungen zurückgesetzt', 'success');
-            }
-        };
-        
-        // Create backup
-        window.createBackup = function() {
-            const backup = {
-                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
-                general: JSON.parse(localStorage.getItem('generalSettings') || '{}'),
-                timestamp: new Date().toISOString()
-            };
-            
-            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `cis-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            window.showMessage('Backup erfolgreich erstellt!', 'success');
-        };
-        
-        // Restore backup
-        window.restoreBackup = function() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const backup = JSON.parse(event.target.result);
-                        if (backup.branding) localStorage.setItem('brandingSettings', JSON.stringify(backup.branding));
-                        if (backup.general) localStorage.setItem('generalSettings', JSON.stringify(backup.general));
-                        
-                        window.showMessage('Backup erfolgreich wiederhergestellt!', 'success');
-                        setTimeout(() => location.reload(), 1500);
-                    } catch (error) {
-                        window.showMessage('Fehler beim Wiederherstellen des Backups', 'error');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        };
-        
-        // Clear cache
-        window.clearCache = function() {
-            if (confirm('Möchten Sie den Cache wirklich leeren?')) {
-                // Clear all cache except settings
-                const keysToKeep = ['brandingSettings', 'generalSettings', 'theme'];
-                const keys = Object.keys(localStorage);
-                keys.forEach(key => {
-                    if (!keysToKeep.includes(key)) {
-                        localStorage.removeItem(key);
-                    }
-                });
-                
-                window.showMessage('Cache erfolgreich geleert!', 'success');
-            }
-        };
-        
-        // Delete all data
-        window.deleteAllData = function() {
-            const confirmation = prompt('Geben Sie "DELETE" ein, um alle Daten zu löschen:');
-            if (confirmation === 'DELETE') {
-                localStorage.clear();
-                window.showMessage('Alle Daten wurden gelöscht', 'success');
-                setTimeout(() => location.reload(), 1500);
-            }
-        };
-        
-        // View logs
-        window.viewLogs = function() {
-            alert('Logs-Funktion wird in einer zukünftigen Version implementiert.');
-        };
-        
-        // Export settings
-        window.exportSettings = function() {
-            const settings = {
-                branding: JSON.parse(localStorage.getItem('brandingSettings') || '{}'),
-                general: JSON.parse(localStorage.getItem('generalSettings') || '{}')
-            };
-            
-            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'cis-settings.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            window.showMessage('Einstellungen exportiert!', 'success');
-        };
-        
-        // Import settings
-        window.importSettings = function() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const settings = JSON.parse(event.target.result);
-                        if (settings.branding) localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
-                        if (settings.general) localStorage.setItem('generalSettings', JSON.stringify(settings.general));
-                        
-                        window.showMessage('Einstellungen importiert!', 'success');
-                        setTimeout(() => location.reload(), 1500);
-                    } catch (error) {
-                        window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        };
-        
-        // Load general settings on page load
-        if (document.getElementById('general')) {
-            loadGeneralSettings();
-        }
-    </script>
 </body>
 </html>>
