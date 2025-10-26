@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Cadillac EV Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=1730000009">
-    <link rel="stylesheet" href="settings-redesign.css?v=1730000009">
-    <script src="kb-functions.js?v=1730000009"></script>
-    <script src="branding-functions.js?v=1730000009"></script>
+    <link rel="stylesheet" href="styles.css?v=1730000010">
+    <link rel="stylesheet" href="settings-redesign.css?v=1730000010">
+    <script src="kb-functions.js?v=1730000010"></script>
+    <script src="td-functions.js?v=1730000010"></script>
+    <script src="branding-functions.js?v=1730000010"></script>
     <style>
         .settings-container {
             max-width: 1200px;
@@ -738,17 +739,17 @@
                 <!-- Statistics -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-value" id="techDocCount">0</div>
+                        <div class="stat-value" id="tdDocCount">0</div>
                         <div class="stat-label">Dokumente</div>
                         <div class="stat-description">Technische Datenbank</div>
                             </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="techTotalSize">0 KB</div>
+                        <div class="stat-value" id="tdTotalSize">0 KB</div>
                         <div class="stat-label">Gesamtgröße</div>
                         <div class="stat-description">Alle Dateien</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="techLastUpdate">-</div>
+                        <div class="stat-value" id="tdLastUpdated">-</div>
                         <div class="stat-label">Letzte Aktualisierung</div>
                         <div class="stat-description">Technische Datenbank</div>
                     </div>
@@ -761,25 +762,30 @@
                         .then(r => r.json())
                         .then(data => {
                             const docs = data.documents || [];
-                            document.getElementById('techDocCount').textContent = docs.length;
+                            document.getElementById('tdDocCount').textContent = docs.length;
                             const size = docs.reduce((sum, doc) => sum + (doc.size || 0), 0);
-                            document.getElementById('techTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
+                            document.getElementById('tdTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
+                            
+                            // Update last updated
+                            const lastUpdated = docs.length > 0 ? Math.max(...docs.map(d => d.uploadedAt?.seconds || d.uploadedAt?._seconds || 0)) : null;
+                            if (lastUpdated) {
+                                const d = new Date(lastUpdated * 1000);
+                                document.getElementById('tdLastUpdated').textContent = d.toLocaleDateString('de-DE');
+                            }
+                            
                             console.log('✅ Tech Inline: Loaded ' + docs.length + ' documents');
                             
-                            // Store documents globally and display them
-                            window.technicalDatabase = docs;
-                            
-                            // Wait for displayTechnicalDatabase function to be available
-                            const displayDocs = function() {
-                                if (typeof window.displayTechnicalDatabase === 'function') {
-                                    window.displayTechnicalDatabase(docs);
+                            // Wait for loadTdDocuments function to be available
+                            const loadDocs = function() {
+                                if (typeof window.loadTdDocuments === 'function') {
+                                    window.loadTdDocuments(docs);
                                     console.log('✅ Tech Inline: Displayed documents');
                                 } else {
-                                    console.log('⏳ Tech Inline: Waiting for displayTechnicalDatabase...');
-                                    setTimeout(displayDocs, 100);
+                                    console.log('⏳ Tech Inline: Waiting for loadTdDocuments...');
+                                    setTimeout(loadDocs, 100);
                                 }
                             };
-                            displayDocs();
+                            loadDocs();
                         })
                         .catch(e => console.error('Tech Inline Error:', e));
                 })();
@@ -789,15 +795,15 @@
                 <div class="kb-toolbar">
                     <!-- Search Row -->
                     <div class="kb-search">
-                        <input type="text" id="techSearch" class="kb-search-input" placeholder="Technische Dokumente durchsuchen...">
-                        <select id="techFilter" class="kb-filter">
+                        <input type="text" id="tdSearch" class="kb-search-input" placeholder="Technische Dokumente durchsuchen...">
+                        <select id="tdFilter" class="kb-filter">
                             <option value="">Alle Kategorien</option>
                             <option value="PDF">PDF</option>
                             <option value="TXT">TXT</option>
                             <option value="MD">Markdown</option>
                             <option value="XLSX">Excel</option>
                         </select>
-                        <select id="techSort" class="kb-sort">
+                        <select id="tdSort" class="kb-sort">
                             <option value="newest">Neueste zuerst</option>
                             <option value="oldest">Älteste zuerst</option>
                             <option value="name">Nach Name</option>
@@ -809,25 +815,29 @@
                     <!-- Bulk Actions Bar -->
                     <div class="kb-bulk-actions">
                         <div class="kb-select-all">
-                            <input type="checkbox" id="selectAllTech">
-                            <label for="selectAllTech">Alle auswählen</label>
+                            <input type="checkbox" id="selectAllTd">
+                            <label for="selectAllTd">Alle auswählen</label>
                             </div>
                         <div class="kb-bulk-actions-right">
-                            <span class="kb-selected-count"><span id="selectedTechCount">0</span> ausgewählt</span>
-                            <button class="btn btn-secondary" id="bulkDeleteTechBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Ausgewählte löschen</button>
-                            <button class="btn btn-secondary" id="exportTechBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Exportieren</button>
-                            <button class="btn btn-secondary" id="importTechBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Importieren</button>
+                            <span class="kb-selected-count"><span id="tdSelectedCount">0</span> ausgewählt</span>
+                            <button class="btn btn-secondary" id="bulkDeleteTdBtn" disabled style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Ausgewählte löschen</button>
+                            <button class="btn btn-secondary" id="exportTdBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Exportieren</button>
+                            <button class="btn btn-secondary" id="importTdBtn" style="height: 44px !important; min-height: 44px !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important;">Importieren</button>
                         </div>
                             </div>
                         </div>
 
                 <!-- Document List -->
-                <div id="techList">
+                <div id="tdList">
                     <!-- Documents will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
                 </div>
+                
+                <!-- Pagination -->
+                <div id="tdPagination">
+                    <!-- Pagination will be rendered here -->
+                </div>
+            </div>
+        </div>
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
@@ -847,7 +857,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=1730000008"></script>
+    <script src="app.js?v=1730000010"></script>
     <script>
         // IMMEDIATE logo loading - no delays, no events
         (function() {
