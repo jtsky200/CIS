@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const { migrateDocumentsToStorage } = require('./migrate-to-storage');
 const cors = require('cors')({ origin: true });
 const OpenAI = require('openai');
 const pdfParse = require('pdf-parse');
@@ -1157,14 +1158,38 @@ exports.upload = functions.https.onRequest((req, res) => {
                     return res.status(400).json({ error: 'Filename and content are required' });
                 }
 
+                // Upload to Firebase Storage
+                const bucket = admin.storage().bucket();
+                const fileBuffer = Buffer.from(content, 'base64');
+                const storagePath = `knowledge-base/${Date.now()}_${filename}`;
+                const file = bucket.file(storagePath);
+                
+                await file.save(fileBuffer, {
+                    metadata: {
+                        contentType: getContentType(fileType || filename.split('.').pop().toLowerCase()),
+                        metadata: {
+                            uploadedBy: 'user',
+                            originalFilename: filename
+                        }
+                    }
+                });
+                
+                // Make file publicly accessible
+                await file.makePublic();
+                const downloadURL = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+                
+                console.log('✅ File uploaded to Storage:', downloadURL);
+
                 const docRef = await db.collection('knowledgebase').add({
                     filename: filename,
                     content: content,
                     fileType: fileType || filename.split('.').pop().toLowerCase(),
-                    size: Buffer.byteLength(content, 'utf8'),
+                    size: fileBuffer.length,
                     uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
                     uploadedBy: 'user',
-                    isActive: true
+                    isActive: true,
+                    storagePath: storagePath,
+                    downloadURL: downloadURL
                 });
                 
                 console.log('📄 Document saved with ID:', docRef.id, 'isActive:', true);
@@ -1227,6 +1252,27 @@ exports.upload = functions.https.onRequest((req, res) => {
 
                                 console.log('File processed:', filename, 'Size:', buffer.length);
 
+                                // Upload to Firebase Storage
+                                const bucket = admin.storage().bucket();
+                                const storagePath = `knowledge-base/${Date.now()}_${filename}`;
+                                const storageFile = bucket.file(storagePath);
+                                
+                                await storageFile.save(buffer, {
+                                    metadata: {
+                                        contentType: getContentType(fileType),
+                                        metadata: {
+                                            uploadedBy: 'user',
+                                            originalFilename: filename
+                                        }
+                                    }
+                                });
+                                
+                                // Make file publicly accessible
+                                await storageFile.makePublic();
+                                const downloadURL = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+                                
+                                console.log('✅ File uploaded to Storage:', downloadURL);
+
                                 // Store in Firestore
                                 const docRef = await db.collection('knowledgebase').add({
                                     filename: filename,
@@ -1236,7 +1282,9 @@ exports.upload = functions.https.onRequest((req, res) => {
                                     uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
                                     uploadedBy: 'user',
                                     isActive: true,
-                                    originalFileData: buffer.toString('base64')
+                                    originalFileData: buffer.toString('base64'),
+                                    storagePath: storagePath,
+                                    downloadURL: downloadURL
                                 });
 
                                 uploads.push({
@@ -4578,3 +4626,7 @@ exports.storeImageAnalysis = functions.https.onRequest((req, res) => {
         }
     });
 });
+
+// Export migration function
+exports.migrateDocumentsToStorage = migrateDocumentsToStorage;
+
