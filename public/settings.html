@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Cadillac EV Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=1730000002">
-    <link rel="stylesheet" href="settings-redesign.css?v=1730000002">
+    <link rel="stylesheet" href="styles.css?v=1730000003">
+    <link rel="stylesheet" href="settings-redesign.css?v=1730000003">
     <style>
         .settings-container {
             max-width: 1200px;
@@ -601,8 +601,22 @@
                 </div>
                 
                 <script>
-                // FORCE LOAD KNOWLEDGE BASE IMMEDIATELY - INLINE SCRIPT
+                // FORCE LOAD AND DISPLAY KNOWLEDGE BASE - SELF-CONTAINED
                 (function() {
+                    const formatSize = (bytes) => {
+                        if (!bytes) return '0 B';
+                        const k = 1024;
+                        const sizes = ['B', 'KB', 'MB', 'GB'];
+                        const i = Math.floor(Math.log(bytes) / Math.log(k));
+                        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+                    };
+                    
+                    const formatDate = (date) => {
+                        if (!date) return '-';
+                        const d = new Date(date);
+                        return d.toLocaleDateString('de-DE');
+                    };
+                    
                     fetch('https://us-central1-cis-de.cloudfunctions.net/knowledgebase?t=' + Date.now())
                         .then(r => r.json())
                         .then(data => {
@@ -612,20 +626,40 @@
                             document.getElementById('kbTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
                             console.log('✅ KB Inline: Loaded ' + docs.length + ' documents');
                             
-                            // Store documents globally and display them
+                            // Store documents globally
                             window.knowledgeBase = docs;
                             
-                            // Wait for displayKnowledgeBase function to be available
-                            const displayDocs = function() {
-                                if (typeof window.displayKnowledgeBase === 'function') {
-                                    window.displayKnowledgeBase(docs);
-                                    console.log('✅ KB Inline: Displayed documents');
-                                } else {
-                                    console.log('⏳ KB Inline: Waiting for displayKnowledgeBase...');
-                                    setTimeout(displayDocs, 100);
-                                }
-                            };
-                            displayDocs();
+                            // Render documents directly
+                            const kbList = document.getElementById('kbList');
+                            if (!kbList) {
+                                console.error('❌ kbList element not found!');
+                                return;
+                            }
+                            
+                            if (docs.length === 0) {
+                                kbList.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Keine Dokumente gefunden</div>';
+                                return;
+                            }
+                            
+                            console.log('✅ KB Inline: Rendering ' + docs.length + ' documents...');
+                            
+                            kbList.innerHTML = docs.map((doc, index) => `
+                                <div class="kb-item" data-doc-id="${doc.id}" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; background: white;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                                            <input type="checkbox" class="kb-checkbox" data-doc-id="${doc.id}">
+                                            <div style="font-weight: 500; color: #1f2937;">${doc.filename || doc.name || 'Unbekannt'}</div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px; align-items: center;">
+                                            <span style="font-size: 12px; color: #6b7280;">${formatDate(doc.uploadedAt)}</span>
+                                            <span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${doc.fileType ? doc.fileType.toUpperCase() : 'FILE'}</span>
+                                            <span style="background: #f3f4f6; color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 11px;">${formatSize(doc.size)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('');
+                            
+                            console.log('✅ KB Inline: Documents rendered successfully');
                         })
                         .catch(e => console.error('KB Inline Error:', e));
                 })();
@@ -791,7 +825,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=1730000002"></script>
+    <script src="app.js?v=1730000003"></script>
     <script>
         // IMMEDIATE logo loading - no delays, no events
         (function() {
