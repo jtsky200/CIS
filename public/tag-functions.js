@@ -14,7 +14,7 @@ async function initTagAutocomplete(inputId, containerId) {
     
     // Load available tags
     async function loadTags() {
-        const { tags, categories } = await loadAllTags();
+        const { tags, categories } = await window.loadAllTags();
         availableTags = [
             ...categories.map(([name]) => ({ name, type: 'category' })),
             ...tags.map(([name]) => ({ name, type: 'tag' }))
@@ -227,7 +227,7 @@ window.refreshTags = async function() {
     
     tagsList.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-weight: 500;">Lade Tags...</div>';
     
-    const { tags, categories } = await loadAllTags();
+    const { tags, categories } = await window.loadAllTags();
     
     if (tags.length === 0 && categories.length === 0) {
         tagsList.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280; font-weight: 500; background: #f9fafb; border-radius: 8px; border: 2px dashed #e5e7eb;">Keine Tags gefunden. Erstellen Sie Ihren ersten Tag!</div>';
