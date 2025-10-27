@@ -166,7 +166,38 @@
         </div>
     </div>
 
-    <script src="app.js?v=20250126-001"></script>
+    <script>
+        // Define global storage for documents
+        window.technicalDatabase = [];
+        
+        // Simple loader that runs immediately when app.js is ready
+        window.loadTechDB = function() {
+            console.log('🚀 loadTechDB called - loading technical database...');
+            
+            fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase')
+                .then(res => res.json())
+                .then(data => {
+                    console.log('✅ Loaded', data.documents.length, 'documents');
+                    window.technicalDatabase = data.documents;
+                    
+                    // Now call display function if it exists
+                    if (typeof displayTechnicalDatabase === 'function') {
+                        console.log('📋 Calling displayTechnicalDatabase...');
+                        displayTechnicalDatabase(window.technicalDatabase);
+                    } else {
+                        console.log('⏳ displayTechnicalDatabase not ready yet...');
+                        // Retry after 500ms
+                        setTimeout(() => {
+                            if (typeof displayTechnicalDatabase === 'function') {
+                                displayTechnicalDatabase(window.technicalDatabase);
+                            }
+                        }, 500);
+                    }
+                })
+                .catch(err => console.error('❌ Error:', err));
+        };
+    </script>
+    <script src="app.js?v=20250126-002"></script>
     <script>
         // Global variables are handled by app.js
         
@@ -747,8 +778,31 @@
         
         ensureDOMReady(() => {
             console.log('✅ DOM is FULLY ready, starting init...');
-            waitForAppJs(initTroubleshooting);
+            waitForAppJs(() => {
+                // Call both methods for maximum reliability
+                initTroubleshooting();
+                
+                // Also try simple direct load
+                if (typeof window.loadTechDB === 'function') {
+                    console.log('🔧 Also calling simple loadTechDB...');
+                    setTimeout(() => window.loadTechDB(), 100);
+                }
+            });
         });
+        
+        // EMERGENCY FALLBACK: Load after 2 seconds no matter what
+        setTimeout(() => {
+            console.log('⏰ Emergency fallback triggered after 2s...');
+            if (document.getElementById('techList') && window.technicalDatabase.length > 0) {
+                console.log('✅ Emergency: Calling displayTechnicalDatabase with cached data...');
+                if (typeof displayTechnicalDatabase === 'function') {
+                    displayTechnicalDatabase(window.technicalDatabase);
+                }
+            } else if (typeof window.loadTechDB === 'function') {
+                console.log('🔄 Emergency: Calling loadTechDB...');
+                window.loadTechDB();
+            }
+        }, 2000);
     </script>
 </body>
 </html>
