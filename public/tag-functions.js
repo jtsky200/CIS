@@ -345,7 +345,7 @@ window.editTag = async function(oldName, type) {
         ? `Möchten Sie die Kategorie "${oldName}" in "${newName}" umbenennen? Dies wird in ALLEN Dokumenten angewendet.`
         : `Möchten Sie den Tag "${oldName}" in "${newName}" umbenennen? Dies wird in ALLEN Dokumenten angewendet.`;
     
-    const confirmed = await window.showConfirmDialog(confirmMsg);
+    const confirmed = await window.showConfirmDialog(confirmMsg, null, null);
     if (!confirmed) return;
     
     try {
@@ -418,7 +418,9 @@ window.deleteTag = async function(tagName, type, count) {
     const typeText = type === 'category' ? 'Kategorie' : 'Tag';
     
     const confirmed = await window.showConfirmDialog(
-        `Möchten Sie ${type === 'tag' ? 'den' : 'die'} ${typeText} "${tagName}" wirklich löschen? Dies entfernt ${type === 'tag' ? 'ihn' : 'sie'} aus ${count} Dokumenten.`
+        `Möchten Sie ${type === 'tag' ? 'den' : 'die'} ${typeText} "${tagName}" wirklich löschen? Dies entfernt ${type === 'tag' ? 'ihn' : 'sie'} aus ${count} Dokumenten.`,
+        null,
+        null
     );
     
     if (!confirmed) return;
@@ -481,7 +483,9 @@ window.cleanupTags = async function() {
     
     console.log('🧹 [Cleanup] Calling showConfirmDialog...');
     const confirmed = await window.showConfirmDialog(
-        'Möchten Sie alle Tags und Kategorien bereinigen? Dies entfernt ungültige Tags (Dateierweiterungen, etc.) und standardisiert die Kategorien.'
+        'Möchten Sie alle Tags und Kategorien bereinigen? Dies entfernt ungültige Tags (Dateierweiterungen, etc.) und standardisiert die Kategorien.',
+        null, // onConfirm callback (we don't need it, using return value instead)
+        null  // onCancel callback
     );
     
     if (!confirmed) {
