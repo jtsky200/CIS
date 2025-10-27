@@ -246,20 +246,23 @@
                         if (techList) {
                             if (docs.length === 0) {
                                 techList.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Keine Dokumente gefunden</div>';
-                            } else if (typeof displayTechnicalDatabase === 'function') {
-                                console.log('✅ INLINE: Using displayTechnicalDatabase function');
-                                displayTechnicalDatabase(docs);
                             } else {
-                                console.log('⚠️ INLINE: Using fallback display');
-                                let html = '<div style="padding: 20px;"><h3>Technische Dokumente (' + docs.length + ')</h3>';
-                                docs.forEach(doc => {
-                                    html += '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 8px 0;">';
-                                    html += '<strong>' + (doc.name || doc.filename || 'Unbekannt') + '</strong>';
-                                    html += '<div><small style="color: #6b7280;">Kategorie: ' + (doc.category || 'N/A') + '</small></div>';
-                                    html += '</div>';
-                                });
-                                html += '</div>';
-                                techList.innerHTML = html;
+                                // Wait for app.js to load, then use displayTechnicalDatabase
+                                const tryDisplay = function(attempts) {
+                                    if (attempts >= 20) {
+                                        console.error('❌ displayTechnicalDatabase not available after 20 attempts');
+                                        return;
+                                    }
+                                    
+                                    if (typeof displayTechnicalDatabase === 'function') {
+                                        console.log('✅ INLINE: Using displayTechnicalDatabase function');
+                                        displayTechnicalDatabase(docs);
+                                    } else {
+                                        console.log('⏳ INLINE: Waiting for displayTechnicalDatabase (attempt ' + (attempts + 1) + ')...');
+                                        setTimeout(() => tryDisplay(attempts + 1), 200);
+                                    }
+                                };
+                                tryDisplay(0);
                             }
                         }
                         console.log('✅ INLINE: Technical Database loading complete!');
