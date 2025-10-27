@@ -668,6 +668,36 @@
             }, 200);
         }
         
+        function waitForTechListElement(callback, maxAttempts = 50) {
+            let attempts = 0;
+            
+            const checkInterval = setInterval(() => {
+                attempts++;
+                const techListElement = document.getElementById('techList');
+                
+                console.log(`🔄 Checking for techList element... (Attempt ${attempts}/${maxAttempts})`);
+                
+                if (techListElement) {
+                    console.log('✅ techList element FOUND in DOM!');
+                    console.log('   Element:', techListElement.tagName, techListElement.id);
+                    console.log('   Parent:', techListElement.parentElement ? techListElement.parentElement.tagName : 'no parent');
+                    clearInterval(checkInterval);
+                    callback();
+                } else if (attempts >= maxAttempts) {
+                    console.error('❌ TIMEOUT: techList element never appeared in DOM after', maxAttempts, 'attempts');
+                    console.log('   DOM State:', document.readyState);
+                    console.log('   Body exists:', !!document.body);
+                    console.log('   Body children:', document.body ? document.body.children.length : 0);
+                    
+                    // List all IDs in the document
+                    const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
+                    console.log('   All IDs in DOM:', allIds.join(', '));
+                    
+                    clearInterval(checkInterval);
+                }
+            }, 100); // Check every 100ms
+        }
+        
         function initTroubleshooting() {
             console.log('🚀 Initializing Troubleshooting Page...');
             
@@ -676,21 +706,14 @@
                 setupIntelligentImageAnalysis();
             }
             
-            // CRITICAL: Verify techList element exists
-            const techListElement = document.getElementById('techList');
-            console.log('📋 techList element check:', techListElement ? '✅ Found' : '❌ Not found');
+            // CRITICAL: Wait for techList element to exist in DOM
+            console.log('📋 Waiting for techList element to be in DOM...');
             
-            if (!techListElement) {
-                console.error('❌ CRITICAL: techList element does not exist in DOM!');
-                console.log('DOM State:', document.readyState);
-                console.log('Body children:', document.body ? document.body.children.length : 'no body');
-                return;
-            }
-            
-            // Load Technical Database
-            console.log('📚 Loading Technical Database...');
-            console.log('📋 Calling loadTechnicalDatabase() now...');
-            loadTechnicalDatabase();
+            waitForTechListElement(() => {
+                console.log('📚 Loading Technical Database...');
+                console.log('📋 Calling loadTechnicalDatabase() now...');
+                loadTechnicalDatabase();
+            });
         }
         
         // AGGRESSIVE DOM-ready check - ensure EVERYTHING is loaded
