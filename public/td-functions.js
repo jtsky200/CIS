@@ -9,7 +9,7 @@
         allDocuments: [],
         filteredDocuments: [],
         currentPage: 1,
-        itemsPerPage: 20,
+        itemsPerPage: 10,
         searchTerm: '',
         filterCategory: '',
         sortBy: 'newest',
@@ -215,31 +215,39 @@
     
     function renderPagination() {
         const container = document.getElementById('tdPagination');
-        if (!container) return;
+        if (!container) {
+            console.warn('tdPagination container not found');
+            return;
+        }
         
         const totalPages = Math.ceil(window.tdState.filteredDocuments.length / window.tdState.itemsPerPage);
         const currentPage = window.tdState.currentPage;
         
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+        
         container.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px;">
                 <button onclick="window.tdGoToPage(1)" ${currentPage === 1 ? 'disabled' : ''} 
-                    style="padding: 8px 16px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 4px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500;">
-                    Erste
+                    style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    ⏮ Erste
                 </button>
                 <button onclick="window.tdGoToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                    style="padding: 8px 16px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 4px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500;">
-                    Zurück
+                    style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    ← Zurück
                 </button>
-                <span style="padding: 8px 16px; background: #f3f4f6; border-radius: 4px; font-weight: 500;">
-                    Seite ${currentPage} von ${totalPages || 1}
+                <span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                    Seite ${currentPage} von ${totalPages}
                 </span>
                 <button onclick="window.tdGoToPage(${currentPage + 1})" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} 
-                    style="padding: 8px 16px; background: ${currentPage === totalPages || totalPages === 0 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages || totalPages === 0 ? '#9ca3af' : 'white'}; border: none; border-radius: 4px; cursor: ${currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer'}; font-weight: 500;">
-                    Weiter
+                    style="padding: 10px 18px; background: ${currentPage === totalPages || totalPages === 0 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages || totalPages === 0 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    Weiter →
                 </button>
                 <button onclick="window.tdGoToPage(${totalPages})" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} 
-                    style="padding: 8px 16px; background: ${currentPage === totalPages || totalPages === 0 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages || totalPages === 0 ? '#9ca3af' : 'white'}; border: none; border-radius: 4px; cursor: ${currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer'}; font-weight: 500;">
-                    Letzte
+                    style="padding: 10px 18px; background: ${currentPage === totalPages || totalPages === 0 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages || totalPages === 0 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    Letzte ⏭
                 </button>
             </div>
         `;
