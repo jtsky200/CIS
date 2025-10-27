@@ -1092,7 +1092,20 @@ function displayKnowledgeBase(documents) {
     console.log('📚 Displaying knowledge base documents:', documents.length);
     console.log('📄 First few documents:', documents.slice(0, 3).map(d => ({ filename: d.filename, fileType: d.fileType, isActive: d.isActive })));
     
-    // Update stats
+    // Initialize pagination state if on settings page
+    const isSettingsPage = window.location.pathname.includes('settings.html');
+    if (isSettingsPage) {
+        if (!window.kbPaginationState) {
+            window.kbPaginationState = {
+                currentPage: 1,
+                itemsPerPage: 10
+            };
+        }
+        // Store full documents list
+        window.kbAllDocuments = documents;
+    }
+    
+    // Update stats with all documents
     const totalDocs = documents.length;
     const totalSize = documents.reduce((sum, doc) => sum + (doc.size || 0), 0);
     
@@ -1151,7 +1164,24 @@ function displayKnowledgeBase(documents) {
     console.log('🔧 Rendering knowledge base documents with buttons...');
     console.log('📄 Documents count:', documents.length);
     
-    kbList.innerHTML = documents.map((doc, index) => {
+    // Apply pagination if on settings page
+    let documentsToDisplay = documents;
+    if (isSettingsPage && window.kbPaginationState) {
+        const state = window.kbPaginationState;
+        const startIdx = (state.currentPage - 1) * state.itemsPerPage;
+        const endIdx = startIdx + state.itemsPerPage;
+        documentsToDisplay = documents.slice(startIdx, endIdx);
+        
+        console.log('📄 KB Pagination applied:', {
+            total: documents.length,
+            displayed: documentsToDisplay.length,
+            startIdx,
+            endIdx,
+            currentPage: state.currentPage
+        });
+    }
+    
+    kbList.innerHTML = documentsToDisplay.map((doc, index) => {
         console.log(`🔧 Rendering document ${index}:`, doc.filename);
         return `
         <div class="kb-item" data-file-index="${index}" data-doc-id="${doc.id}">
@@ -1205,9 +1235,69 @@ function displayKnowledgeBase(documents) {
         `;
     }).join('');
     
+    // Render pagination if on settings page
+    if (isSettingsPage && window.kbPaginationState && documents.length > window.kbPaginationState.itemsPerPage) {
+        renderKBPagination(documents.length);
+    }
+    
     // Add event listeners for enhanced functionality
     setupKnowledgeBaseEventListeners();
 }
+
+// Render knowledge base pagination
+function renderKBPagination(totalDocs) {
+    const paginationContainer = document.getElementById('kbPagination');
+    if (!paginationContainer || !window.kbPaginationState) return;
+
+    const state = window.kbPaginationState;
+    const totalPages = Math.ceil(totalDocs / state.itemsPerPage);
+    const currentPage = state.currentPage;
+
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        paginationContainer.style.display = 'none';
+        return;
+    }
+
+    paginationContainer.style.display = 'flex';
+
+    paginationContainer.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px; width: 100%;">
+            <button onclick="window.goToKBPage(1)" ${currentPage === 1 ? 'disabled' : ''}
+                style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                ⏮ Erste
+            </button>
+            <button onclick="window.goToKBPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}
+                style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                ← Zurück
+            </button>
+            <span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Seite ${currentPage} von ${totalPages}
+            </span>
+            <button onclick="window.goToKBPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}
+                style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                Weiter →
+            </button>
+            <button onclick="window.goToKBPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}
+                style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                Letzte ⏭
+            </button>
+        </div>
+    `;
+}
+
+// Go to knowledge base page
+window.goToKBPage = function(page) {
+    if (!window.kbPaginationState || !window.kbAllDocuments) return;
+
+    const state = window.kbPaginationState;
+    const totalPages = Math.ceil(window.kbAllDocuments.length / state.itemsPerPage);
+
+    if (page < 1 || page > totalPages) return;
+
+    state.currentPage = page;
+    displayKnowledgeBase(window.kbAllDocuments);
+};
 
 // Load knowledge base data
 async function loadKnowledgeBase() {
