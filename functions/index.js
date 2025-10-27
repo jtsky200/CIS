@@ -4958,3 +4958,104 @@ exports.updateCategoriesAndTags = functions.runWith({
     });
 });
 
+// Smart categorize documents in GENERAL category
+exports.smartCategorize = functions.runWith({
+    memory: '512MB',
+    timeoutSeconds: 60
+}).https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            console.log('🧠 Starting smart categorization...');
+            
+            let categorizedKB = 0;
+            let categorizedTD = 0;
+            
+            // Get all documents with GENERAL category
+            const kbSnapshot = await db.collection('knowledgebase')
+                .where('category', '==', 'GENERAL')
+                .get();
+            
+            const tdSnapshot = await db.collection('technicalDatabase')
+                .where('category', '==', 'GENERAL')
+                .get();
+            
+            const allDocs = [
+                ...kbSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id, db: 'knowledgebase', ref: doc.ref })),
+                ...tdSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id, db: 'technicalDatabase', ref: doc.ref }))
+            ];
+            
+            console.log(`Found ${allDocs.length} documents with GENERAL category`);
+            
+            // Analyze each document and categorize
+            for (const doc of allDocs) {
+                const filename = doc.filename || doc.name || '';
+                const fileType = doc.fileType || '';
+                const tags = doc.tags || [];
+                
+                // Determine new category based on filename and tags
+                let newCategory = null;
+                
+                // Check for car model indicators
+                if (filename.toUpperCase().includes('LYRIQ') || 
+                    tags.some(t => t.toUpperCase().includes('LYRIQ'))) {
+                    newCategory = 'LYRIQ';
+                } else if (filename.toUpperCase().includes('VISTIQ') || 
+                           tags.some(t => t.toUpperCase().includes('VISTIQ'))) {
+                    newCategory = 'VISTIQ';
+                } else if (filename.toUpperCase().includes('OPTIQ') || 
+                           tags.some(t => t.toUpperCase().includes('OPTIQ'))) {
+                    newCategory = 'OPTIQ';
+                } else if (filename.toUpperCase().includes('SPECIFICATION') || 
+                           filename.toUpperCase().includes('SPECS') || 
+                           fileType === 'XLS' || fileType === 'XLSX') {
+                    newCategory = 'SPECIFICATIONS';
+                } else if (filename.toUpperCase().includes('TROUBLESHOOT') || 
+                           filename.toUpperCase().includes('DIAGNOSE') || 
+                           tags.some(t => t.toUpperCase().includes('TROUBLESHOOT'))) {
+                    newCategory = 'TROUBLESHOOTING';
+                } else if (filename.toUpperCase().includes('SERVICE') || 
+                           filename.toUpperCase().includes('REPAIR') || 
+                           filename.toUpperCase().includes('MAINTENANCE')) {
+                    newCategory = 'SERVICE MANUAL';
+                } else if (filename.toUpperCase().includes('CHARGE') || 
+                           filename.toUpperCase().includes('BATTERY') || 
+                           tags.some(t => t.toUpperCase().includes('CHARGE'))) {
+                    newCategory = 'CHARGING';
+                }
+                
+                // Update if we found a more specific category
+                if (newCategory && newCategory !== 'GENERAL') {
+                    try {
+                        await doc.ref.update({ category: newCategory });
+                        console.log(`✅ Moved "${filename}" from GENERAL to ${newCategory}`);
+                        
+                        if (doc.db === 'knowledgebase') {
+                            categorizedKB++;
+                        } else {
+                            categorizedTD++;
+                        }
+                    } catch (error) {
+                        console.error(`❌ Error updating ${doc.id}:`, error);
+                    }
+                }
+            }
+            
+            return res.json({
+                success: true,
+                categorizedKB,
+                categorizedTD,
+                total: categorizedKB + categorizedTD,
+                message: `Smart categorization complete: ${categorizedKB + categorizedTD} documents recategorized`
+            });
+            
+        } catch (error) {
+            console.error('Error in smart categorization:', error);
+            return res.status(500).json({ error: 'Failed to categorize documents' });
+        }
+    });
+});
+
