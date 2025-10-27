@@ -1733,6 +1733,105 @@ exports.deleteTechnicalDocument = functions.https.onRequest((req, res) => {
     });
 });
 
+// Migrate technical document sizes
+exports.migrateTechnicalDocSizes = functions.runWith({
+    memory: '512MB',
+    timeoutSeconds: 540
+}).https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        console.log('🔄 Starting migration to add file sizes to technical documents...');
+        
+        try {
+            // Get all active technical documents
+            const snapshot = await db.collection('technicalDatabase')
+                .where('isActive', '==', true)
+                .get();
+            
+            console.log(`📋 Found ${snapshot.size} documents to migrate`);
+            
+            let updated = 0;
+            let skipped = 0;
+            let errors = 0;
+            
+            for (const doc of snapshot.docs) {
+                const data = doc.data();
+                
+                // Check if size already exists
+                if (data.size && data.size > 0) {
+                    console.log(`⏭️  Skipping ${data.filename || data.name} (already has size: ${data.size} bytes)`);
+                    skipped++;
+                    continue;
+                }
+                
+                let calculatedSize = 0;
+                
+                // Try to get size from originalFileData
+                if (data.originalFileData) {
+                    try {
+                        const buffer = Buffer.from(data.originalFileData, 'base64');
+                        calculatedSize = buffer.length;
+                        console.log(`📊 Calculated size for ${data.filename || data.name}: ${calculatedSize} bytes`);
+                    } catch (e) {
+                        console.error(`❌ Error calculating size from originalFileData:`, e.message);
+                    }
+                }
+                // Try originalPdfData if originalFileData doesn't exist
+                else if (data.originalPdfData) {
+                    try {
+                        const buffer = Buffer.from(data.originalPdfData, 'base64');
+                        calculatedSize = buffer.length;
+                        console.log(`📊 Calculated size for ${data.filename || data.name}: ${calculatedSize} bytes`);
+                    } catch (e) {
+                        console.error(`❌ Error calculating size from originalPdfData:`, e.message);
+                    }
+                }
+                // Try content field as last resort
+                else if (data.content) {
+                    try {
+                        calculatedSize = Buffer.byteLength(data.content, 'utf8');
+                        console.log(`📊 Calculated size from content for ${data.filename || data.name}: ${calculatedSize} bytes`);
+                    } catch (e) {
+                        console.error(`❌ Error calculating size from content:`, e.message);
+                    }
+                }
+                
+                // Update the document with the calculated size
+                if (calculatedSize > 0) {
+                    try {
+                        await doc.ref.update({ size: calculatedSize });
+                        console.log(`✅ Updated ${data.filename || data.name} with size: ${calculatedSize} bytes`);
+                        updated++;
+                    } catch (e) {
+                        console.error(`❌ Error updating document:`, e.message);
+                        errors++;
+                    }
+                } else {
+                    console.log(`⚠️  Could not determine size for ${data.filename || data.name}`);
+                    errors++;
+                }
+            }
+            
+            console.log(`\n✅ Migration complete!`);
+            console.log(`   📝 Total documents: ${snapshot.size}`);
+            console.log(`   ✅ Updated: ${updated}`);
+            console.log(`   ⏭️  Skipped: ${skipped}`);
+            console.log(`   ❌ Errors: ${errors}`);
+            
+            return res.json({
+                success: true,
+                total: snapshot.size,
+                updated,
+                skipped,
+                errors
+            });
+            
+        } catch (error) {
+            console.error('❌ Migration failed:', error);
+            return res.status(500).json({ error: 'Migration failed', details: error.message });
+        }
+    });
+});
+
 // Delete knowledge base document completely
 exports.deleteDocument = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
