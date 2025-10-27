@@ -803,6 +803,18 @@
                 window.loadTechDB();
             }
         }, 2000);
+        
+        // ABSOLUTE LAST RESORT: Manually trigger after 3 seconds
+        setTimeout(() => {
+            console.log('🚨 LAST RESORT: Trying direct manual call...');
+            const techListEl = document.getElementById('techList');
+            if (techListEl && typeof loadTechnicalDatabase === 'function') {
+                console.log('✅ Last resort: Calling loadTechnicalDatabase()...');
+                loadTechnicalDatabase();
+            } else {
+                console.log('❌ Last resort failed - techList:', !!techListEl, 'loadTechnicalDatabase:', typeof loadTechnicalDatabase);
+            }
+        }, 3000);
     </script>
 </body>
 </html>
