@@ -5000,14 +5000,16 @@ exports.smartCategorize = functions.runWith({
                 let newCategory = null;
                 
                 // Check for car model indicators (case-insensitive)
-                if (filename.toUpperCase().includes('LYRIQ') || 
-                    tags.some(t => t.toUpperCase().includes('LYRIQ')) ||
-                    (filename.toUpperCase().includes('PDF') && filename.toUpperCase().includes('LYRIQ'))) {
+                // Also check for common patterns
+                const upperFilename = filename.toUpperCase();
+                
+                if (upperFilename.includes('LYRIQ') || 
+                    tags.some(t => t.toUpperCase().includes('LYRIQ'))) {
                     newCategory = 'LYRIQ';
-                } else if (filename.toUpperCase().includes('VISTIQ') || 
+                } else if (upperFilename.includes('VISTIQ') || 
                            tags.some(t => t.toUpperCase().includes('VISTIQ'))) {
                     newCategory = 'VISTIQ';
-                } else if (filename.toUpperCase().includes('OPTIQ') || 
+                } else if (upperFilename.includes('OPTIQ') || 
                            tags.some(t => t.toUpperCase().includes('OPTIQ'))) {
                     newCategory = 'OPTIQ';
                 } else if (filename.toUpperCase().includes('SPECIFICATION') || 
