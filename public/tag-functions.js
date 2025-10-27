@@ -505,7 +505,7 @@ window.cleanupTags = async function() {
             // Refresh the tag list after a delay
             setTimeout(() => {
                 console.log('Refreshing tags...');
-                refreshTags();
+                window.refreshTags();
             }, 1000);
         } else {
             const errorText = await response.text();
