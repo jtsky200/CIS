@@ -1603,6 +1603,7 @@ exports.uploadTechnicalDocument = functions.https.onRequest((req, res) => {
                 description: description || '',
                 originalFileData: fileData || null, // Store original binary data
                 originalPdfData: fileData || null, // Also store as PDF data for direct access
+                size: fileData ? Buffer.from(fileData, 'base64').length : 0, // Store file size in bytes
                 uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
                 isActive: true
             };
