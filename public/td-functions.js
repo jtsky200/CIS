@@ -142,16 +142,21 @@
         }
         
         container.innerHTML = pageDocs.map(doc => {
-            // Detect file type from filename extension
-            const filename = doc.filename || doc.name || '';
-            const ext = filename.split('.').pop().toLowerCase();
+            // Use fileType from API if available, otherwise extract from filename
             let fileType = 'UNKNOWN';
-            
-            if (ext === 'pdf') fileType = 'PDF';
-            else if (ext === 'txt') fileType = 'TXT';
-            else if (ext === 'md') fileType = 'MD';
-            else if (ext === 'xlsx' || ext === 'xls') fileType = 'EXCEL';
-            else fileType = ext.toUpperCase();
+            if (doc.fileType) {
+                fileType = doc.fileType.toUpperCase();
+            } else {
+                // Fallback: detect file type from filename extension
+                const filename = doc.filename || doc.name || '';
+                const ext = filename.split('.').pop().toLowerCase();
+                
+                if (ext === 'pdf') fileType = 'PDF';
+                else if (ext === 'txt') fileType = 'TXT';
+                else if (ext === 'md') fileType = 'MD';
+                else if (ext === 'xlsx' || ext === 'xls') fileType = 'EXCEL';
+                else fileType = ext.toUpperCase();
+            }
             
             const category = getCategoryInfo(fileType);
             const isSelected = window.tdState.selectedDocs.has(doc.id);
