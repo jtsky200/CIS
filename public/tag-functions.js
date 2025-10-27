@@ -129,7 +129,7 @@ window.removeTag = function(button, tag) {
 };
 
 // Load all tags from both databases
-async function loadAllTags() {
+window.loadAllTags = async function() {
     try {
         // Load tags from Knowledge Base
         const kbResponse = await fetch(`${API_BASE}/knowledgebase`);
@@ -221,7 +221,7 @@ async function loadAllTags() {
 }
 
 // Refresh tags list
-async function refreshTags() {
+window.refreshTags = async function() {
     const tagsList = document.getElementById('tagsList');
     if (!tagsList) return;
     
@@ -309,7 +309,7 @@ async function refreshTags() {
 }
 
 // Create new tag
-async function createNewTag() {
+window.createNewTag = async function() {
     const tagName = document.getElementById('newTagName').value;
     const category = document.getElementById('newTagCategory').value;
     
