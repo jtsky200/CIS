@@ -141,19 +141,48 @@ async function loadAllTags() {
         const tdData = await tdResponse.json();
         const tdDocs = tdData.documents || [];
         
+        // Category mappings to clean up
+        const categoryMappings = {
+            'LYRIQ Owner Manuals': 'LYRIQ',
+            'VISTIQ Owner Manuals': 'VISTIQ',
+            'OPTIQ Owner Manuals': 'OPTIQ',
+            'Troubleshooting': 'TROUBLESHOOTING',
+            'General': 'GENERAL'
+        };
+        
+        // Tags to merge (remove duplicates)
+        const tagsToMerge = {
+            'TROUBLESHOOTING': ['Troubleshooting', 'TROUBLESHOOTING'],
+            'CHARGING': ['charging', 'CHARGING', 'Charging']
+        };
+        
         // Extract all unique tags and categories
         const tagsMap = new Map();
         const categoriesMap = new Map();
         
         [...kbDocs, ...tdDocs].forEach(doc => {
-            // Count categories
-            const category = doc.category || 'General';
+            // Clean and count categories
+            let category = doc.category || 'GENERAL';
+            // Apply mapping
+            category = categoryMappings[category] || category;
+            // Convert to uppercase
+            category = category.toUpperCase();
             categoriesMap.set(category, (categoriesMap.get(category) || 0) + 1);
             
-            // Count tags
+            // Clean and count tags
             if (doc.tags && Array.isArray(doc.tags)) {
                 doc.tags.forEach(tag => {
-                    tagsMap.set(tag, (tagsMap.get(tag) || 0) + 1);
+                    // Merge duplicate tags
+                    let cleanedTag = tag;
+                    for (const [canonicalTag, variations] of Object.entries(tagsToMerge)) {
+                        if (variations.includes(tag)) {
+                            cleanedTag = canonicalTag;
+                            break;
+                        }
+                    }
+                    // Convert to uppercase
+                    cleanedTag = cleanedTag.toUpperCase();
+                    tagsMap.set(cleanedTag, (tagsMap.get(cleanedTag) || 0) + 1);
                 });
             }
         });
