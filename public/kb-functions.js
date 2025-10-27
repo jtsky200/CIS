@@ -90,12 +90,21 @@
     function applyFiltersAndSort() {
         let docs = [...window.kbState.allDocuments];
         
-        // Apply search filter
+        // Apply search filter - includes tags and categories
         if (window.kbState.searchTerm) {
             const term = window.kbState.searchTerm.toLowerCase();
             docs = docs.filter(doc => {
                 const filename = (doc.filename || doc.name || '').toLowerCase();
-                return filename.includes(term);
+                const category = (doc.category || '').toLowerCase();
+                const subcategory = (doc.subcategory || '').toLowerCase();
+                const tags = (doc.tags || []).map(t => t.toLowerCase()).join(' ');
+                const content = (doc.content || '').toLowerCase();
+                
+                return filename.includes(term) || 
+                       category.includes(term) || 
+                       subcategory.includes(term) ||
+                       tags.includes(term) ||
+                       content.includes(term);
             });
         }
         

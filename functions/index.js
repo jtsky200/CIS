@@ -543,17 +543,29 @@ async function searchKnowledgeBase(query) {
         
         const documents = [];
         snapshot.forEach(doc => {
+            const data = doc.data();
             documents.push({
                 id: doc.id,
-                ...doc.data()
+                ...data
             });
         });
 
-        // Simple text search (in production, you'd want more sophisticated search)
+        // Enhanced text search including tags and categories
         const results = documents.filter(doc => {
-            const content = doc.content.toLowerCase();
             const searchTerms = query.toLowerCase().split(' ');
-            return searchTerms.some(term => content.includes(term));
+            const content = (doc.content || '').toLowerCase();
+            const filename = (doc.filename || '').toLowerCase();
+            const category = (doc.category || '').toLowerCase();
+            const subcategory = (doc.subcategory || '').toLowerCase();
+            const tags = (doc.tags || []).map(t => t.toLowerCase()).join(' ');
+            
+            return searchTerms.some(term => 
+                content.includes(term) || 
+                filename.includes(term) || 
+                category.includes(term) || 
+                subcategory.includes(term) ||
+                tags.includes(term)
+            );
         });
 
         return results.slice(0, 3); // Return top 3 results
@@ -1122,9 +1134,18 @@ exports.knowledgebase = functions.https.onRequest((req, res) => {
                     const documents = [];
                     
                     snapshot.forEach(doc => {
+                        const data = doc.data();
                         documents.push({
                             id: doc.id,
-                            ...doc.data()
+                            filename: data.filename || data.name,
+                            content: data.content,
+                            fileType: data.fileType,
+                            category: data.category || 'General',
+                            subcategory: data.subcategory || 'General',
+                            tags: data.tags || [],
+                            size: data.size || 0,
+                            uploadedAt: data.uploadedAt,
+                            isActive: data.isActive
                         });
                     });
 
@@ -1184,6 +1205,9 @@ exports.upload = functions.https.onRequest((req, res) => {
                     filename: filename,
                     content: content,
                     fileType: fileType || filename.split('.').pop().toLowerCase(),
+                    category: req.body.category || 'General',
+                    subcategory: req.body.subcategory || 'General',
+                    tags: req.body.tags || [],
                     size: fileBuffer.length,
                     uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
                     uploadedBy: 'user',
@@ -1465,6 +1489,9 @@ exports.uploadWithOverwrite = functions.https.onRequest((req, res) => {
                 filename: filename,
                 content: processedContent,
                 fileType: fileType,
+                category: category || 'General',
+                subcategory: subcategory || 'General',
+                tags: req.body.tags || [],
                 originalFileData: fileData || null,
                 uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
                 isActive: true
@@ -1519,6 +1546,8 @@ exports.technicalDatabase = functions.runWith({
                         name: data.name || data.filename || 'Unnamed Document',
                         fileType: data.fileType || 'unknown',
                         category: data.category || 'General',
+                        subcategory: data.subcategory || 'General',
+                        tags: data.tags || [],
                         vehicleType: data.vehicleType || 'General',
                         uploadedAt: data.uploadedAt,
                         size: data.size || 0,
@@ -1601,6 +1630,7 @@ exports.uploadTechnicalDocument = functions.https.onRequest((req, res) => {
                 category: category || 'Uncategorized',
                 subcategory: subcategory || 'General',
                 description: description || '',
+                tags: req.body.tags || [],
                 originalFileData: fileData || null, // Store original binary data
                 originalPdfData: fileData || null, // Also store as PDF data for direct access
                 size: fileData ? Buffer.from(fileData, 'base64').length : 0, // Store file size in bytes
