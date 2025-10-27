@@ -147,13 +147,25 @@ async function loadAllTags() {
             'VISTIQ Owner Manuals': 'VISTIQ',
             'OPTIQ Owner Manuals': 'OPTIQ',
             'Troubleshooting': 'TROUBLESHOOTING',
-            'General': 'GENERAL'
+            'General': 'GENERAL',
+            'SERVICE_MANUAL': 'SERVICE MANUAL',
+            'service_manual': 'SERVICE MANUAL',
+            'Service_Manual': 'SERVICE MANUAL'
         };
         
-        // Tags to merge (remove duplicates)
+        // Tags to exclude (not real tags)
+        const tagsToExclude = [
+            'TXT', 'PDF', 'DOC', 'DOCX', 'XLSX', 'MD', // File types
+            'official-website', 'OFFICIAL-WEBSITE', // Not a category
+            'powertrain', 'POWERTRAIN', // Too specific
+            'manual', 'MANUAL' // Too generic
+        ];
+        
+        // Tags to merge (remove duplicates and standardize)
         const tagsToMerge = {
             'TROUBLESHOOTING': ['Troubleshooting', 'TROUBLESHOOTING'],
-            'CHARGING': ['charging', 'CHARGING', 'Charging']
+            'CHARGING': ['charging', 'CHARGING', 'Charging'],
+            'SERVICE MANUAL': ['SERVICE_MANUAL', 'service_manual', 'Service_Manual', 'SERVICE MANUAL']
         };
         
         // Extract all unique tags and categories
@@ -172,17 +184,26 @@ async function loadAllTags() {
             // Clean and count tags
             if (doc.tags && Array.isArray(doc.tags)) {
                 doc.tags.forEach(tag => {
+                    // Skip excluded tags
+                    if (tagsToExclude.includes(tag) || tagsToExclude.includes(tag.toUpperCase())) {
+                        return;
+                    }
+                    
                     // Merge duplicate tags
                     let cleanedTag = tag;
                     for (const [canonicalTag, variations] of Object.entries(tagsToMerge)) {
-                        if (variations.includes(tag)) {
+                        if (variations.includes(tag) || variations.includes(tag.toUpperCase())) {
                             cleanedTag = canonicalTag;
                             break;
                         }
                     }
                     // Convert to uppercase
                     cleanedTag = cleanedTag.toUpperCase();
-                    tagsMap.set(cleanedTag, (tagsMap.get(cleanedTag) || 0) + 1);
+                    // Skip if it's a file extension
+                    const fileExtensions = ['PDF', 'TXT', 'DOC', 'DOCX', 'XLSX', 'MD', 'PNG', 'JPG', 'JPEG'];
+                    if (!fileExtensions.includes(cleanedTag)) {
+                        tagsMap.set(cleanedTag, (tagsMap.get(cleanedTag) || 0) + 1);
+                    }
                 });
             }
         });
