@@ -5022,10 +5022,11 @@ exports.smartCategorize = functions.runWith({
                            fileType === 'XLS' || fileType === 'XLSX') {
                     newCategory = 'SPECIFICATIONS';
                     console.log(`  → Categorized as SPECIFICATIONS`);
-                } else if (filename.toUpperCase().includes('TROUBLESHOOT') || 
-                           filename.toUpperCase().includes('DIAGNOSE') || 
+                } else if (upperFilename.includes('TROUBLESHOOT') || 
+                           upperFilename.includes('DIAGNOSE') || 
                            tags.some(t => t.toUpperCase().includes('TROUBLESHOOT'))) {
                     newCategory = 'TROUBLESHOOTING';
+                    console.log(`  → Categorized as TROUBLESHOOTING`);
                 } else if (upperFilename.includes('SERVICE') || 
                            upperFilename.includes('REPAIR') || 
                            upperFilename.includes('MAINTENANCE')) {
