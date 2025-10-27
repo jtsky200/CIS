@@ -1628,6 +1628,18 @@ function displayTechnicalDatabase(documents) {
     const totalDocs = documents.length;
     const totalSize = documents.reduce((sum, doc) => sum + (doc.size || 0), 0);
     
+    // Check if we're on troubleshooting page and set up pagination
+    const isTroubleshootingPage = window.location.pathname.includes('troubleshooting.html');
+    const itemsPerPage = isTroubleshootingPage ? 10 : documents.length; // Only paginate on troubleshooting page
+    
+    // Initialize pagination state if on troubleshooting page
+    if (isTroubleshootingPage && !window.techPaginationState) {
+        window.techPaginationState = {
+            currentPage: 1,
+            itemsPerPage: itemsPerPage
+        };
+    }
+    
     const techList = document.getElementById('techList');
     
     // Handle last updated date properly
@@ -1755,7 +1767,19 @@ function displayTechnicalDatabase(documents) {
         return;
     }
     
-    techList.innerHTML = documents.map((doc, index) => `
+    // Apply pagination if on troubleshooting page
+    let documentsToDisplay = documents;
+    if (isTroubleshootingPage && window.techPaginationState) {
+        const state = window.techPaginationState;
+        const startIdx = (state.currentPage - 1) * state.itemsPerPage;
+        const endIdx = startIdx + state.itemsPerPage;
+        documentsToDisplay = documents.slice(startIdx, endIdx);
+        
+        // Store full documents list for pagination
+        window.techAllDocuments = documents;
+    }
+    
+    techList.innerHTML = documentsToDisplay.map((doc, index) => `
         <div class="kb-item" data-file-index="${index}" data-doc-id="${doc.id}">
             <div class="kb-item-header">
                 <div style="display: flex; align-items: center; flex: 1;">
@@ -1808,7 +1832,67 @@ function displayTechnicalDatabase(documents) {
     
     // Add event listeners for enhanced functionality
     setupTechnicalDatabaseEventListeners();
+    
+    // Render pagination if on troubleshooting page
+    if (isTroubleshootingPage && window.techPaginationState && documents.length > window.techPaginationState.itemsPerPage) {
+        renderTechnicalPagination(documents.length);
+    }
 }
+
+// Render pagination for troubleshooting page
+function renderTechnicalPagination(totalDocs) {
+    const paginationContainer = document.getElementById('techPagination');
+    if (!paginationContainer || !window.techPaginationState) return;
+    
+    const state = window.techPaginationState;
+    const totalPages = Math.ceil(totalDocs / state.itemsPerPage);
+    const currentPage = state.currentPage;
+    
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        paginationContainer.style.display = 'none';
+        return;
+    }
+    
+    paginationContainer.style.display = 'flex';
+    
+    paginationContainer.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px; width: 100%;">
+            <button onclick="window.goToTechnicalPage(1)" ${currentPage === 1 ? 'disabled' : ''} 
+                style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                ⏮ Erste
+            </button>
+            <button onclick="window.goToTechnicalPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                ← Zurück
+            </button>
+            <span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Seite ${currentPage} von ${totalPages}
+            </span>
+            <button onclick="window.goToTechnicalPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                Weiter →
+            </button>
+            <button onclick="window.goToTechnicalPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} 
+                style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                Letzte ⏭
+            </button>
+        </div>
+    `;
+}
+
+// Navigate to specific page
+window.goToTechnicalPage = function(page) {
+    if (!window.techPaginationState || !window.techAllDocuments) return;
+    
+    const state = window.techPaginationState;
+    const totalPages = Math.ceil(window.techAllDocuments.length / state.itemsPerPage);
+    
+    if (page < 1 || page > totalPages) return;
+    
+    state.currentPage = page;
+    displayTechnicalDatabase(window.techAllDocuments);
+};
 
 // Delete technical database document
 async function deleteTechnicalDocument(docId) {
