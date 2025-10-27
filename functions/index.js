@@ -4999,9 +4999,10 @@ exports.smartCategorize = functions.runWith({
                 // Determine new category based on filename and tags
                 let newCategory = null;
                 
-                // Check for car model indicators
+                // Check for car model indicators (case-insensitive)
                 if (filename.toUpperCase().includes('LYRIQ') || 
-                    tags.some(t => t.toUpperCase().includes('LYRIQ'))) {
+                    tags.some(t => t.toUpperCase().includes('LYRIQ')) ||
+                    (filename.toUpperCase().includes('PDF') && filename.toUpperCase().includes('LYRIQ'))) {
                     newCategory = 'LYRIQ';
                 } else if (filename.toUpperCase().includes('VISTIQ') || 
                            tags.some(t => t.toUpperCase().includes('VISTIQ'))) {
@@ -5035,8 +5036,12 @@ exports.smartCategorize = functions.runWith({
                            filename.toUpperCase().includes('GARANTIE')) {
                     newCategory = 'WARRANTY';
                 } else if (filename.toUpperCase().includes('WEBSITE') ||
-                           filename.toUpperCase().includes('DATA')) {
+                           filename.toUpperCase().includes('DATA') ||
+                           filename.toUpperCase().includes('LINK')) {
                     newCategory = 'RESOURCES';
+                } else if (filename.toUpperCase().includes('TROUBLESHOOT') ||
+                           filename.toUpperCase().includes('TROUBLESHOOTING')) {
+                    newCategory = 'TROUBLESHOOTING';
                 }
                 
                 // Update if we found a more specific category
