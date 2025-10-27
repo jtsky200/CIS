@@ -4774,7 +4774,15 @@ async function performCleanup() {
         'General': 'GENERAL',
         'SERVICE_MANUAL': 'SERVICE MANUAL',
         'service_manual': 'SERVICE MANUAL',
-        'Service_Manual': 'SERVICE MANUAL'
+        'Service_Manual': 'SERVICE MANUAL',
+        // Clean up invalid categories
+        'OFFICIAL-WEBSITE': 'GENERAL',
+        'official-website': 'GENERAL',
+        'TXT': 'GENERAL',
+        'POWERTRAIN': 'GENERAL',
+        'powertrain': 'GENERAL',
+        'MANUAL': 'GENERAL',
+        'manual': 'GENERAL'
     };
     
     // Tags to exclude
@@ -4840,8 +4848,17 @@ async function performCleanup() {
         // Clean category
         if (data.category) {
             let newCategory = categoryMappings[data.category] || data.category;
-            newCategory = newCategory.toUpperCase();
-            if (newCategory !== data.category) {
+            
+            // If category is in the excluded tags, convert to GENERAL
+            const upperCategory = newCategory.toUpperCase();
+            if (tagsToExclude.includes(upperCategory) || 
+                tagsToExclude.includes(newCategory)) {
+                newCategory = 'GENERAL';
+            } else {
+                newCategory = upperCategory;
+            }
+            
+            if (newCategory !== data.category.toUpperCase()) {
                 updates.category = newCategory;
             }
         }
@@ -4869,8 +4886,17 @@ async function performCleanup() {
         // Clean category
         if (data.category) {
             let newCategory = categoryMappings[data.category] || data.category;
-            newCategory = newCategory.toUpperCase();
-            if (newCategory !== data.category) {
+            
+            // If category is in the excluded tags, convert to GENERAL
+            const upperCategory = newCategory.toUpperCase();
+            if (tagsToExclude.includes(upperCategory) || 
+                tagsToExclude.includes(newCategory)) {
+                newCategory = 'GENERAL';
+            } else {
+                newCategory = upperCategory;
+            }
+            
+            if (newCategory !== data.category.toUpperCase()) {
                 updates.category = newCategory;
             }
         }
