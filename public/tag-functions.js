@@ -470,14 +470,20 @@ window.deleteTag = async function(tagName, type, count) {
 
 // Cleanup tags function
 window.cleanupTags = async function() {
+    console.log('🧹 Cleanup button clicked');
+    
     const confirmed = await window.showConfirmDialog(
         'Möchten Sie alle Tags und Kategorien bereinigen? Dies entfernt ungültige Tags (Dateierweiterungen, etc.) und standardisiert die Kategorien.'
     );
     
-    if (!confirmed) return;
+    if (!confirmed) {
+        console.log('Cleanup cancelled by user');
+        return;
+    }
     
     try {
-        window.showNotification('Bereinigung läuft...', 'info');
+        console.log('Starting cleanup...');
+        window.showNotification('Bereinigung läuft... Das kann 30-60 Sekunden dauern.', 'info');
         
         // Call the cleanup function via Cloud Function
         const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/updateCategoriesAndTags', {
@@ -486,19 +492,25 @@ window.cleanupTags = async function() {
             body: JSON.stringify({ action: 'cleanup' })
         });
         
+        console.log('Response status:', response.status);
+        
         if (response.ok) {
             const result = await response.json();
+            console.log('Cleanup result:', result);
             window.showNotification(
                 `Bereinigung abgeschlossen! KB: ${result.updatedKB} Dokumente, TD: ${result.updatedTD} Dokumente aktualisiert.`,
                 'success'
             );
             
-            // Refresh the tag list
-            setTimeout(() => refreshTags(), 1000);
+            // Refresh the tag list after a delay
+            setTimeout(() => {
+                console.log('Refreshing tags...');
+                refreshTags();
+            }, 1000);
         } else {
             const errorText = await response.text();
-            console.error('Cleanup failed:', errorText);
-            window.showNotification('Bereinigung fehlgeschlagen. Bitte Seite neu laden und erneut versuchen.', 'error');
+            console.error('Cleanup failed:', response.status, errorText);
+            window.showNotification(`Bereinigung fehlgeschlagen (Status: ${response.status}). Bitte Seite neu laden und erneut versuchen.`, 'error');
         }
         
     } catch (error) {
