@@ -385,41 +385,124 @@
                     .catch(error => console.error('Download error:', error));
             };
             
+            // Custom confirmation modal
+            window.showConfirmDialog = function(message, onConfirm, onCancel) {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+                
+                const modal = document.createElement('div');
+                modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
+                
+                modal.innerHTML = `
+                    <div style="margin-bottom: 24px;">
+                        <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">Bestätigung</div>
+                        <div style="color: #6b7280; font-size: 15px;">${message}</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button id="cancelBtn" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">Abbrechen</button>
+                        <button id="confirmBtn" style="padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;" onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">Löschen</button>
+                    </div>
+                `;
+                
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                const closeModal = () => {
+                    document.body.removeChild(overlay);
+                };
+                
+                document.getElementById('cancelBtn').addEventListener('click', () => {
+                    closeModal();
+                    if (onCancel) onCancel();
+                });
+                
+                document.getElementById('confirmBtn').addEventListener('click', () => {
+                    closeModal();
+                    if (onConfirm) onConfirm();
+                });
+                
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeModal();
+                        if (onCancel) onCancel();
+                    }
+                });
+            };
+            
             // Delete document function
             window.deleteTechDoc = function(docId, docName) {
-                if (!confirm(`Möchten Sie "${docName}" wirklich löschen?`)) return;
-                
-                fetch('https://us-central1-cis-de.cloudfunctions.net/deleteDocument', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: docId, type: 'technical' })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Remove from local array
-                        window.techAllDocuments = window.techAllDocuments.filter(d => d.id !== docId);
-                        window.technicalDatabase = window.technicalDatabase.filter(d => d.id !== docId);
-                        
-                        // Update stats
-                        document.getElementById('techDocCount').textContent = window.techAllDocuments.length;
-                        const size = window.techAllDocuments.reduce((sum, doc) => sum + (doc.size || 0), 0);
-                        document.getElementById('techTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
-                        
-                        // Refresh display
-                        const state = window.techPaginationState;
-                        const totalPages = Math.ceil(window.techAllDocuments.length / state.itemsPerPage);
-                        if (state.currentPage > totalPages && totalPages > 0) {
-                            state.currentPage = totalPages;
-                        }
-                        window.goToTechnicalPage(state.currentPage);
-                    } else {
-                        alert('Fehler beim Löschen des Dokuments.');
+                window.showConfirmDialog(
+                    `Möchten Sie "${docName}" wirklich löschen?`,
+                    () => {
+                        fetch('https://us-central1-cis-de.cloudfunctions.net/deleteDocument', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: docId, type: 'technical' })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Remove from local array
+                                window.techAllDocuments = window.techAllDocuments.filter(d => d.id !== docId);
+                                window.technicalDatabase = window.technicalDatabase.filter(d => d.id !== docId);
+                                
+                                // Update stats
+                                document.getElementById('techDocCount').textContent = window.techAllDocuments.length;
+                                const size = window.techAllDocuments.reduce((sum, doc) => sum + (doc.size || 0), 0);
+                                document.getElementById('techTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
+                                
+                                // Refresh display
+                                const state = window.techPaginationState;
+                                const totalPages = Math.ceil(window.techAllDocuments.length / state.itemsPerPage);
+                                if (state.currentPage > totalPages && totalPages > 0) {
+                                    state.currentPage = totalPages;
+                                }
+                                window.goToTechnicalPage(state.currentPage);
+                                
+                                // Show success notification
+                                window.showNotification('Dokument erfolgreich gelöscht.', 'success');
+                            } else {
+                                window.showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Delete error:', error);
+                            window.showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                        });
                     }
-                })
-                .catch(error => {
-                    console.error('Delete error:', error);
-                    alert('Fehler beim Löschen des Dokuments.');
-                });
+                );
+            };
+            
+            // Show notification
+            window.showNotification = function(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: ${type === 'error' ? '#ef4444' : '#10b981'};
+                    color: white;
+                    padding: 16px 24px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    z-index: 10001;
+                    font-size: 14px;
+                    font-weight: 500;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                }, 10);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
             };
             </script>
         </div>

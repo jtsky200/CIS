@@ -1496,10 +1496,12 @@
         
         // Reset general settings
         window.resetGeneralSettings = function() {
-            if (confirm('Möchten Sie alle Einstellungen zurücksetzen?')) {
-                // Settings cleared from Firestore
-                window.showMessage('Einstellungen zurückgesetzt', 'success');
-                setTimeout(() => location.reload(), 1000);
+            if (typeof window.showConfirmDialog === 'function') {
+                window.showConfirmDialog('Möchten Sie alle Einstellungen zurücksetzen?', () => {
+                    // Settings cleared from Firestore
+                    window.showMessage('Einstellungen zurückgesetzt', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                });
             }
         };
         
@@ -1549,28 +1551,34 @@
         
         // Clear cache
         window.clearCache = function() {
-            if (confirm('Möchten Sie den Cache wirklich leeren?')) {
-                // KB cache cleared
-                // TD cache cleared
-                window.showMessage('Cache erfolgreich geleert!', 'success');
+            if (typeof window.showConfirmDialog === 'function') {
+                window.showConfirmDialog('Möchten Sie den Cache wirklich leeren?', () => {
+                    // KB cache cleared
+                    // TD cache cleared
+                    window.showMessage('Cache erfolgreich geleert!', 'success');
+                });
             }
         };
         
         // Delete all data
         window.deleteAllData = function() {
-            if (confirm('ACHTUNG: Alle Daten werden gelöscht! Dies kann nicht rückgängig gemacht werden. Fortfahren?')) {
-                if (confirm('Sind Sie WIRKLICH sicher? Alle Einstellungen und Daten gehen verloren!')) {
-                    // All data cleared from Firestore
-                    window.showMessage('Alle Daten wurden gelöscht', 'success');
-                    setTimeout(() => location.reload(), 1500);
-                }
+            if (typeof window.showConfirmDialog === 'function') {
+                window.showConfirmDialog('ACHTUNG: Alle Daten werden gelöscht! Dies kann nicht rückgängig gemacht werden. Fortfahren?', () => {
+                    window.showConfirmDialog('Sind Sie WIRKLICH sicher? Alle Einstellungen und Daten gehen verloren!', () => {
+                        // All data cleared from Firestore
+                        window.showMessage('Alle Daten wurden gelöscht', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    });
+                });
             }
         };
         
         // View logs
         window.viewLogs = function() {
             const logs = 'Logs werden in Firestore gespeichert'  // TODO: Load from Firestore || 'Keine Logs verfügbar';
-            alert('System Logs:\n\n' + logs);
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('System Logs:\n\n' + logs, 'info');
+            }
         };
         
         // Export settings

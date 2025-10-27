@@ -4555,3 +4555,79 @@ window.initAutocomplete = initAutocomplete;
     }
 })();
 
+// Global Custom Modal Dialogs - NO MORE BROWSER WARNINGS!
+window.showConfirmDialog = function(message, onConfirm, onCancel) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
+    
+    modal.innerHTML = `
+        <div style="margin-bottom: 24px;">
+            <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">Bestätigung</div>
+            <div style="color: #6b7280; font-size: 15px;">${message}</div>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button id="customCancelBtn" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Abbrechen</button>
+            <button id="customConfirmBtn" style="padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Bestätigen</button>
+        </div>
+    `;
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    const closeModal = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    document.getElementById('customCancelBtn').addEventListener('click', () => {
+        closeModal();
+        if (onCancel) onCancel();
+    });
+    
+    document.getElementById('customConfirmBtn').addEventListener('click', () => {
+        closeModal();
+        if (onConfirm) onConfirm();
+    });
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeModal();
+            if (onCancel) onCancel();
+        }
+    });
+};
+
+window.showNotification = function(message, type = 'success') {
+    const existing = document.querySelector('.custom-notification');
+    if (existing) existing.remove();
+    
+    const notification = document.createElement('div');
+    notification.className = 'custom-notification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'error' ? '#ef4444' : '#10b981'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10001;
+        font-size: 14px;
+        font-weight: 500;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.style.opacity = '1', 10);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+};
+

@@ -361,26 +361,31 @@
         const doc = window.tdState.allDocuments.find(d => d.id === docId);
         if (!doc) return;
         
-        if (!confirm(`Möchten Sie "${doc.filename || doc.name}" wirklich löschen?`)) return;
-        
-        try {
-            const response = await fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: docId, type: 'technical' })
-            });
-            
-            if (response.ok) {
-                window.tdState.allDocuments = window.tdState.allDocuments.filter(d => d.id !== docId);
-                applyFiltersAndSort();
-                renderDocuments();
-                showNotification('Dokument erfolgreich gelöscht.', 'success');
-            } else {
-                showNotification('Fehler beim Löschen des Dokuments.', 'error');
-            }
-        } catch (error) {
-            console.error('Error deleting document:', error);
-            showNotification('Fehler beim Löschen des Dokuments.', 'error');
+        if (typeof window.showConfirmDialog === 'function') {
+            window.showConfirmDialog(
+                `Möchten Sie "${doc.filename || doc.name}" wirklich löschen?`,
+                async () => {
+                    try {
+                        const response = await fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: docId, type: 'technical' })
+                        });
+                        
+                        if (response.ok) {
+                            window.tdState.allDocuments = window.tdState.allDocuments.filter(d => d.id !== docId);
+                            applyFiltersAndSort();
+                            renderDocuments();
+                            showNotification('Dokument erfolgreich gelöscht.', 'success');
+                        } else {
+                            showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting document:', error);
+                        showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                    }
+                }
+            );
         }
     }
     
@@ -388,29 +393,34 @@
         const count = window.tdState.selectedDocs.size;
         if (count === 0) return;
         
-        if (!confirm(`Möchten Sie ${count} Dokument(e) wirklich löschen?`)) return;
-        
-        try {
-            const docIds = Array.from(window.tdState.selectedDocs);
-            await Promise.all(docIds.map(id => 
-                fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, type: 'technical' })
-                })
-            ));
-            
-            window.tdState.allDocuments = window.tdState.allDocuments.filter(
-                d => !window.tdState.selectedDocs.has(d.id)
+        if (typeof window.showConfirmDialog === 'function') {
+            window.showConfirmDialog(
+                `Möchten Sie ${count} Dokument(e) wirklich löschen?`,
+                async () => {
+                    try {
+                        const docIds = Array.from(window.tdState.selectedDocs);
+                        await Promise.all(docIds.map(id => 
+                            fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
+                                method: 'DELETE',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id, type: 'technical' })
+                            })
+                        ));
+                        
+                        window.tdState.allDocuments = window.tdState.allDocuments.filter(
+                            d => !window.tdState.selectedDocs.has(d.id)
+                        );
+                        window.tdState.selectedDocs.clear();
+                        applyFiltersAndSort();
+                        renderDocuments();
+                        updateSelectedCount();
+                        showNotification(`${count} Dokument(e) erfolgreich gelöscht.`, 'success');
+                    } catch (error) {
+                        console.error('Error bulk deleting documents:', error);
+                        showNotification('Fehler beim Löschen der Dokumente.', 'error');
+                    }
+                }
             );
-            window.tdState.selectedDocs.clear();
-            applyFiltersAndSort();
-            renderDocuments();
-            updateSelectedCount();
-            showNotification(`${count} Dokument(e) erfolgreich gelöscht.`, 'success');
-        } catch (error) {
-            console.error('Error bulk deleting documents:', error);
-            showNotification('Fehler beim Löschen der Dokumente.', 'error');
         }
     }
     
