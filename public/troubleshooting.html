@@ -247,22 +247,50 @@
                             if (docs.length === 0) {
                                 techList.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Keine Dokumente gefunden</div>';
                             } else {
-                                // Wait for app.js to load, then use displayTechnicalDatabase
-                                const tryDisplay = function(attempts) {
-                                    if (attempts >= 20) {
-                                        console.error('❌ displayTechnicalDatabase not available after 20 attempts');
-                                        return;
-                                    }
+                                // Pagination logic (10 items per page)
+                                if (!window.techPaginationState) {
+                                    window.techPaginationState = { currentPage: 1, itemsPerPage: 10 };
+                                }
+                                const state = window.techPaginationState;
+                                const startIdx = (state.currentPage - 1) * state.itemsPerPage;
+                                const endIdx = startIdx + state.itemsPerPage;
+                                const pageDocs = docs.slice(startIdx, endIdx);
+                                
+                                console.log('📄 Rendering with pagination:', {
+                                    total: docs.length,
+                                    showing: pageDocs.length,
+                                    page: state.currentPage,
+                                    start: startIdx,
+                                    end: endIdx
+                                });
+                                
+                                // Store full docs list
+                                window.techAllDocuments = docs;
+                                
+                                // Now try to use displayTechnicalDatabase if available
+                                if (typeof displayTechnicalDatabase === 'function') {
+                                    console.log('✅ Using displayTechnicalDatabase');
+                                    displayTechnicalDatabase(docs);
+                                } else {
+                                    console.log('⚠️ Using inline rendering');
+                                    let html = '<div style="padding: 20px;"><h3>Technische Dokumente (' + docs.length + ')</h3>';
+                                    pageDocs.forEach(doc => {
+                                        html += '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 8px 0;">';
+                                        html += '<strong>' + (doc.name || doc.filename || 'Unbekannt') + '</strong>';
+                                        html += '<div><small style="color: #6b7280;">Kategorie: ' + (doc.category || 'N/A') + '</small></div>';
+                                        html += '</div>';
+                                    });
+                                    html += '</div>';
+                                    techList.innerHTML = html;
                                     
-                                    if (typeof displayTechnicalDatabase === 'function') {
-                                        console.log('✅ INLINE: Using displayTechnicalDatabase function');
-                                        displayTechnicalDatabase(docs);
-                                    } else {
-                                        console.log('⏳ INLINE: Waiting for displayTechnicalDatabase (attempt ' + (attempts + 1) + ')...');
-                                        setTimeout(() => tryDisplay(attempts + 1), 200);
+                                    // Render pagination
+                                    const paginationContainer = document.getElementById('techPagination');
+                                    if (paginationContainer && docs.length > 10) {
+                                        const totalPages = Math.ceil(docs.length / 10);
+                                        paginationContainer.style.display = 'flex';
+                                        paginationContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px; width: 100%;"><button onclick="window.goToTechnicalPage(1)" ' + (state.currentPage === 1 ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === 1 ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === 1 ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">⏮ Erste</button><button onclick="window.goToTechnicalPage(' + (state.currentPage - 1) + ')" ' + (state.currentPage === 1 ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === 1 ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === 1 ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">← Zurück</button><span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">Seite ' + state.currentPage + ' von ' + totalPages + '</span><button onclick="window.goToTechnicalPage(' + (state.currentPage + 1) + ')" ' + (state.currentPage === totalPages ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === totalPages ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === totalPages ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">Weiter →</button><button onclick="window.goToTechnicalPage(' + totalPages + ')" ' + (state.currentPage === totalPages ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === totalPages ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === totalPages ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">Letzte ⏭</button></div>';
                                     }
-                                };
-                                tryDisplay(0);
+                                }
                             }
                         }
                         console.log('✅ INLINE: Technical Database loading complete!');
@@ -275,6 +303,44 @@
                         }
                     });
             })();
+            </script>
+            
+            <script>
+            // Pagination navigation function
+            window.goToTechnicalPage = function(page) {
+                if (!window.techPaginationState || !window.techAllDocuments) return;
+                
+                const state = window.techPaginationState;
+                const totalPages = Math.ceil(window.techAllDocuments.length / state.itemsPerPage);
+                
+                if (page < 1 || page > totalPages) return;
+                
+                state.currentPage = page;
+                
+                const startIdx = (state.currentPage - 1) * state.itemsPerPage;
+                const endIdx = startIdx + state.itemsPerPage;
+                const pageDocs = window.techAllDocuments.slice(startIdx, endIdx);
+                
+                const techList = document.getElementById('techList');
+                if (techList) {
+                    let html = '<div style="padding: 20px;"><h3>Technische Dokumente (' + window.techAllDocuments.length + ')</h3>';
+                    pageDocs.forEach(doc => {
+                        html += '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 8px 0;">';
+                        html += '<strong>' + (doc.name || doc.filename || 'Unbekannt') + '</strong>';
+                        html += '<div><small style="color: #6b7280;">Kategorie: ' + (doc.category || 'N/A') + '</small></div>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    techList.innerHTML = html;
+                }
+                
+                // Update pagination controls
+                const paginationContainer = document.getElementById('techPagination');
+                if (paginationContainer && window.techAllDocuments.length > 10) {
+                    paginationContainer.style.display = 'flex';
+                    paginationContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px; width: 100%;"><button onclick="window.goToTechnicalPage(1)" ' + (state.currentPage === 1 ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === 1 ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === 1 ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">⏮ Erste</button><button onclick="window.goToTechnicalPage(' + (state.currentPage - 1) + ')" ' + (state.currentPage === 1 ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === 1 ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === 1 ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">← Zurück</button><span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">Seite ' + state.currentPage + ' von ' + totalPages + '</span><button onclick="window.goToTechnicalPage(' + (state.currentPage + 1) + ')" ' + (state.currentPage === totalPages ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === totalPages ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === totalPages ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">Weiter →</button><button onclick="window.goToTechnicalPage(' + totalPages + ')" ' + (state.currentPage === totalPages ? 'disabled' : '') + ' style="padding: 10px 18px; background: ' + (state.currentPage === totalPages ? '#e5e7eb' : '#3b82f6') + '; color: ' + (state.currentPage === totalPages ? '#9ca3af' : 'white') + '; border: none; border-radius: 6px; cursor: ' + (state.currentPage === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px;">Letzte ⏭</button></div>';
+                }
+            };
             </script>
         </div>
     </div>
