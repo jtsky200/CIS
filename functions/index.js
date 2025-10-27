@@ -5028,8 +5028,15 @@ exports.smartCategorize = functions.runWith({
                 } else if (filename.toUpperCase().includes('FAQ')) {
                     newCategory = 'FAQ';
                 } else if (filename.toUpperCase().includes('GUIDE') || 
-                           filename.toUpperCase().includes('ACTIVATION')) {
-                    newCategory = 'GENERAL';  // Keep guides in GENERAL for now
+                           filename.toUpperCase().includes('ACTIVATION') ||
+                           filename.toUpperCase().includes('HOW-TO')) {
+                    newCategory = 'GUIDE';
+                } else if (filename.toUpperCase().includes('WARRANTY') ||
+                           filename.toUpperCase().includes('GARANTIE')) {
+                    newCategory = 'WARRANTY';
+                } else if (filename.toUpperCase().includes('WEBSITE') ||
+                           filename.toUpperCase().includes('DATA')) {
+                    newCategory = 'RESOURCES';
                 }
                 
                 // Update if we found a more specific category
