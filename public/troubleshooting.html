@@ -111,6 +111,25 @@
                 <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 8px;" data-i18n="settings.technicalDb.title">Technische Datenbank</h2>
                 <p style="color: #6b7280; font-size: 14px; margin-bottom: 24px;" data-i18n="settings.technicalDb.subtitle">Verwalten Sie technische Dokumente</p>
                 
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="techDocCount">0</div>
+                        <div class="stat-label" data-i18n="settings.technicalDb.documents">Dokumente</div>
+                        <div class="stat-description">Technische Datenbank</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="techTotalSize">0 MB</div>
+                        <div class="stat-label" data-i18n="settings.technicalDb.totalSize">Gesamtgröße</div>
+                        <div class="stat-description" data-i18n="settings.technicalDb.allFiles">Alle Dateien</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="techLastUpdate">-</div>
+                        <div class="stat-label" data-i18n="settings.technicalDb.lastUpdate">Letzte Aktualisierung</div>
+                        <div class="stat-description">Technische Datenbank</div>
+                    </div>
+                </div>
+                
                 <!-- Search & Controls -->
                 <div class="database-controls" style="display: flex; gap: 12px; margin-bottom: 20px;">
                     <div style="position: relative; flex: 1;">
@@ -136,15 +155,14 @@
                     </select>
                 </div>
 
-                <!-- Documents List -->
-                <div id="techList" style="border: 1px solid #e5e7eb; border-radius: 12px; background: white; min-height: 200px;">
-                    <div style="padding: 40px; text-align: center; color: #9ca3af;">
-                        <svg style="width: 64px; height: 64px; margin: 0 auto 16px; opacity: 0.4;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <p style="margin: 0; font-size: 15px; color: #6b7280;" data-i18n="settings.technicalDb.noDocuments">Keine Dokumente gefunden</p>
-                    </div>
+                <!-- Loading State -->
+                <div id="techLoadingState" style="display: none; text-align: center; padding: 40px;">
+                    <div style="display: inline-block; width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <p style="margin-top: 16px; color: #6b7280;">Lädt technische Dokumente...</p>
                 </div>
+
+                <!-- Documents List -->
+                <div id="techList" style="border: 1px solid #e5e7eb; border-radius: 12px; background: white; min-height: 200px;"></div>
 
                 <!-- Pagination -->
                 <div id="techPagination" style="display: none; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 4px;">
@@ -163,6 +181,106 @@
                     </button>
                 </div>
             </div>
+            
+            <style>
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+            </style>
+            
+            <script>
+            // INLINE LOADER FOR TECHNICAL DATABASE
+            (function() {
+                console.log('📚 INLINE: Starting Technical Database Loader...');
+                
+                const loadingState = document.getElementById('techLoadingState');
+                const techList = document.getElementById('techList');
+                if (loadingState && techList) {
+                    loadingState.style.display = 'block';
+                    techList.innerHTML = '';
+                }
+                
+                const formatSize = (bytes) => {
+                    if (!bytes) return '0 B';
+                    const k = 1024;
+                    const sizes = ['B', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+                };
+                
+                const formatDate = (date) => {
+                    if (!date) return '-';
+                    let timestamp;
+                    if (typeof date === 'object') {
+                        if (date._seconds) timestamp = date._seconds * 1000;
+                        else if (date.seconds) timestamp = date.seconds * 1000;
+                        else if (date.toDate) timestamp = date.toDate().getTime();
+                        else timestamp = new Date(date).getTime();
+                    } else {
+                        timestamp = new Date(date).getTime();
+                    }
+                    const d = new Date(timestamp);
+                    return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('de-DE');
+                };
+                
+                fetch('https://us-central1-cis-de.cloudfunctions.net/technicalDatabase?t=' + Date.now())
+                    .then(res => res.json())
+                    .then(data => {
+                        const docs = data.documents || [];
+                        console.log('✅ INLINE: Loaded', docs.length, 'technical documents');
+                        
+                        // Update statistics
+                        document.getElementById('techDocCount').textContent = docs.length;
+                        const size = docs.reduce((sum, doc) => sum + (doc.size || 0), 0);
+                        document.getElementById('techTotalSize').textContent = formatSize(size);
+                        
+                        if (docs.length > 0) {
+                            const timestamps = docs.map(d => {
+                                const ts = d.uploadedAt;
+                                if (typeof ts === 'number') return ts;
+                                if (ts && ts.seconds) return ts.seconds * 1000;
+                                if (ts && ts._seconds) return ts._seconds * 1000;
+                                return 0;
+                            }).filter(t => t > 0);
+                            if (timestamps.length > 0) {
+                                const lastUpdated = Math.max(...timestamps);
+                                document.getElementById('techLastUpdate').textContent = formatDate(new Date(lastUpdated));
+                            }
+                        }
+                        
+                        window.technicalDatabase = docs;
+                        if (loadingState) loadingState.style.display = 'none';
+                        
+                        if (techList) {
+                            if (docs.length === 0) {
+                                techList.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Keine Dokumente gefunden</div>';
+                            } else if (typeof displayTechnicalDatabase === 'function') {
+                                console.log('✅ INLINE: Using displayTechnicalDatabase function');
+                                displayTechnicalDatabase(docs);
+                            } else {
+                                console.log('⚠️ INLINE: Using fallback display');
+                                let html = '<div style="padding: 20px;"><h3>Technische Dokumente (' + docs.length + ')</h3>';
+                                docs.forEach(doc => {
+                                    html += '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 8px 0;">';
+                                    html += '<strong>' + (doc.name || doc.filename || 'Unbekannt') + '</strong>';
+                                    html += '<div><small style="color: #6b7280;">Kategorie: ' + (doc.category || 'N/A') + '</small></div>';
+                                    html += '</div>';
+                                });
+                                html += '</div>';
+                                techList.innerHTML = html;
+                            }
+                        }
+                        console.log('✅ INLINE: Technical Database loading complete!');
+                    })
+                    .catch(err => {
+                        console.error('❌ INLINE ERROR:', err);
+                        if (loadingState) loadingState.style.display = 'none';
+                        if (techList) {
+                            techList.innerHTML = '<div style="text-align: center; padding: 40px; color: #dc2626;">Fehler: ' + err.message + '</div>';
+                        }
+                    });
+            })();
+            </script>
         </div>
     </div>
 
