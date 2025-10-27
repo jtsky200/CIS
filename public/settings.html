@@ -1018,9 +1018,13 @@
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="font-size: 16px; font-weight: 600; color: #2d2d2d;">Bestehende Tags</h3>
-                        <button onclick="refreshTags()" class="btn-secondary" 
-                            style="padding: 8px 16px; font-size: 14px; height: 36px;">
-                            🔄 Aktualisieren
+                        <button onclick="refreshTags()" 
+                            style="padding: 8px 16px; font-size: 14px; font-weight: 500; height: 36px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
+                            onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+                            </svg>
+                            Aktualisieren
                         </button>
                     </div>
                     <div id="tagsList" style="min-height: 100px;">

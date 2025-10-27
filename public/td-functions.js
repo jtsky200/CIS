@@ -475,7 +475,20 @@
         document.body.removeChild(a);
     }
     
-    function handleImport() {
+    async function handleImport() {
+        // Show tag selection modal first
+        const tags = await getAvailableTags();
+        
+        if (tags.length === 0) {
+            // No tags available, proceed with upload
+            await performFileUpload([], null);
+            return;
+        }
+        
+        // Create modal for tag selection
+        const selectedTags = await showTagSelectionModal(tags);
+        
+        // Proceed with file selection
         const input = document.createElement('input');
         input.type = 'file';
         input.multiple = true;
@@ -483,27 +496,132 @@
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
             
-            try {
+            await performFileUpload(files, selectedTags);
+        };
+        input.click();
+    }
+    
+    async function getAvailableTags() {
+        try {
+            const { tags, categories } = await loadAllTags();
+            return [
+                ...categories.map(([name]) => ({ name, type: 'category' })),
+                ...tags.map(([name]) => ({ name, type: 'tag' }))
+            ];
+        } catch (error) {
+            console.error('Error loading tags:', error);
+            return [];
+        }
+    }
+    
+    async function showTagSelectionModal(availableTags) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
+            
+            const selectedTags = [];
+            
+            modal.innerHTML = `
+                <div style="margin-bottom: 24px;">
+                    <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">Tags für Dokumente auswählen</div>
+                    <div style="color: #6b7280; font-size: 15px;">Wählen Sie optional Tags für die hochgeladenen Dokumente</div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-bottom: 24px; max-height: 300px; overflow-y: auto;">
+                    ${availableTags.map(tag => `
+                        <label style="display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500;">
+                            <input type="checkbox" value="${tag.name}" style="margin-right: 8px;">
+                            ${tag.name}
+                        </label>
+                    `).join('')}
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button id="tagModalCancel" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Überspringen</button>
+                    <button id="tagModalConfirm" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Fortfahren</button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            const checkboxes = modal.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        selectedTags.push(e.target.value);
+                    } else {
+                        const index = selectedTags.indexOf(e.target.value);
+                        if (index > -1) selectedTags.splice(index, 1);
+                    }
+                });
+            });
+            
+            const closeModal = () => {
+                document.body.removeChild(overlay);
+            };
+            
+            document.getElementById('tagModalCancel').addEventListener('click', () => {
+                closeModal();
+                resolve([]);
+            });
+            
+            document.getElementById('tagModalConfirm').addEventListener('click', () => {
+                closeModal();
+                resolve(selectedTags);
+            });
+            
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeModal();
+                    resolve([]);
+                }
+            });
+        });
+    }
+    
+    async function performFileUpload(files, selectedTags = []) {
+        if (files.length === 0) return;
+        
+        try {
+            for (const file of files) {
+                const fileBuffer = await file.arrayBuffer();
+                const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+                
+                const uploadData = {
+                    filename: file.name,
+                    content: '',  // Will be processed on server
+                    fileType: file.name.split('.').pop().toLowerCase(),
+                    tags: selectedTags.length > 0 ? selectedTags : [],
+                    category: selectedTags.length > 0 ? selectedTags[0] : 'General',
+                    subcategory: 'General'
+                };
+                
+                // Also append file for server processing
                 const formData = new FormData();
-                files.forEach(file => formData.append('files', file));
+                formData.append('file', file);
+                formData.append('category', uploadData.category);
+                formData.append('tags', JSON.stringify(selectedTags));
+                formData.append('filename', file.name);
                 
                 const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/uploadTechnicalDocument', {
                     method: 'POST',
                     body: formData
                 });
                 
-                if (response.ok) {
-                    showNotification(`${files.length} Datei(en) erfolgreich hochgeladen.`, 'success');
-                    window.refreshTechnicalDatabase();
-                } else {
-                    showNotification('Fehler beim Hochladen der Dateien.', 'error');
+                if (!response.ok) {
+                    throw new Error('Upload failed');
                 }
-            } catch (error) {
-                console.error('Error importing files:', error);
-                showNotification('Fehler beim Hochladen der Dateien.', 'error');
             }
-        };
-        input.click();
+            
+            showNotification(`${files.length} Datei(en) erfolgreich hochgeladen.`, 'success');
+            window.refreshTechnicalDatabase();
+            
+        } catch (error) {
+            console.error('Error uploading files:', error);
+            showNotification('Fehler beim Hochladen der Dateien.', 'error');
+        }
     }
     
     function getCategoryInfo(fileType) {
