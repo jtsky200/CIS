@@ -305,7 +305,8 @@
                                     };
                                     
                                     pageDocs.forEach((doc, idx) => {
-                                        const fileType = getFileType(doc.name || doc.filename);
+                                        // Use fileType from API if available, otherwise extract from filename
+                                        const fileType = doc.fileType ? doc.fileType.toUpperCase() : getFileType(doc.name || doc.filename);
                                         html += '<div class="kb-item" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 0; margin-bottom: 12px; background: white; overflow: hidden;">';
                                         html += '<div class="kb-item-header" style="display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #f3f4f6;">';
                                         html += '<div style="display: flex; align-items: center; flex: 1; min-width: 200px;">';
@@ -418,7 +419,8 @@
                     
                     let html = '';
                     pageDocs.forEach((doc, idx) => {
-                        const fileType = getFileType(doc.name || doc.filename);
+                        // Use fileType from API if available, otherwise extract from filename
+                        const fileType = doc.fileType ? doc.fileType.toUpperCase() : getFileType(doc.name || doc.filename);
                         html += '<div class="kb-item" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 0; margin-bottom: 12px; background: white; overflow: hidden;">';
                         html += '<div class="kb-item-header" style="display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #f3f4f6;">';
                         html += '<div style="display: flex; align-items: center; flex: 1; min-width: 200px;">';
