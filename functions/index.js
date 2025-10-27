@@ -4760,3 +4760,152 @@ exports.storeImageAnalysis = functions.https.onRequest((req, res) => {
 // Export migration function
 exports.migrateDocumentsToStorage = migrateDocumentsToStorage;
 
+// Update Categories and Tags Function
+exports.updateCategoriesAndTags = functions.https.onRequest(async (req, res) => {
+    cors(req, res, async () => {
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            let updatedKB = 0;
+            let updatedTD = 0;
+            
+            // Category mappings
+            const categoryMappings = {
+                'LYRIQ Owner Manuals': 'LYRIQ',
+                'VISTIQ Owner Manuals': 'VISTIQ',
+                'OPTIQ Owner Manuals': 'OPTIQ',
+                'Troubleshooting': 'TROUBLESHOOTING',
+                'General': 'GENERAL',
+                'SERVICE_MANUAL': 'SERVICE MANUAL',
+                'service_manual': 'SERVICE MANUAL',
+                'Service_Manual': 'SERVICE MANUAL'
+            };
+            
+            // Tags to exclude
+            const tagsToExclude = ['TXT', 'PDF', 'DOC', 'DOCX', 'XLSX', 'MD', 
+                                   'official-website', 'OFFICIAL-WEBSITE',
+                                   'powertrain', 'POWERTRAIN',
+                                   'manual', 'MANUAL'];
+            
+            // Tags to merge
+            const tagsToMerge = {
+                'TROUBLESHOOTING': ['Troubleshooting', 'TROUBLESHOOTING'],
+                'CHARGING': ['charging', 'CHARGING', 'Charging'],
+                'SERVICE MANUAL': ['SERVICE_MANUAL', 'service_manual', 'Service_Manual', 'SERVICE MANUAL']
+            };
+            
+            // Clean tags array
+            function cleanTags(tags) {
+                if (!Array.isArray(tags)) return [];
+                
+                const cleaned = [];
+                const seen = new Set();
+                
+                tags.forEach(tag => {
+                    // Skip excluded tags
+                    if (tagsToExclude.includes(tag) || tagsToExclude.includes(tag.toUpperCase())) {
+                        return;
+                    }
+                    
+                    // Merge duplicates
+                    let cleanedTag = tag;
+                    for (const [canonicalTag, variations] of Object.entries(tagsToMerge)) {
+                        if (variations.includes(tag) || variations.includes(tag.toUpperCase())) {
+                            cleanedTag = canonicalTag;
+                            break;
+                        }
+                    }
+                    
+                    // Convert to uppercase
+                    cleanedTag = cleanedTag.toUpperCase();
+                    
+                    // Skip file extensions
+                    const fileExtensions = ['PDF', 'TXT', 'DOC', 'DOCX', 'XLSX', 'MD', 'PNG', 'JPG', 'JPEG'];
+                    if (fileExtensions.includes(cleanedTag)) {
+                        return;
+                    }
+                    
+                    // Add if not duplicate
+                    if (!seen.has(cleanedTag) && cleanedTag.trim() !== '') {
+                        cleaned.push(cleanedTag);
+                        seen.add(cleanedTag);
+                    }
+                });
+                
+                return cleaned;
+            }
+            
+            // Update Knowledge Base
+            const kbSnapshot = await db.collection('knowledgebase').get();
+            for (const doc of kbSnapshot.docs) {
+                const data = doc.data();
+                const updates = {};
+                
+                // Clean category
+                if (data.category) {
+                    let newCategory = categoryMappings[data.category] || data.category;
+                    newCategory = newCategory.toUpperCase();
+                    if (newCategory !== data.category) {
+                        updates.category = newCategory;
+                    }
+                }
+                
+                // Clean tags
+                if (data.tags && Array.isArray(data.tags)) {
+                    const cleanedTags = cleanTags(data.tags);
+                    if (JSON.stringify(cleanedTags) !== JSON.stringify(data.tags)) {
+                        updates.tags = cleanedTags;
+                    }
+                }
+                
+                if (Object.keys(updates).length > 0) {
+                    await doc.ref.update(updates);
+                    updatedKB++;
+                }
+            }
+            
+            // Update Technical Database
+            const tdSnapshot = await db.collection('technicalDatabase').get();
+            for (const doc of tdSnapshot.docs) {
+                const data = doc.data();
+                const updates = {};
+                
+                // Clean category
+                if (data.category) {
+                    let newCategory = categoryMappings[data.category] || data.category;
+                    newCategory = newCategory.toUpperCase();
+                    if (newCategory !== data.category) {
+                        updates.category = newCategory;
+                    }
+                }
+                
+                // Clean tags
+                if (data.tags && Array.isArray(data.tags)) {
+                    const cleanedTags = cleanTags(data.tags);
+                    if (JSON.stringify(cleanedTags) !== JSON.stringify(data.tags)) {
+                        updates.tags = cleanedTags;
+                    }
+                }
+                
+                if (Object.keys(updates).length > 0) {
+                    await doc.ref.update(updates);
+                    updatedTD++;
+                }
+            }
+            
+            return res.json({
+                success: true,
+                updatedKB,
+                updatedTD,
+                message: `Updated ${updatedKB + updatedTD} documents`
+            });
+            
+        } catch (error) {
+            console.error('Error updating categories and tags:', error);
+            return res.status(500).json({ error: 'Failed to update categories and tags' });
+        }
+    });
+});
+
