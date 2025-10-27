@@ -1630,14 +1630,15 @@ function displayTechnicalDatabase(documents) {
     
     // Check if we're on troubleshooting page and set up pagination
     const isTroubleshootingPage = window.location.pathname.includes('troubleshooting.html');
-    const itemsPerPage = isTroubleshootingPage ? 10 : documents.length; // Only paginate on troubleshooting page
     
-    // Initialize pagination state if on troubleshooting page
-    if (isTroubleshootingPage && !window.techPaginationState) {
-        window.techPaginationState = {
-            currentPage: 1,
-            itemsPerPage: itemsPerPage
-        };
+    // Always initialize pagination state if on troubleshooting page
+    if (isTroubleshootingPage) {
+        if (!window.techPaginationState) {
+            window.techPaginationState = {
+                currentPage: 1,
+                itemsPerPage: 10
+            };
+        }
     }
     
     const techList = document.getElementById('techList');
@@ -1769,15 +1770,7 @@ function displayTechnicalDatabase(documents) {
     
     // Apply pagination if on troubleshooting page
     let documentsToDisplay = documents;
-    if (isTroubleshootingPage) {
-        // Ensure state exists
-        if (!window.techPaginationState) {
-            window.techPaginationState = {
-                currentPage: 1,
-                itemsPerPage: 10
-            };
-        }
-        
+    if (isTroubleshootingPage && window.techPaginationState) {
         const state = window.techPaginationState;
         const startIdx = (state.currentPage - 1) * state.itemsPerPage;
         const endIdx = startIdx + state.itemsPerPage;
@@ -1785,6 +1778,14 @@ function displayTechnicalDatabase(documents) {
         
         // Store full documents list for pagination
         window.techAllDocuments = documents;
+        
+        console.log('📄 Pagination applied:', {
+            total: documents.length,
+            displayed: documentsToDisplay.length,
+            startIdx,
+            endIdx,
+            currentPage: state.currentPage
+        });
     }
     
     techList.innerHTML = documentsToDisplay.map((doc, index) => `
