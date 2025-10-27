@@ -200,7 +200,7 @@ async function refreshTags() {
                     onmouseout="this.style.boxShadow=''; this.style.transform=''">
                     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
                         <svg width="16" height="16" fill="#92400e" viewBox="0 0 24 24"><path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/></svg>
-                        <span style="color: #92400e; font-weight: 600; font-size: 14px;">${category}</span>
+                        <span style="color: #92400e; font-weight: 600; font-size: 14px; text-transform: uppercase;">${category.toUpperCase()}</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #92400e;">${count} Dok.</span>
@@ -231,7 +231,7 @@ async function refreshTags() {
                     onmouseout="this.style.boxShadow=''; this.style.transform=''">
                     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
                         <svg width="16" height="16" fill="#1e40af" viewBox="0 0 24 24"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
-                        <span style="color: #1e40af; font-weight: 600; font-size: 14px;">${tag}</span>
+                        <span style="color: #1e40af; font-weight: 600; font-size: 14px; text-transform: uppercase;">${tag.toUpperCase()}</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #1e40af;">${count} Dok.</span>
