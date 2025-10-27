@@ -5003,19 +5003,25 @@ exports.smartCategorize = functions.runWith({
                 // Also check for common patterns
                 const upperFilename = filename.toUpperCase();
                 
+                console.log(`Analyzing: ${filename}`);
+                
                 if (upperFilename.includes('LYRIQ') || 
                     tags.some(t => t.toUpperCase().includes('LYRIQ'))) {
                     newCategory = 'LYRIQ';
+                    console.log(`  → Categorized as LYRIQ`);
                 } else if (upperFilename.includes('VISTIQ') || 
                            tags.some(t => t.toUpperCase().includes('VISTIQ'))) {
                     newCategory = 'VISTIQ';
+                    console.log(`  → Categorized as VISTIQ`);
                 } else if (upperFilename.includes('OPTIQ') || 
                            tags.some(t => t.toUpperCase().includes('OPTIQ'))) {
                     newCategory = 'OPTIQ';
-                } else if (filename.toUpperCase().includes('SPECIFICATION') || 
-                           filename.toUpperCase().includes('SPECS') || 
+                    console.log(`  → Categorized as OPTIQ`);
+                } else if (upperFilename.includes('SPECIFICATION') || 
+                           upperFilename.includes('SPECS') || 
                            fileType === 'XLS' || fileType === 'XLSX') {
                     newCategory = 'SPECIFICATIONS';
+                    console.log(`  → Categorized as SPECIFICATIONS`);
                 } else if (filename.toUpperCase().includes('TROUBLESHOOT') || 
                            filename.toUpperCase().includes('DIAGNOSE') || 
                            tags.some(t => t.toUpperCase().includes('TROUBLESHOOT'))) {
