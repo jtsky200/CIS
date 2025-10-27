@@ -5026,30 +5026,39 @@ exports.smartCategorize = functions.runWith({
                            filename.toUpperCase().includes('DIAGNOSE') || 
                            tags.some(t => t.toUpperCase().includes('TROUBLESHOOT'))) {
                     newCategory = 'TROUBLESHOOTING';
-                } else if (filename.toUpperCase().includes('SERVICE') || 
-                           filename.toUpperCase().includes('REPAIR') || 
-                           filename.toUpperCase().includes('MAINTENANCE')) {
+                } else if (upperFilename.includes('SERVICE') || 
+                           upperFilename.includes('REPAIR') || 
+                           upperFilename.includes('MAINTENANCE')) {
                     newCategory = 'SERVICE MANUAL';
-                } else if (filename.toUpperCase().includes('CHARGE') || 
-                           filename.toUpperCase().includes('BATTERY') || 
+                    console.log(`  → Categorized as SERVICE MANUAL`);
+                } else if (upperFilename.includes('CHARGE') || 
+                           upperFilename.includes('BATTERY') || 
                            tags.some(t => t.toUpperCase().includes('CHARGE'))) {
                     newCategory = 'CHARGING';
-                } else if (filename.toUpperCase().includes('FAQ')) {
+                    console.log(`  → Categorized as CHARGING`);
+                } else if (upperFilename.includes('FAQ')) {
                     newCategory = 'FAQ';
-                } else if (filename.toUpperCase().includes('GUIDE') || 
-                           filename.toUpperCase().includes('ACTIVATION') ||
-                           filename.toUpperCase().includes('HOW-TO')) {
+                    console.log(`  → Categorized as FAQ`);
+                } else if (upperFilename.includes('GUIDE') || 
+                           upperFilename.includes('ACTIVATION') ||
+                           upperFilename.includes('HOW-TO')) {
                     newCategory = 'GUIDE';
-                } else if (filename.toUpperCase().includes('WARRANTY') ||
-                           filename.toUpperCase().includes('GARANTIE')) {
+                    console.log(`  → Categorized as GUIDE`);
+                } else if (upperFilename.includes('WARRANTY') ||
+                           upperFilename.includes('GARANTIE')) {
                     newCategory = 'WARRANTY';
-                } else if (filename.toUpperCase().includes('WEBSITE') ||
-                           filename.toUpperCase().includes('DATA') ||
-                           filename.toUpperCase().includes('LINK')) {
+                    console.log(`  → Categorized as WARRANTY`);
+                } else if (upperFilename.includes('WEBSITE') ||
+                           upperFilename.includes('DATA') ||
+                           upperFilename.includes('LINK') ||
+                           upperFilename.includes('MOLO') ||
+                           upperFilename.includes('LIBRARY')) {
                     newCategory = 'RESOURCES';
-                } else if (filename.toUpperCase().includes('TROUBLESHOOT') ||
-                           filename.toUpperCase().includes('TROUBLESHOOTING')) {
+                    console.log(`  → Categorized as RESOURCES`);
+                } else if (upperFilename.includes('TROUBLESHOOT') ||
+                           upperFilename.includes('DIAGNOSE')) {
                     newCategory = 'TROUBLESHOOTING';
+                    console.log(`  → Categorized as TROUBLESHOOTING`);
                 }
                 
                 // Update if we found a more specific category
