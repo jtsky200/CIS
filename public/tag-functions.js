@@ -3,6 +3,131 @@
 
 const API_BASE = 'https://us-central1-cis-de.cloudfunctions.net';
 
+// Initialize tag autocomplete for upload forms
+async function initTagAutocomplete(inputId, containerId) {
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(containerId);
+    
+    if (!input || !container) return;
+    
+    let availableTags = [];
+    
+    // Load available tags
+    async function loadTags() {
+        const { tags, categories } = await loadAllTags();
+        availableTags = [
+            ...categories.map(([name]) => ({ name, type: 'category' })),
+            ...tags.map(([name]) => ({ name, type: 'tag' }))
+        ];
+    }
+    
+    await loadTags();
+    
+    let currentFocus = -1;
+    
+    input.addEventListener('input', async function(e) {
+        const val = this.value.trim();
+        
+        // Close any existing dropdown
+        closeTagDropdown();
+        
+        if (!val) return;
+        
+        // Filter tags
+        const filtered = availableTags.filter(tag => 
+            tag.name.toLowerCase().includes(val.toLowerCase())
+        );
+        
+        if (filtered.length === 0) return;
+        
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.id = 'tagAutocompleteList';
+        dropdown.className = 'tag-autocomplete-list';
+        dropdown.style.cssText = 'position: absolute; border: 1px solid #d1d5db; border-radius: 6px; max-height: 200px; overflow-y: auto; background: white; z-index: 1000; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
+        
+        filtered.forEach((tag, index) => {
+            const item = document.createElement('div');
+            item.style.cssText = `padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 8px;`;
+            item.innerHTML = `
+                <span style="padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; 
+                    background: ${tag.type === 'category' ? '#fef3c7' : '#dbeafe'}; 
+                    color: ${tag.type === 'category' ? '#92400e' : '#1e40af'};">
+                    ${tag.type === 'category' ? 'Cat' : 'Tag'}
+                </span>
+                <span>${tag.name}</span>
+            `;
+            
+            item.addEventListener('click', function() {
+                // Add tag to input value
+                const currentValue = input.value.trim();
+                const tags = currentValue ? currentValue.split(',').map(t => t.trim()) : [];
+                
+                if (!tags.includes(tag.name)) {
+                    tags.push(tag.name);
+                    input.value = tags.join(', ');
+                    updateTagChips(container, tags);
+                }
+                
+                closeTagDropdown();
+            });
+            
+            item.addEventListener('mouseenter', function() {
+                item.style.background = '#f9fafb';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                item.style.background = '';
+            });
+            
+            dropdown.appendChild(item);
+        });
+        
+        container.parentElement.style.position = 'relative';
+        container.appendChild(dropdown);
+    });
+    
+    function closeTagDropdown() {
+        const existing = document.getElementById('tagAutocompleteList');
+        if (existing) existing.remove();
+    }
+    
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !container.contains(e.target)) {
+            closeTagDropdown();
+        }
+    });
+}
+
+// Update tag chips display
+function updateTagChips(container, tags) {
+    if (!container) return;
+    
+    container.innerHTML = tags.map(tag => `
+        <span class="tag-chip" style="display: inline-flex; align-items: center; padding: 6px 12px; background: #dbeafe; color: #1e40af; border-radius: 6px; font-size: 14px; margin-right: 8px; margin-bottom: 8px;">
+            ${tag}
+            <button onclick="removeTag(this, '${tag}')" style="margin-left: 8px; background: none; border: none; color: #1e40af; cursor: pointer; font-size: 18px; line-height: 1;">×</button>
+        </span>
+    `).join('');
+}
+
+// Remove tag
+window.removeTag = function(button, tag) {
+    // Find all tag inputs and remove the tag
+    const input = document.querySelector('[data-tag-input="true"]');
+    if (input) {
+        const tags = input.value.split(',').map(t => t.trim()).filter(t => t !== tag);
+        input.value = tags.join(', ');
+        
+        // Update tag container
+        const container = document.getElementById('uploadTagsContainer');
+        if (container) updateTagChips(container, tags);
+    }
+    
+    button.parentElement.remove();
+};
+
 // Load all tags from both databases
 async function loadAllTags() {
     try {
