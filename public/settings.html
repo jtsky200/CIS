@@ -9,6 +9,7 @@
     <script src="kb-functions.js?v=1730000014"></script>
     <script src="td-functions.js?v=1730000010"></script>
     <script src="branding-functions.js?v=1730000010"></script>
+    <script src="tag-functions.js?v=1730000014"></script>
     <script src="js/i18n.js?v=1730000020"></script>
     <style>
         .settings-container {
@@ -572,6 +573,7 @@
             <button class="settings-tab active" data-tab="branding" onclick="switchSettingsTab('branding')" data-i18n="settings.tabs.branding">Branding</button>
             <button class="settings-tab" data-tab="knowledge" onclick="switchSettingsTab('knowledge')" data-i18n="settings.tabs.knowledgeDb">Wissensdatenbank</button>
             <button class="settings-tab" data-tab="technical" onclick="switchSettingsTab('technical')" data-i18n="settings.tabs.technicalDb">Technische Datenbank</button>
+            <button class="settings-tab" data-tab="tags" onclick="switchSettingsTab('tags')" data-i18n="settings.tabs.tags">Tag-Verwaltung</button>
             <button class="settings-tab" data-tab="general" onclick="switchSettingsTab('general')" data-i18n="settings.tabs.general">Allgemeine Einstellungen</button>
             </div>
             
@@ -971,6 +973,48 @@
                 <!-- Pagination -->
                 <div id="tdPagination">
                     <!-- Pagination will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tag Management Tab -->
+        <div id="tags" class="tab-content">
+            <div class="branding-section">
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Tag-Verwaltung</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Verwalten Sie Tags für Ihre Dokumente</p>
+                
+                <!-- Tag Creation -->
+                <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 15px;">Neuen Tag erstellen</h3>
+                    <div style="display: flex; gap: 12px; align-items: flex-end;">
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #2d2d2d;">Tag-Name</label>
+                            <input type="text" id="newTagName" placeholder="z.B. Owner Manual, Specification, FAQ" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #2d2d2d;">Kategorie</label>
+                            <select id="newTagCategory" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                                <option value="General">General</option>
+                                <option value="LYRIQ Owner Manuals">LYRIQ Owner Manuals</option>
+                                <option value="VISTIQ Owner Manuals">VISTIQ Owner Manuals</option>
+                                <option value="SPECIFICATIONS">SPECIFICATIONS</option>
+                                <option value="FAQ">FAQ</option>
+                                <option value="Troubleshooting">Troubleshooting</option>
+                            </select>
+                        </div>
+                        <button onclick="createNewTag()" class="btn-primary" style="padding: 12px 24px; height: fit-content;">Tag erstellen</button>
+                    </div>
+                </div>
+
+                <!-- Tags List -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d;">Bestehende Tags</h3>
+                        <button onclick="refreshTags()" class="btn-secondary" style="padding: 10px 20px;">Aktualisieren</button>
+                    </div>
+                    <div id="tagsList" style="display: grid; gap: 12px;">
+                        <!-- Tags will be loaded here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -1771,6 +1815,11 @@
                 console.log('🔧 Initializing technical database...');
                 if (typeof window.loadTechnicalDatabase === 'function') {
                     window.loadTechnicalDatabase();
+                }
+            } else if (tabName === 'tags') {
+                console.log('🏷️ Initializing tag management...');
+                if (typeof window.refreshTags === 'function') {
+                    setTimeout(() => window.refreshTags(), 100);
                 }
             }
             
@@ -2635,6 +2684,13 @@
                         window.loadTechnicalDatabase();
                     } else {
                         console.error('❌ loadTechnicalDatabase function not found');
+                    }
+                } else if (tabName === 'tags') {
+                    console.log('🏷️ Initializing tag management...');
+                    if (typeof window.refreshTags === 'function') {
+                        setTimeout(() => window.refreshTags(), 100);
+                    } else {
+                        console.error('❌ refreshTags function not found');
                     }
                 }
                 
