@@ -4761,7 +4761,10 @@ exports.storeImageAnalysis = functions.https.onRequest((req, res) => {
 exports.migrateDocumentsToStorage = migrateDocumentsToStorage;
 
 // Update Categories and Tags Function
-exports.updateCategoriesAndTags = functions.https.onRequest(async (req, res) => {
+exports.updateCategoriesAndTags = functions.runWith({
+    memory: '512MB',
+    timeoutSeconds: 60
+}).https.onRequest((req, res) => {
     cors(req, res, async () => {
         if (req.method !== 'POST') {
             return res.status(405).json({ error: 'Method not allowed' });
