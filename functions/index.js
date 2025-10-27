@@ -5075,6 +5075,8 @@ exports.smartCategorize = functions.runWith({
                     } catch (error) {
                         console.error(`❌ Error updating ${doc.id}:`, error);
                     }
+                } else {
+                    console.log(`⚠️  No specific category found for: ${filename}`);
                 }
             }
             
