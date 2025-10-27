@@ -468,6 +468,43 @@ window.deleteTag = async function(tagName, type, count) {
     }
 };
 
+// Cleanup tags function
+window.cleanupTags = async function() {
+    const confirmed = await window.showConfirmDialog(
+        'Möchten Sie alle Tags und Kategorien bereinigen? Dies entfernt ungültige Tags (Dateierweiterungen, etc.) und standardisiert die Kategorien.'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        window.showNotification('Bereinigung läuft...', 'info');
+        
+        // Call the cleanup function
+        const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/updateCategoriesAndTags', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            window.showNotification(
+                `Bereinigung abgeschlossen! ${result.updatedKB + result.updatedTD} Dokumente aktualisiert.`,
+                'success'
+            );
+            
+            // Refresh the tag list
+            setTimeout(() => refreshTags(), 1000);
+        } else {
+            throw new Error('Cleanup failed');
+        }
+        
+    } catch (error) {
+        console.error('Error cleaning up tags:', error);
+        window.showNotification('Fehler bei der Bereinigung. Bitte versuchen Sie es erneut.', 'error');
+    }
+};
+
 // Load tags when tab is opened
 document.addEventListener('DOMContentLoaded', function() {
     // Load tags when tags tab is clicked
