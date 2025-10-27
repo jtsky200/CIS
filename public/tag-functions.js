@@ -470,29 +470,42 @@ window.deleteTag = async function(tagName, type, count) {
 
 // Cleanup tags function
 window.cleanupTags = async function() {
-    console.log('🧹 Cleanup button clicked');
+    console.log('🧹 [Cleanup] Button clicked - function called');
     
+    // Check if showConfirmDialog exists
+    if (typeof window.showConfirmDialog !== 'function') {
+        console.error('❌ window.showConfirmDialog is not a function');
+        alert('Fehler: showConfirmDialog ist nicht verfügbar');
+        return;
+    }
+    
+    console.log('🧹 [Cleanup] Calling showConfirmDialog...');
     const confirmed = await window.showConfirmDialog(
         'Möchten Sie alle Tags und Kategorien bereinigen? Dies entfernt ungültige Tags (Dateierweiterungen, etc.) und standardisiert die Kategorien.'
     );
     
     if (!confirmed) {
-        console.log('Cleanup cancelled by user');
+        console.log('🧹 [Cleanup] Cancelled by user');
         return;
     }
     
     try {
-        console.log('Starting cleanup...');
+        console.log('🧹 [Cleanup] Starting cleanup process...');
         window.showNotification('Bereinigung läuft... Das kann 30-60 Sekunden dauern.', 'info');
         
+        console.log('🧹 [Cleanup] Calling Cloud Function...');
+        const url = 'https://us-central1-cis-de.cloudfunctions.net/updateCategoriesAndTags';
+        console.log('🧹 [Cleanup] URL:', url);
+        
         // Call the cleanup function via Cloud Function
-        const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/updateCategoriesAndTags', {
+        const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'cleanup' })
         });
         
-        console.log('Response status:', response.status);
+        console.log('🧹 [Cleanup] Response status:', response.status);
+        console.log('🧹 [Cleanup] Response OK:', response.ok);
         
         if (response.ok) {
             const result = await response.json();
