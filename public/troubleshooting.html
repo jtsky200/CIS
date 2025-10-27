@@ -304,18 +304,6 @@
                                         return ext || 'UNKNOWN';
                                     };
                                     
-                                    // Debug: Log first document to see its structure
-                                    if (pageDocs.length > 0) {
-                                        console.log('📄 Sample document structure:', {
-                                            id: pageDocs[0].id,
-                                            name: pageDocs[0].name || pageDocs[0].filename,
-                                            size: pageDocs[0].size,
-                                            fileSize: pageDocs[0].fileSize,
-                                            bytes: pageDocs[0].bytes,
-                                            allProps: Object.keys(pageDocs[0])
-                                        });
-                                    }
-                                    
                                     pageDocs.forEach((doc, idx) => {
                                         const fileType = getFileType(doc.name || doc.filename);
                                         html += '<div class="kb-item" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 0; margin-bottom: 12px; background: white; overflow: hidden;">';
