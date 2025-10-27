@@ -9,7 +9,7 @@
         allDocuments: [],
         filteredDocuments: [],
         currentPage: 1,
-        itemsPerPage: 20,
+        itemsPerPage: 10,
         searchTerm: '',
         filterCategory: '',
         sortBy: 'newest',
@@ -160,33 +160,54 @@
         const category = getCategoryFromFileType(fileType);
         
         return `
-            <div class="kb-item" data-doc-id="${doc.id}" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; background: white; transition: all 0.2s;">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-                    <!-- Left: Checkbox and filename -->
-                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
-                        <input type="checkbox" class="kb-checkbox" data-doc-id="${doc.id}" ${isSelected ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
-                        <div style="font-weight: 500; color: #1f2937; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${doc.filename || doc.name || 'Unbekannt'}</div>
-                    </div>
-                    
-                    <!-- Right: Metadata and actions -->
-                    <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
-                        <span style="font-size: 13px; color: #6b7280;">${formatDate(doc.uploadedAt)}</span>
-                        <span style="background: ${category.color}; color: ${category.textColor}; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600;">${fileType}</span>
-                        <span style="background: #f3f4f6; color: #374151; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500;">${formatSize(doc.size)}</span>
-                        
-                        <!-- Action buttons -->
-                        <button class="kb-action-btn kb-view-btn" data-doc-id="${doc.id}" title="Ansehen" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
-                            Ansehen
+        <div class="kb-item" data-doc-id="${doc.id}">
+            <div class="kb-item-header">
+                <div style="display: flex; align-items: center; flex: 1;">
+                    <input type="checkbox" class="kb-checkbox" data-doc-id="${doc.id}" ${isSelected ? 'checked' : ''}>
+                    <div class="kb-item-title">${doc.filename || doc.name || 'Unbekannt'}</div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="kb-item-date">${formatDate(doc.uploadedAt)}</div>
+                    <div class="kb-tools">
+                        <button class="kb-tool-btn primary" data-doc-id="${doc.id}" title="Vorschau">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14L20.5,19.79L19.79,20.5L14,14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                            </svg>
                         </button>
-                        <button class="kb-action-btn kb-download-btn" data-doc-id="${doc.id}" title="Herunterladen" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
-                            Download
+                        <button class="kb-tool-btn" data-doc-id="${doc.id}" title="Download">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04M14,13V17H10V13H7L12,8L17,13H14Z"/>
+                            </svg>
                         </button>
-                        <button class="kb-action-btn kb-delete-btn" data-doc-id="${doc.id}" title="Löschen" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
-                            Löschen
+                        <button class="kb-tool-btn danger" data-doc-id="${doc.id}" data-doc-name="${doc.filename || doc.name || 'Unbekannt'}" title="Löschen">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9V17H10V9H8M14,9V17H16V9H14Z"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
             </div>
+            <div class="kb-item-meta">
+                <span class="file-type-badge">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,11L9,14H11V18H13V14H15L12,11Z"/>
+                    </svg>
+                    ${fileType}
+                </span>
+                <span class="file-size-badge">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
+                        <path d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z"/>
+                    </svg>
+                    ${formatSize(doc.size)}
+                </span>
+                ${doc.category ? `<span class="kb-item-category">
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                        <path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/>
+                    </svg>
+                    ${doc.category}
+                </span>` : ''}
+            </div>
+        </div>
         `;
     }
     
@@ -215,14 +236,28 @@
         let paginationHtml = '';
         if (totalPages > 1) {
             paginationHtml = `
-                <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; padding: 16px;">
-                    <button onclick="window.goToKbPage(1)" ${currentPage === 1 ? 'disabled' : ''} style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 14px;">Erste</button>
-                    <button onclick="window.goToKbPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 14px;">Zurück</button>
-                    <span style="padding: 8px 16px; font-size: 14px; color: #374151;">Seite ${currentPage} von ${totalPages}</span>
-                    <button onclick="window.goToKbPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 14px;">Weiter</button>
-                    <button onclick="window.goToKbPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 14px;">Letzte</button>
-                </div>
-            `;
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px;">
+                <button onclick="window.goToKbPage(1)" ${currentPage === 1 ? 'disabled' : ''} 
+                    style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    ⏮ Erste
+                </button>
+                <button onclick="window.goToKbPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                    style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    ← Zurück
+                </button>
+                <span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                    Seite ${currentPage} von ${totalPages}
+                </span>
+                <button onclick="window.goToKbPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                    style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    Weiter →
+                </button>
+                <button onclick="window.goToKbPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} 
+                    style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
+                    Letzte ⏭
+                </button>
+            </div>
+        `;
         }
         
         const kbList = document.getElementById('kbList');
@@ -249,22 +284,29 @@
     function attachDocumentEventListeners() {
         // Checkboxes
         document.querySelectorAll('.kb-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', handleCheckboxChange);
+            if (!checkbox.dataset.listenerAttached) {
+                checkbox.addEventListener('change', handleCheckboxChange);
+                checkbox.dataset.listenerAttached = 'true';
+            }
         });
         
-        // View buttons
-        document.querySelectorAll('.kb-view-btn').forEach(btn => {
-            btn.addEventListener('click', () => handleViewDocument(btn.dataset.docId));
-        });
-        
-        // Download buttons
-        document.querySelectorAll('.kb-download-btn').forEach(btn => {
-            btn.addEventListener('click', () => handleDownloadDocument(btn.dataset.docId));
-        });
-        
-        // Delete buttons
-        document.querySelectorAll('.kb-delete-btn').forEach(btn => {
-            btn.addEventListener('click', () => handleDeleteDocument(btn.dataset.docId));
+        // Tool buttons (view, download, delete)
+        document.querySelectorAll('.kb-tool-btn').forEach(btn => {
+            if (!btn.dataset.listenerAttached) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const docId = btn.dataset.docId;
+                    
+                    if (btn.classList.contains('primary')) {
+                        handleViewDocument(docId);
+                    } else if (btn.classList.contains('danger')) {
+                        handleDeleteDocument(docId);
+                    } else {
+                        handleDownloadDocument(docId);
+                    }
+                });
+                btn.dataset.listenerAttached = 'true';
+            }
         });
     }
     
@@ -381,29 +423,57 @@
         const doc = window.kbState.allDocuments.find(d => d.id === docId);
         if (!doc) return;
         
-        if (!confirm(`Möchten Sie "${doc.filename || doc.name}" wirklich löschen?`)) {
-            return;
-        }
-        
-        try {
-            const response = await fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: docId })
-            });
+        if (typeof window.showConfirmDialog === 'function') {
+            window.showConfirmDialog(`Möchten Sie "${doc.filename || doc.name}" wirklich löschen?`,
+                async () => {
+                    try {
+                        const response = await fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: docId })
+                        });
+                        
+                        if (response.ok) {
+                            // Remove from local state
+                            window.kbState.allDocuments = window.kbState.allDocuments.filter(d => d.id !== docId);
+                            applyFiltersAndSort();
+                            renderDocuments();
+                            showNotification('Dokument erfolgreich gelöscht.', 'success');
+                        } else {
+                            showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting document:', error);
+                        showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                    }
+                }
+            );
+        } else {
+            // Fallback to old confirm if showConfirmDialog not available
+            if (!confirm(`Möchten Sie "${doc.filename || doc.name}" wirklich löschen?`)) {
+                return;
+            }
             
-            if (response.ok) {
-                // Remove from local state
-                window.kbState.allDocuments = window.kbState.allDocuments.filter(d => d.id !== docId);
-                applyFiltersAndSort();
-                renderDocuments();
-                showNotification('Dokument erfolgreich gelöscht.', 'success');
-            } else {
+            try {
+                const response = await fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: docId })
+                });
+                
+                if (response.ok) {
+                    // Remove from local state
+                    window.kbState.allDocuments = window.kbState.allDocuments.filter(d => d.id !== docId);
+                    applyFiltersAndSort();
+                    renderDocuments();
+                    showNotification('Dokument erfolgreich gelöscht.', 'success');
+                } else {
+                    showNotification('Fehler beim Löschen des Dokuments.', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting document:', error);
                 showNotification('Fehler beim Löschen des Dokuments.', 'error');
             }
-        } catch (error) {
-            console.error('Error deleting document:', error);
-            showNotification('Fehler beim Löschen des Dokuments.', 'error');
         }
     }
     
@@ -411,33 +481,65 @@
         const count = window.kbState.selectedDocs.size;
         if (count === 0) return;
         
-        if (!confirm(`Möchten Sie ${count} Dokument(e) wirklich löschen?`)) {
-            return;
-        }
-        
-        try {
-            const deletePromises = Array.from(window.kbState.selectedDocs).map(docId =>
-                fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: docId })
-                })
+        if (typeof window.showConfirmDialog === 'function') {
+            window.showConfirmDialog(`Möchten Sie ${count} Dokument(e) wirklich löschen?`,
+                async () => {
+                    try {
+                        const deletePromises = Array.from(window.kbState.selectedDocs).map(docId =>
+                            fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: docId })
+                            })
+                        );
+                        
+                        await Promise.all(deletePromises);
+                        
+                        // Remove from local state
+                        window.kbState.allDocuments = window.kbState.allDocuments.filter(
+                            d => !window.kbState.selectedDocs.has(d.id)
+                        );
+                        window.kbState.selectedDocs.clear();
+                        applyFiltersAndSort();
+                        renderDocuments();
+                        updateSelectedCount();
+                        showNotification(`${count} Dokument(e) erfolgreich gelöscht.`, 'success');
+                    } catch (error) {
+                        console.error('Error bulk deleting documents:', error);
+                        showNotification('Fehler beim Löschen der Dokumente.', 'error');
+                    }
+                }
             );
+        } else {
+            // Fallback to old confirm
+            if (!confirm(`Möchten Sie ${count} Dokument(e) wirklich löschen?`)) {
+                return;
+            }
             
-            await Promise.all(deletePromises);
-            
-            // Remove from local state
-            window.kbState.allDocuments = window.kbState.allDocuments.filter(
-                d => !window.kbState.selectedDocs.has(d.id)
-            );
-            window.kbState.selectedDocs.clear();
-            applyFiltersAndSort();
-            renderDocuments();
-            updateSelectedCount();
-            showNotification(`${count} Dokument(e) erfolgreich gelöscht.`, 'success');
-        } catch (error) {
-            console.error('Error bulk deleting documents:', error);
-            showNotification('Fehler beim Löschen der Dokumente.', 'error');
+            try {
+                const deletePromises = Array.from(window.kbState.selectedDocs).map(docId =>
+                    fetch(`https://us-central1-cis-de.cloudfunctions.net/deleteDocument`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: docId })
+                    })
+                );
+                
+                await Promise.all(deletePromises);
+                
+                // Remove from local state
+                window.kbState.allDocuments = window.kbState.allDocuments.filter(
+                    d => !window.kbState.selectedDocs.has(d.id)
+                );
+                window.kbState.selectedDocs.clear();
+                applyFiltersAndSort();
+                renderDocuments();
+                updateSelectedCount();
+                showNotification(`${count} Dokument(e) erfolgreich gelöscht.`, 'success');
+            } catch (error) {
+                console.error('Error bulk deleting documents:', error);
+                showNotification('Fehler beim Löschen der Dokumente.', 'error');
+            }
         }
     }
     
