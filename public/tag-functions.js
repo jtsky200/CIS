@@ -479,29 +479,31 @@ window.cleanupTags = async function() {
     try {
         window.showNotification('Bereinigung läuft...', 'info');
         
-        // Call the cleanup function
+        // Call the cleanup function via Cloud Function
         const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/updateCategoriesAndTags', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
+            body: JSON.stringify({ action: 'cleanup' })
         });
         
         if (response.ok) {
             const result = await response.json();
             window.showNotification(
-                `Bereinigung abgeschlossen! ${result.updatedKB + result.updatedTD} Dokumente aktualisiert.`,
+                `Bereinigung abgeschlossen! KB: ${result.updatedKB} Dokumente, TD: ${result.updatedTD} Dokumente aktualisiert.`,
                 'success'
             );
             
             // Refresh the tag list
             setTimeout(() => refreshTags(), 1000);
         } else {
-            throw new Error('Cleanup failed');
+            const errorText = await response.text();
+            console.error('Cleanup failed:', errorText);
+            window.showNotification('Bereinigung fehlgeschlagen. Bitte Seite neu laden und erneut versuchen.', 'error');
         }
         
     } catch (error) {
         console.error('Error cleaning up tags:', error);
-        window.showNotification('Fehler bei der Bereinigung. Bitte versuchen Sie es erneut.', 'error');
+        window.showNotification('Fehler bei der Bereinigung: ' + error.message, 'error');
     }
 };
 
