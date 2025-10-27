@@ -980,39 +980,50 @@
         <!-- Tag Management Tab -->
         <div id="tags" class="tab-content">
             <div class="branding-section">
-                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 20px;">Tag-Verwaltung</h2>
-                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Verwalten Sie Tags für Ihre Dokumente</p>
+                <h2 style="font-weight: 500; color: #2d2d2d; margin-bottom: 8px;">Tag-Verwaltung</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; font-weight: 500;">Verwalten Sie Tags für Ihre Dokumente - Änderungen werden auf alle Dokumente angewendet</p>
                 
                 <!-- Tag Creation -->
-                <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d; margin-bottom: 15px;">Neuen Tag erstellen</h3>
-                    <div style="display: flex; gap: 12px; align-items: flex-end;">
-                        <div style="flex: 1;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #2d2d2d;">Tag-Name</label>
-                            <input type="text" id="newTagName" placeholder="z.B. Owner Manual, Specification, FAQ" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                <div style="background: #f9fafb; padding: 24px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e5e7eb;">
+                    <h3 style="font-size: 16px; font-weight: 600; color: #2d2d2d; margin-bottom: 20px;">Neuen Tag erstellen</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end;">
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Tag-Name</label>
+                            <input type="text" id="newTagName" placeholder="z.B. LYRIQ, Owner Manual, FAQ" 
+                                style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; font-weight: 500; transition: all 0.2s;"
+                                onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                                onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                         </div>
-                        <div style="flex: 1;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #2d2d2d;">Kategorie</label>
-                            <select id="newTagCategory" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Kategorie</label>
+                            <select id="newTagCategory" 
+                                style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; font-weight: 500; background: white; cursor: pointer;">
                                 <option value="General">General</option>
                                 <option value="LYRIQ Owner Manuals">LYRIQ Owner Manuals</option>
                                 <option value="VISTIQ Owner Manuals">VISTIQ Owner Manuals</option>
+                                <option value="OPTIQ Owner Manuals">OPTIQ Owner Manuals</option>
                                 <option value="SPECIFICATIONS">SPECIFICATIONS</option>
                                 <option value="FAQ">FAQ</option>
                                 <option value="Troubleshooting">Troubleshooting</option>
                             </select>
                         </div>
-                        <button onclick="createNewTag()" class="btn-primary" style="padding: 12px 24px; height: fit-content;">Tag erstellen</button>
+                        <button onclick="createNewTag()" class="btn-primary" 
+                            style="padding: 10px 24px; font-size: 15px; font-weight: 600; white-space: nowrap; height: 44px;">
+                            + Tag erstellen
+                        </button>
                     </div>
                 </div>
 
                 <!-- Tags List -->
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="font-size: 18px; font-weight: 500; color: #2d2d2d;">Bestehende Tags</h3>
-                        <button onclick="refreshTags()" class="btn-secondary" style="padding: 10px 20px;">Aktualisieren</button>
+                        <h3 style="font-size: 16px; font-weight: 600; color: #2d2d2d;">Bestehende Tags</h3>
+                        <button onclick="refreshTags()" class="btn-secondary" 
+                            style="padding: 8px 16px; font-size: 14px; height: 36px;">
+                            🔄 Aktualisieren
+                        </button>
                     </div>
-                    <div id="tagsList" style="display: grid; gap: 12px;">
+                    <div id="tagsList" style="min-height: 100px;">
                         <!-- Tags will be loaded here -->
                     </div>
                 </div>

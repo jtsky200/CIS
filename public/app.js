@@ -4647,45 +4647,113 @@ window.initAutocomplete = initAutocomplete;
 
 // Global Custom Modal Dialogs - NO MORE BROWSER WARNINGS!
 window.showConfirmDialog = function(message, onConfirm, onCancel) {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
-    
-    const modal = document.createElement('div');
-    modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
-    
-    modal.innerHTML = `
-        <div style="margin-bottom: 24px;">
-            <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">Bestätigung</div>
-            <div style="color: #6b7280; font-size: 15px;">${message}</div>
-        </div>
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button id="customCancelBtn" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Abbrechen</button>
-            <button id="customConfirmBtn" style="padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Bestätigen</button>
-        </div>
-    `;
-    
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    
-    const closeModal = () => {
-        document.body.removeChild(overlay);
-    };
-    
-    document.getElementById('customCancelBtn').addEventListener('click', () => {
-        closeModal();
-        if (onCancel) onCancel();
-    });
-    
-    document.getElementById('customConfirmBtn').addEventListener('click', () => {
-        closeModal();
-        if (onConfirm) onConfirm();
-    });
-    
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
+        
+        modal.innerHTML = `
+            <div style="margin-bottom: 24px;">
+                <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">Bestätigung</div>
+                <div style="color: #6b7280; font-size: 15px;">${message}</div>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button id="customCancelBtn" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Abbrechen</button>
+                <button id="customConfirmBtn" style="padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Bestätigen</button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        const closeModal = () => {
+            document.body.removeChild(overlay);
+        };
+        
+        document.getElementById('customCancelBtn').addEventListener('click', () => {
             closeModal();
+            resolve(false);
             if (onCancel) onCancel();
-        }
+        });
+        
+        document.getElementById('customConfirmBtn').addEventListener('click', () => {
+            closeModal();
+            resolve(true);
+            if (onConfirm) onConfirm();
+        });
+        
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal();
+                resolve(false);
+                if (onCancel) onCancel();
+            }
+        });
+    });
+};
+
+window.showPromptDialog = function(title, message, defaultValue = '') {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
+        
+        modal.innerHTML = `
+            <div style="margin-bottom: 24px;">
+                <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">${title}</div>
+                <div style="color: #6b7280; font-size: 15px; margin-bottom: 16px;">${message}</div>
+                <input type="text" id="promptInput" value="${defaultValue}" 
+                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; font-weight: 500;"
+                    autofocus>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button id="promptCancelBtn" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Abbrechen</button>
+                <button id="promptConfirmBtn" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">OK</button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        const input = document.getElementById('promptInput');
+        input.select();
+        
+        const closeModal = () => {
+            document.body.removeChild(overlay);
+        };
+        
+        const submitValue = () => {
+            const value = input.value.trim();
+            closeModal();
+            resolve(value);
+        };
+        
+        document.getElementById('promptCancelBtn').addEventListener('click', () => {
+            closeModal();
+            resolve(null);
+        });
+        
+        document.getElementById('promptConfirmBtn').addEventListener('click', submitValue);
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                submitValue();
+            } else if (e.key === 'Escape') {
+                closeModal();
+                resolve(null);
+            }
+        });
+        
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal();
+                resolve(null);
+            }
+        });
     });
 };
 

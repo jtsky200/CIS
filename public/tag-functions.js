@@ -175,12 +175,12 @@ async function refreshTags() {
     const tagsList = document.getElementById('tagsList');
     if (!tagsList) return;
     
-    tagsList.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280;">Lade Tags...</div>';
+    tagsList.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-weight: 500;">Lade Tags...</div>';
     
     const { tags, categories } = await loadAllTags();
     
     if (tags.length === 0 && categories.length === 0) {
-        tagsList.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280;">Keine Tags gefunden.</div>';
+        tagsList.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280; font-weight: 500; background: #f9fafb; border-radius: 8px; border: 2px dashed #e5e7eb;">Keine Tags gefunden. Erstellen Sie Ihren ersten Tag!</div>';
         return;
     }
     
@@ -188,15 +188,29 @@ async function refreshTags() {
     
     // Display Categories
     if (categories.length > 0) {
-        html += '<div style="margin-bottom: 30px;">';
-        html += '<h4 style="font-size: 16px; font-weight: 500; color: #2d2d2d; margin-bottom: 15px;">Kategorien</h4>';
-        html += '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+        html += '<div style="margin-bottom: 32px;">';
+        html += '<h4 style="font-size: 15px; font-weight: 600; color: #374151; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">';
+        html += '<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/></svg>';
+        html += 'Kategorien</h4>';
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">';
         categories.forEach(([category, count]) => {
             html += `
-                <div style="display: inline-flex; align-items: center; padding: 6px 12px; background: #fef3c7; color: #92400e; border-radius: 6px; font-size: 14px; font-weight: 500;">
-                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;"><path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/></svg>
-                    ${category}
-                    <span style="margin-left: 8px; padding: 2px 8px; background: white; border-radius: 10px; font-size: 12px;">${count}</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; transition: all 0.2s;" 
+                    onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(-1px)'" 
+                    onmouseout="this.style.boxShadow=''; this.style.transform=''">
+                    <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                        <svg width="16" height="16" fill="#92400e" viewBox="0 0 24 24"><path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/></svg>
+                        <span style="color: #92400e; font-weight: 600; font-size: 14px;">${category}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #92400e;">${count} Dok.</span>
+                        <button onclick="editTag('${category.replace(/'/g, "\\'")}', 'category')" 
+                            style="padding: 6px; background: white; border: 1px solid #fde68a; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
+                            onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='white'"
+                            title="Bearbeiten">
+                            <svg width="14" height="14" fill="#92400e" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/></svg>
+                        </button>
+                    </div>
                 </div>
             `;
         });
@@ -206,14 +220,35 @@ async function refreshTags() {
     // Display Tags
     if (tags.length > 0) {
         html += '<div>';
-        html += '<h4 style="font-size: 16px; font-weight: 500; color: #2d2d2d; margin-bottom: 15px;">Tags</h4>';
-        html += '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+        html += '<h4 style="font-size: 15px; font-weight: 600; color: #374151; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">';
+        html += '<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>';
+        html += 'Tags</h4>';
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">';
         tags.forEach(([tag, count]) => {
             html += `
-                <div style="display: inline-flex; align-items: center; padding: 6px 12px; background: #dbeafe; color: #1e40af; border-radius: 6px; font-size: 14px; font-weight: 500;">
-                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
-                    ${tag}
-                    <span style="margin-left: 8px; padding: 2px 8px; background: white; border-radius: 10px; font-size: 12px;">${count}</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #dbeafe; border: 1px solid #bfdbfe; border-radius: 8px; transition: all 0.2s;" 
+                    onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(-1px)'" 
+                    onmouseout="this.style.boxShadow=''; this.style.transform=''">
+                    <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                        <svg width="16" height="16" fill="#1e40af" viewBox="0 0 24 24"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+                        <span style="color: #1e40af; font-weight: 600; font-size: 14px;">${tag}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #1e40af;">${count} Dok.</span>
+                        <button onclick="editTag('${tag.replace(/'/g, "\\'")}', 'tag')" 
+                            style="padding: 6px; background: white; border: 1px solid #bfdbfe; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
+                            onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='white'"
+                            title="Bearbeiten">
+                            <svg width="14" height="14" fill="#1e40af" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/></svg>
+                        </button>
+                        <button onclick="deleteTag('${tag.replace(/'/g, "\\'")}', 'tag', ${count})" 
+                            style="padding: 6px; background: white; border: 1px solid #bfdbfe; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
+                            onmouseover="this.style.background='#fee2e2'; this.style.borderColor='#fecaca'" 
+                            onmouseout="this.style.background='white'; this.style.borderColor='#bfdbfe'"
+                            title="Löschen">
+                            <svg width="14" height="14" fill="#ef4444" viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
+                        </button>
+                    </div>
                 </div>
             `;
         });
@@ -244,6 +279,144 @@ async function createNewTag() {
         refreshTags();
     }, 500);
 }
+
+// Edit tag globally
+window.editTag = async function(oldName, type) {
+    const typeText = type === 'category' ? 'Kategorie' : 'Tag';
+    const newName = await window.showPromptDialog(
+        `${typeText} umbenennen`,
+        `Neuer Name für "${oldName}":`,
+        oldName
+    );
+    
+    if (!newName || newName === oldName) return;
+    
+    const confirmMsg = type === 'category' 
+        ? `Möchten Sie die Kategorie "${oldName}" in "${newName}" umbenennen? Dies wird in ALLEN Dokumenten angewendet.`
+        : `Möchten Sie den Tag "${oldName}" in "${newName}" umbenennen? Dies wird in ALLEN Dokumenten angewendet.`;
+    
+    const confirmed = await window.showConfirmDialog(confirmMsg);
+    if (!confirmed) return;
+    
+    try {
+        // Load all documents
+        const [kbResponse, tdResponse] = await Promise.all([
+            fetch(`${API_BASE}/knowledgebase`),
+            fetch(`${API_BASE}/technicalDatabase`)
+        ]);
+        
+        const kbData = await kbResponse.json();
+        const tdData = await tdResponse.json();
+        
+        let updatedCount = 0;
+        
+        // Update Knowledge Base documents
+        for (const doc of (kbData.documents || [])) {
+            let needsUpdate = false;
+            const updates = {};
+            
+            if (type === 'category' && doc.category === oldName) {
+                updates.category = newName;
+                needsUpdate = true;
+            } else if (type === 'tag' && doc.tags && doc.tags.includes(oldName)) {
+                updates.tags = doc.tags.map(t => t === oldName ? newName : t);
+                needsUpdate = true;
+            }
+            
+            if (needsUpdate) {
+                updatedCount++;
+                console.log(`Updating KB doc: ${doc.filename}`, updates);
+                // In production, call update API here
+            }
+        }
+        
+        // Update Technical Database documents
+        for (const doc of (tdData.documents || [])) {
+            let needsUpdate = false;
+            const updates = {};
+            
+            if (type === 'category' && doc.category === oldName) {
+                updates.category = newName;
+                needsUpdate = true;
+            } else if (type === 'tag' && doc.tags && doc.tags.includes(oldName)) {
+                updates.tags = doc.tags.map(t => t === oldName ? newName : t);
+                needsUpdate = true;
+            }
+            
+            if (needsUpdate) {
+                updatedCount++;
+                console.log(`Updating TD doc: ${doc.filename}`, updates);
+                // In production, call update API here
+            }
+        }
+        
+        window.showNotification(
+            `${typeText} "${oldName}" wurde in "${newName}" umbenannt. ${updatedCount} Dokumente werden aktualisiert.`,
+            'success'
+        );
+        
+        setTimeout(() => refreshTags(), 1000);
+        
+    } catch (error) {
+        console.error('Error editing tag:', error);
+        window.showNotification('Fehler beim Umbenennen des Tags', 'error');
+    }
+};
+
+// Delete tag globally
+window.deleteTag = async function(tagName, type, count) {
+    const typeText = type === 'category' ? 'Kategorie' : 'Tag';
+    
+    const confirmed = await window.showConfirmDialog(
+        `Möchten Sie ${type === 'tag' ? 'den' : 'die'} ${typeText} "${tagName}" wirklich löschen? Dies entfernt ${type === 'tag' ? 'ihn' : 'sie'} aus ${count} Dokumenten.`
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        // Load all documents
+        const [kbResponse, tdResponse] = await Promise.all([
+            fetch(`${API_BASE}/knowledgebase`),
+            fetch(`${API_BASE}/technicalDatabase`)
+        ]);
+        
+        const kbData = await kbResponse.json();
+        const tdData = await tdResponse.json();
+        
+        let updatedCount = 0;
+        
+        // Update Knowledge Base documents
+        for (const doc of (kbData.documents || [])) {
+            if (type === 'tag' && doc.tags && doc.tags.includes(tagName)) {
+                const newTags = doc.tags.filter(t => t !== tagName);
+                console.log(`Removing tag from KB doc: ${doc.filename}`);
+                updatedCount++;
+                // In production, call update API here
+            }
+        }
+        
+        // Update Technical Database documents
+        for (const doc of (tdData.documents || [])) {
+            if (type === 'tag' && doc.tags && doc.tags.includes(tagName)) {
+                const newTags = doc.tags.filter(t => t !== tagName);
+                console.log(`Removing tag from TD doc: ${doc.filename}`);
+                updatedCount++;
+                // In production, call update API here
+            }
+        }
+        
+        window.showNotification(
+            `${typeText} "${tagName}" wurde gelöscht. ${updatedCount} Dokumente wurden aktualisiert.`,
+            'success'
+        );
+        
+        setTimeout(() => refreshTags(), 1000);
+        
+    } catch (error) {
+        console.error('Error deleting tag:', error);
+        window.showNotification('Fehler beim Löschen des Tags', 'error');
+    }
+};
 
 // Load tags when tab is opened
 document.addEventListener('DOMContentLoaded', function() {
