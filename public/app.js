@@ -1769,7 +1769,15 @@ function displayTechnicalDatabase(documents) {
     
     // Apply pagination if on troubleshooting page
     let documentsToDisplay = documents;
-    if (isTroubleshootingPage && window.techPaginationState) {
+    if (isTroubleshootingPage) {
+        // Ensure state exists
+        if (!window.techPaginationState) {
+            window.techPaginationState = {
+                currentPage: 1,
+                itemsPerPage: 10
+            };
+        }
+        
         const state = window.techPaginationState;
         const startIdx = (state.currentPage - 1) * state.itemsPerPage;
         const endIdx = startIdx + state.itemsPerPage;
