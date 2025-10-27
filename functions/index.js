@@ -5025,6 +5025,11 @@ exports.smartCategorize = functions.runWith({
                            filename.toUpperCase().includes('BATTERY') || 
                            tags.some(t => t.toUpperCase().includes('CHARGE'))) {
                     newCategory = 'CHARGING';
+                } else if (filename.toUpperCase().includes('FAQ')) {
+                    newCategory = 'FAQ';
+                } else if (filename.toUpperCase().includes('GUIDE') || 
+                           filename.toUpperCase().includes('ACTIVATION')) {
+                    newCategory = 'GENERAL';  // Keep guides in GENERAL for now
                 }
                 
                 // Update if we found a more specific category
