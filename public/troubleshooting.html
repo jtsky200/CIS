@@ -273,14 +273,22 @@
                                     displayTechnicalDatabase(docs);
                                 } else {
                                     console.log('⚠️ Using inline rendering');
-                                    let html = '<div style="padding: 20px;"><h3>Technische Dokumente (' + docs.length + ')</h3>';
-                                    pageDocs.forEach(doc => {
-                                        html += '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 8px 0;">';
-                                        html += '<strong>' + (doc.name || doc.filename || 'Unbekannt') + '</strong>';
-                                        html += '<div><small style="color: #6b7280;">Kategorie: ' + (doc.category || 'N/A') + '</small></div>';
+                                    let html = '';
+                                    pageDocs.forEach((doc, idx) => {
+                                        html += '<div class="kb-item" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: white;">';
+                                        html += '<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">';
+                                        html += '<div style="flex: 1; min-width: 200px;">';
+                                        html += '<div style="font-weight: 600; color: #111827; font-size: 15px; margin-bottom: 4px;">' + (doc.name || doc.filename || 'Unbekannt') + '</div>';
+                                        html += '<div style="color: #6b7280; font-size: 13px;">Kategorie: ' + (doc.category || 'N/A') + '</div>';
+                                        html += '</div>';
+                                        html += '<div style="display: flex; gap: 8px; align-items: center;">';
+                                        html += '<button class="kb-tool-btn primary" data-doc-id="' + doc.id + '" onclick="window.viewTechDoc(\'' + doc.id + '\')" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">Vorschau</button>';
+                                        html += '<button class="kb-tool-btn" data-doc-id="' + doc.id + '" onclick="window.downloadTechDoc(\'' + doc.id + '\')" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">Download</button>';
+                                        html += '<button class="kb-tool-btn danger" data-doc-id="' + doc.id + '" onclick="window.deleteTechDoc(\'' + doc.id + '\', \'' + (doc.name || doc.filename || 'Unbekannt').replace(/\'/g, '\\\'') + '\')" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">Löschen</button>';
+                                        html += '</div>';
+                                        html += '</div>';
                                         html += '</div>';
                                     });
-                                    html += '</div>';
                                     techList.innerHTML = html;
                                     
                                     // Render pagination
@@ -323,14 +331,22 @@
                 
                 const techList = document.getElementById('techList');
                 if (techList) {
-                    let html = '<div style="padding: 20px;"><h3>Technische Dokumente (' + window.techAllDocuments.length + ')</h3>';
-                    pageDocs.forEach(doc => {
-                        html += '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 8px 0;">';
-                        html += '<strong>' + (doc.name || doc.filename || 'Unbekannt') + '</strong>';
-                        html += '<div><small style="color: #6b7280;">Kategorie: ' + (doc.category || 'N/A') + '</small></div>';
+                    let html = '';
+                    pageDocs.forEach((doc, idx) => {
+                        html += '<div class="kb-item" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: white;">';
+                        html += '<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">';
+                        html += '<div style="flex: 1; min-width: 200px;">';
+                        html += '<div style="font-weight: 600; color: #111827; font-size: 15px; margin-bottom: 4px;">' + (doc.name || doc.filename || 'Unbekannt') + '</div>';
+                        html += '<div style="color: #6b7280; font-size: 13px;">Kategorie: ' + (doc.category || 'N/A') + '</div>';
+                        html += '</div>';
+                        html += '<div style="display: flex; gap: 8px; align-items: center;">';
+                        html += '<button class="kb-tool-btn primary" data-doc-id="' + doc.id + '" onclick="window.viewTechDoc(\'' + doc.id + '\')" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">Vorschau</button>';
+                        html += '<button class="kb-tool-btn" data-doc-id="' + doc.id + '" onclick="window.downloadTechDoc(\'' + doc.id + '\')" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">Download</button>';
+                        html += '<button class="kb-tool-btn danger" data-doc-id="' + doc.id + '" onclick="window.deleteTechDoc(\'' + doc.id + '\', \'' + (doc.name || doc.filename || 'Unbekannt').replace(/\'/g, '\\\'') + '\')" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">Löschen</button>';
+                        html += '</div>';
+                        html += '</div>';
                         html += '</div>';
                     });
-                    html += '</div>';
                     techList.innerHTML = html;
                 }
                 
@@ -340,6 +356,70 @@
                     paginationContainer.style.display = 'flex';
                     paginationContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 0; width: 100%;"><button onclick="window.goToTechnicalPage(' + (state.currentPage - 1) + ')" ' + (state.currentPage === 1 ? 'disabled' : '') + ' style="padding: 10px 16px; background: ' + (state.currentPage === 1 ? '#f3f4f6' : '#ffffff') + '; color: ' + (state.currentPage === 1 ? '#9ca3af' : '#374151') + '; border: 1px solid #e5e7eb; border-radius: 8px; cursor: ' + (state.currentPage === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px; transition: all 0.2s;">Zurück</button><span style="padding: 10px 16px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; font-weight: 500; font-size: 14px; color: #374151;">Seite ' + state.currentPage + ' von ' + totalPages + '</span><button onclick="window.goToTechnicalPage(' + (state.currentPage + 1) + ')" ' + (state.currentPage === totalPages ? 'disabled' : '') + ' style="padding: 10px 16px; background: ' + (state.currentPage === totalPages ? '#f3f4f6' : '#ffffff') + '; color: ' + (state.currentPage === totalPages ? '#9ca3af' : '#374151') + '; border: 1px solid #e5e7eb; border-radius: 8px; cursor: ' + (state.currentPage === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 500; font-size: 14px; transition: all 0.2s;">Weiter</button></div>';
                 }
+            };
+            
+            // View document function
+            window.viewTechDoc = function(docId) {
+                const url = `https://us-central1-cis-de.cloudfunctions.net/viewDocument?docId=${docId}&type=technical`;
+                window.open(url, '_blank');
+            };
+            
+            // Download document function
+            window.downloadTechDoc = function(docId) {
+                const doc = window.techAllDocuments.find(d => d.id === docId);
+                if (!doc) return;
+                
+                const url = `https://us-central1-cis-de.cloudfunctions.net/downloadDocument?id=${docId}&type=technical`;
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = doc.filename || doc.name || 'document';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(downloadUrl);
+                        document.body.removeChild(a);
+                    })
+                    .catch(error => console.error('Download error:', error));
+            };
+            
+            // Delete document function
+            window.deleteTechDoc = function(docId, docName) {
+                if (!confirm(`Möchten Sie "${docName}" wirklich löschen?`)) return;
+                
+                fetch('https://us-central1-cis-de.cloudfunctions.net/deleteDocument', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: docId, type: 'technical' })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove from local array
+                        window.techAllDocuments = window.techAllDocuments.filter(d => d.id !== docId);
+                        window.technicalDatabase = window.technicalDatabase.filter(d => d.id !== docId);
+                        
+                        // Update stats
+                        document.getElementById('techDocCount').textContent = window.techAllDocuments.length;
+                        const size = window.techAllDocuments.reduce((sum, doc) => sum + (doc.size || 0), 0);
+                        document.getElementById('techTotalSize').textContent = (size / (1024 * 1024)).toFixed(2) + ' MB';
+                        
+                        // Refresh display
+                        const state = window.techPaginationState;
+                        const totalPages = Math.ceil(window.techAllDocuments.length / state.itemsPerPage);
+                        if (state.currentPage > totalPages && totalPages > 0) {
+                            state.currentPage = totalPages;
+                        }
+                        window.goToTechnicalPage(state.currentPage);
+                    } else {
+                        alert('Fehler beim Löschen des Dokuments.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Delete error:', error);
+                    alert('Fehler beim Löschen des Dokuments.');
+                });
             };
             </script>
         </div>
