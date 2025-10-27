@@ -13,6 +13,7 @@
       "branding": "Image de marque",
       "knowledgeDb": "Base de connaissances",
       "technicalDb": "Base de données technique",
+      "tags": "Gestion des tags",
       "general": "Paramètres généraux"
     },
     "branding": {

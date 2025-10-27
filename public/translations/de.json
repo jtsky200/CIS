@@ -13,6 +13,7 @@
       "branding": "Branding",
       "knowledgeDb": "Wissensdatenbank",
       "technicalDb": "Technische Datenbank",
+      "tags": "Tag-Verwaltung",
       "general": "Allgemeine Einstellungen"
     },
     "branding": {
