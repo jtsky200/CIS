@@ -2444,39 +2444,25 @@
                 document.body.setAttribute('data-theme', 'light');
             }
             
-            // Setup theme toggle button - Use global from app.js with retry
+            // Setup theme toggle button - Use global from app.js
+            // app.js already has retry logic in setupThemeToggle, so just call it
             console.log('🔧 Setting up theme toggle...');
-            console.log('   window.setupThemeToggle exists:', typeof window.setupThemeToggle);
-            console.log('   window.toggleTheme exists:', typeof window.toggleTheme);
             
-            // Try to call setupThemeToggle with retry logic
-            const setupTheme = () => {
-                if (typeof window.setupThemeToggle === 'function') {
-                    console.log('✅ Calling window.setupThemeToggle()...');
-                    try {
-                        window.setupThemeToggle();
-                        return true;
-                    } catch (error) {
-                        console.error('Error calling setupThemeToggle:', error);
-                        return false;
-                    }
+            if (typeof window.setupThemeToggle === 'function') {
+                console.log('✅ Calling window.setupThemeToggle()...');
+                try {
+                    window.setupThemeToggle();
+                } catch (error) {
+                    console.error('❌ Error calling setupThemeToggle:', error);
                 }
-                return false;
-            };
-            
-            if (!setupTheme()) {
-                console.log('⚠️ setupThemeToggle not yet available, will retry...');
-                let retries = 0;
-                const retryInterval = setInterval(() => {
-                    retries++;
-                    if (setupTheme()) {
-                        console.log(`✅ Retry ${retries} successful!`);
-                        clearInterval(retryInterval);
-                    } else if (retries >= 10) {
-                        console.error(`❌ setupThemeToggle still not available after ${retries} retries`);
-                        clearInterval(retryInterval);
-                    }
-                }, 200);
+            } else {
+                console.error('❌ window.setupThemeToggle not available');
+                // Fallback: Manually attach event listener
+                const themeToggle = document.getElementById('themeToggle');
+                if (themeToggle && typeof window.toggleTheme === 'function') {
+                    console.log('⚠️  Fallback: Manually attaching event listener...');
+                    themeToggle.addEventListener('click', window.toggleTheme);
+                }
             }
             
             // Setup language dropdown event listener
