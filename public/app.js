@@ -4558,6 +4558,7 @@ function setupAutocomplete(searchInput, type) {
     // Create autocomplete container
     const autocompleteContainer = document.createElement('div');
     autocompleteContainer.id = `${type}Autocomplete`;
+    autocompleteContainer.className = 'document-list-hidden-scroll';
     autocompleteContainer.style.cssText = `
         position: absolute;
         top: 100%;
@@ -4569,7 +4570,6 @@ function setupAutocomplete(searchInput, type) {
         border-radius: 0 0 8px 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         max-height: 200px;
-        overflow-y: auto;
         z-index: 1000;
         display: none;
         width: 100%;

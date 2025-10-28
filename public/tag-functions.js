@@ -471,6 +471,7 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
     `;
     
     const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content-hidden-scroll';
     modalContent.style.cssText = `
         background: white !important;
         border-radius: 16px !important;
@@ -482,10 +483,8 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
         max-width: 800px !important;
         width: 90% !important;
         max-height: 80vh !important;
-        overflow-y: auto !important;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
         position: relative !important;
-        overflow: hidden !important;
     `;
     
     let content = `
@@ -551,7 +550,7 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
             </div>
         `;
     } else {
-        content += '<div style="display: flex; flex-direction: column; gap: 12px;">';
+        content += '<div class="document-list-hidden-scroll" style="display: flex; flex-direction: column; gap: 12px;">';
         
         documents.forEach((doc, index) => {
             // Fix file size calculation

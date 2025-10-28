@@ -520,7 +520,8 @@
             overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
             
             const modal = document.createElement('div');
-            modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
+            modal.className = 'modal-content-hidden-scroll';
+            modal.style.cssText = 'background: white; border-radius: 12px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);';
             
             const selectedTags = [];
             
@@ -529,7 +530,7 @@
                     <div style="font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 8px;">Tags für Dokumente auswählen</div>
                     <div style="color: #6b7280; font-size: 15px;">Wählen Sie optional Tags für die hochgeladenen Dokumente</div>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-bottom: 24px; max-height: 300px; overflow-y: auto;">
+                <div class="document-list-hidden-scroll" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-bottom: 24px; max-height: 300px;">
                     ${availableTags.map(tag => `
                         <label style="display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500;">
                             <input type="checkbox" value="${tag.name}" style="margin-right: 8px;">
