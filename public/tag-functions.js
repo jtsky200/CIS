@@ -329,32 +329,54 @@ window.showTagDocuments = async function(tagName) {
         const kbDocs = kbData.documents || [];
         const tdDocs = tdData.documents || [];
         
+        console.log('📊 API Response Debug:', {
+            kbDocsCount: kbDocs.length,
+            tdDocsCount: tdDocs.length,
+            tagName: tagName
+        });
+        
         // Filter documents that contain this tag
         const matchingDocs = [];
         
         // Check Knowledge Base documents
         kbDocs.forEach(doc => {
-            if (doc.tags && doc.tags.includes(tagName)) {
+            // Check both tags array and category
+            const hasTag = doc.tags && doc.tags.includes(tagName);
+            const hasCategory = doc.category && doc.category.toUpperCase() === tagName.toUpperCase();
+            
+            if (hasTag || hasCategory) {
                 matchingDocs.push({
                     ...doc,
                     source: 'Knowledge Base',
-                    sourceColor: '#3b82f6'
+                    sourceColor: '#3b82f6',
+                    matchType: hasTag ? 'tag' : 'category'
                 });
             }
         });
         
         // Check Technical Database documents
         tdDocs.forEach(doc => {
-            if (doc.tags && doc.tags.includes(tagName)) {
+            // Check both tags array and category
+            const hasTag = doc.tags && doc.tags.includes(tagName);
+            const hasCategory = doc.category && doc.category.toUpperCase() === tagName.toUpperCase();
+            
+            if (hasTag || hasCategory) {
                 matchingDocs.push({
                     ...doc,
                     source: 'Technical Database',
-                    sourceColor: '#10b981'
+                    sourceColor: '#10b981',
+                    matchType: hasTag ? 'tag' : 'category'
                 });
             }
         });
         
         console.log(`✅ Found ${matchingDocs.length} documents for tag "${tagName}"`);
+        console.log('📋 Matching documents:', matchingDocs.map(doc => ({
+            name: doc.name || doc.filename || doc.title,
+            tags: doc.tags,
+            category: doc.category,
+            matchType: doc.matchType
+        })));
         
         // Show modal with documents
         showTagModal(tagName, matchingDocs, false);
@@ -470,7 +492,10 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
         
         documents.forEach((doc, index) => {
             const fileSize = doc.size ? (doc.size / 1024 / 1024).toFixed(1) + ' MB' : 'Unbekannt';
-            const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString('de-DE') : 'Unbekannt';
+            const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString('de-DE') : 
+                              doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString('de-DE') : 'Unbekannt';
+            const docName = doc.name || doc.filename || doc.title || 'Unbenanntes Dokument';
+            const otherTags = doc.tags ? doc.tags.filter(t => t !== tagName && t !== tagName.toUpperCase()).join(', ') : '';
             
             content += `
                 <div style="
@@ -485,23 +510,27 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
                    onclick="viewDocument('${doc.id}', '${doc.source}')">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                         <h3 style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 600; flex: 1; margin-right: 16px;">
-                            ${doc.name || doc.title || 'Unbenanntes Dokument'}
+                            ${docName}
                         </h3>
-                        <span style="
-                            padding: 4px 8px;
-                            background: ${doc.sourceColor};
-                            color: white;
-                            border-radius: 6px;
-                            font-size: 12px;
-                            font-weight: 600;
-                        ">
-                            ${doc.source}
-                        </span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            ${doc.matchType ? `<span style="padding: 2px 6px; background: #fef3c7; color: #92400e; border-radius: 4px; font-size: 11px; font-weight: 600;">${doc.matchType === 'tag' ? 'TAG' : 'KATEGORIE'}</span>` : ''}
+                            <span style="
+                                padding: 4px 8px;
+                                background: ${doc.sourceColor};
+                                color: white;
+                                border-radius: 6px;
+                                font-size: 12px;
+                                font-weight: 600;
+                            ">
+                                ${doc.source}
+                            </span>
+                        </div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px;">
                         <span>📄 ${fileSize}</span>
                         <span>📅 ${uploadDate}</span>
-                        ${doc.tags && doc.tags.length > 1 ? `<span>🏷️ ${doc.tags.filter(t => t !== tagName).join(', ')}</span>` : ''}
+                        ${otherTags ? `<span>🏷️ ${otherTags}</span>` : ''}
+                        ${doc.category ? `<span>📁 ${doc.category}</span>` : ''}
                     </div>
                 </div>
             `;

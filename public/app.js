@@ -1585,10 +1585,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('🔄 Starting basic setup...');
 
         // Setup basic functionality
-        initializeTheme(); // Initialize theme first
+        if (typeof window.initializeTheme === 'function') {
+            window.initializeTheme();
+        } else {
+            console.error('❌ initializeTheme function not available');
+        }
         setupNavigation();
         setupThemeToggle();
         setupChatFunctionality();
+        
+        // Debug available functions after a delay
+        setTimeout(() => {
+            window.debugFunctions();
+        }, 1000);
         
         // Initialize branding system immediately
         console.log('🎨 Initializing branding system...');
@@ -2999,6 +3008,57 @@ function initializeTheme() {
     console.log('✅ Theme initialized:', savedTheme);
 }
 
+// Make initializeTheme globally accessible
+window.initializeTheme = initializeTheme;
+
+// Debug function to check all available functions
+window.debugFunctions = function() {
+    const functions = {
+        toggleTheme: typeof window.toggleTheme,
+        initializeTheme: typeof window.initializeTheme,
+        setupThemeToggle: typeof window.setupThemeToggle,
+        showTagDocuments: typeof window.showTagDocuments,
+        closeTagModal: typeof window.closeTagModal,
+        refreshTags: typeof window.refreshTags
+    };
+    
+    console.log('🔍 Available Functions:', functions);
+    return functions;
+};
+
+// Test all functions
+window.testAllFunctions = function() {
+    console.log('🧪 Testing all functions...');
+    
+    // Test theme functions
+    if (typeof window.toggleTheme === 'function') {
+        console.log('✅ toggleTheme function available');
+        try {
+            window.toggleTheme();
+            console.log('✅ toggleTheme executed successfully');
+        } catch (error) {
+            console.error('❌ toggleTheme error:', error);
+        }
+    } else {
+        console.error('❌ toggleTheme function not available');
+    }
+    
+    // Test tag functions
+    if (typeof window.showTagDocuments === 'function') {
+        console.log('✅ showTagDocuments function available');
+        try {
+            window.showTagDocuments('TEST');
+            console.log('✅ showTagDocuments executed successfully');
+        } catch (error) {
+            console.error('❌ showTagDocuments error:', error);
+        }
+    } else {
+        console.error('❌ showTagDocuments function not available');
+    }
+    
+    return 'Test completed';
+};
+
 // Setup theme toggle functionality - Improved
 function setupThemeToggle() {
     const attemptSetup = () => {
@@ -4263,7 +4323,7 @@ window.setupKnowledgeBaseManagement = setupKnowledgeBaseManagement;
 window.previewDocument = previewDocument;
 window.downloadDocument = downloadDocument;
 window.toggleSidebar = toggleSidebar;
-window.toggleTheme = toggleTheme;
+// window.toggleTheme already defined above
 window.setupThemeToggle = setupThemeToggle;
 window.initChat = initChat;
 window.clearAllChats = clearAllChats;
