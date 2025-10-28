@@ -4960,8 +4960,8 @@ exports.updateCategoriesAndTags = functions.runWith({
 
 // Smart categorize documents in GENERAL category
 exports.smartCategorize = functions.runWith({
-    memory: '512MB',
-    timeoutSeconds: 60
+    memory: '1GB',
+    timeoutSeconds: 300
 }).https.onRequest((req, res) => {
     cors(req, res, async () => {
         if (req.method !== 'POST') {
