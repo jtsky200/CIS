@@ -490,13 +490,13 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
     let content = `
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <svg width="24" height="24" fill="#1e40af" viewBox="0 0 24 24">
+                <svg width="24" height="24" fill="#6b7280" viewBox="0 0 24 24">
                     <path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
                 </svg>
-                <h2 style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 600;">
-                    ${tagName.toUpperCase()}
+                <h2 style="margin: 0; color: #1f2937; font-size: 22px; font-weight: 700; letter-spacing: -0.025em;">
+                    ${tagName}
                 </h2>
-                <span style="padding: 4px 12px; background: #dbeafe; color: #1e40af; border-radius: 12px; font-size: 14px; font-weight: 600;">
+                <span style="padding: 6px 14px; background: #f3f4f6; color: #6b7280; border-radius: 16px; font-size: 13px; font-weight: 500; border: 1px solid #e5e7eb;">
                     ${documents.length} Dokumente
                 </span>
             </div>
