@@ -508,9 +508,40 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
         content += '<div style="display: flex; flex-direction: column; gap: 12px;">';
         
         documents.forEach((doc, index) => {
-            const fileSize = doc.size ? (doc.size / 1024 / 1024).toFixed(1) + ' MB' : 'Unbekannt';
-            const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString('de-DE') : 
-                              doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString('de-DE') : 'Unbekannt';
+            // Fix file size calculation
+            let fileSize = 'Unbekannt';
+            if (doc.size && doc.size > 0) {
+                if (doc.size < 1024) {
+                    fileSize = doc.size + ' B';
+                } else if (doc.size < 1024 * 1024) {
+                    fileSize = (doc.size / 1024).toFixed(1) + ' KB';
+                } else {
+                    fileSize = (doc.size / 1024 / 1024).toFixed(1) + ' MB';
+                }
+            }
+            
+            // Fix date parsing
+            let uploadDate = 'Unbekannt';
+            if (doc.uploadDate) {
+                try {
+                    const date = new Date(doc.uploadDate);
+                    if (!isNaN(date.getTime())) {
+                        uploadDate = date.toLocaleDateString('de-DE');
+                    }
+                } catch (e) {
+                    uploadDate = 'Unbekannt';
+                }
+            } else if (doc.uploadedAt) {
+                try {
+                    const date = new Date(doc.uploadedAt);
+                    if (!isNaN(date.getTime())) {
+                        uploadDate = date.toLocaleDateString('de-DE');
+                    }
+                } catch (e) {
+                    uploadDate = 'Unbekannt';
+                }
+            }
+            
             const docName = doc.name || doc.filename || doc.title || 'Unbenanntes Dokument';
             const otherTags = doc.tags ? doc.tags.filter(t => t !== tagName && t !== tagName.toUpperCase()).join(', ') : '';
             
@@ -530,7 +561,6 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
                             ${docName}
                         </h3>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            ${doc.matchType ? `<span style="padding: 2px 6px; background: #fef3c7; color: #92400e; border-radius: 4px; font-size: 11px; font-weight: 600;">${doc.matchType === 'tag' ? 'TAG' : 'KATEGORIE'}</span>` : ''}
                             <span style="
                                 padding: 4px 8px;
                                 background: ${doc.sourceColor};
@@ -544,10 +574,34 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
                         </div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px;">
-                        <span>📄 ${fileSize}</span>
-                        <span>📅 ${uploadDate}</span>
-                        ${otherTags ? `<span>🏷️ ${otherTags}</span>` : ''}
-                        ${doc.category ? `<span>📁 ${doc.category}</span>` : ''}
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            <span>${fileSize}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V8H19V19Z"/>
+                            </svg>
+                            <span>${uploadDate}</span>
+                        </div>
+                        ${otherTags ? `
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/>
+                                </svg>
+                                <span>${otherTags}</span>
+                            </div>
+                        ` : ''}
+                        ${doc.category ? `
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z"/>
+                                </svg>
+                                <span>${doc.category}</span>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `;
