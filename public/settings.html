@@ -1953,19 +1953,62 @@
                     exportType: 'settings'
                 };
                 
-                const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `cis-settings-${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                window.showMessage('Einstellungen erfolgreich exportiert!', 'success');
+                // Use CIS export system
+                if (window.exportToCIS) {
+                    window.exportToCIS(settings, 'einstellungen');
+                    window.showMessage('Einstellungen erfolgreich exportiert!', 'success');
+                } else {
+                    console.error('CIS export system not available');
+                    window.showMessage('Fehler: CIS Export System nicht verfügbar', 'error');
+                }
             } catch (error) {
                 console.error('Error exporting settings:', error);
                 window.showMessage('Fehler beim Exportieren der Einstellungen', 'error');
+            }
+        };
+        
+        // Test webhook
+        window.testWebhook = function() {
+            const webhookUrl = document.getElementById('webhookUrlSetting')?.value;
+            
+            if (!webhookUrl) {
+                window.showMessage('Bitte geben Sie eine Webhook URL ein', 'error');
+                return;
+            }
+            
+            try {
+                // Validate URL
+                new URL(webhookUrl);
+                
+                // Send test webhook
+                const testData = {
+                    test: true,
+                    message: 'CIS Webhook Test',
+                    timestamp: new Date().toISOString(),
+                    source: 'CIS Settings'
+                };
+                
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.showMessage('Webhook erfolgreich getestet!', 'success');
+                    } else {
+                        window.showMessage(`Webhook Test fehlgeschlagen: ${response.status}`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Webhook test error:', error);
+                    window.showMessage('Fehler beim Testen des Webhooks', 'error');
+                });
+            } catch (error) {
+                console.error('Invalid webhook URL:', error);
+                window.showMessage('Ungültige Webhook URL', 'error');
             }
         };
         
@@ -1973,36 +2016,46 @@
         window.importSettings = function() {
             const input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
+            input.accept = '.cis';
+            input.onchange = async function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const settings = JSON.parse(event.target.result);
-                        
-                        // Import general settings
-                        if (settings.general && window.updateGeneralSettings) {
-                            window.updateGeneralSettings(settings.general);
-                        }
-                        
-                        // Import branding settings
-                        if (settings.branding) {
-                            localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
-                            if (typeof window.loadBrandingSettings === 'function') {
-                                window.loadBrandingSettings();
-                            }
-                        }
-                        
-                        window.showMessage('Einstellungen erfolgreich importiert!', 'success');
-                        setTimeout(() => location.reload(), 1500);
-                    } catch (error) {
-                        console.error('Error importing settings:', error);
-                        window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
+                
+                try {
+                    // Check if CIS import system is available
+                    if (!window.importFromCIS) {
+                        console.error('CIS import system not available');
+                        window.showMessage('Fehler: CIS Import System nicht verfügbar', 'error');
+                        return;
                     }
-                };
-                reader.readAsText(file);
+                    
+                    // Import CIS file
+                    const settings = await window.importFromCIS(file);
+                    
+                    if (!settings) {
+                        window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
+                        return;
+                    }
+                    
+                    // Import general settings
+                    if (settings.general && window.updateGeneralSettings) {
+                        window.updateGeneralSettings(settings.general);
+                    }
+                    
+                    // Import branding settings
+                    if (settings.branding) {
+                        localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
+                        if (typeof window.loadBrandingSettings === 'function') {
+                            window.loadBrandingSettings();
+                        }
+                    }
+                    
+                    window.showMessage('Einstellungen erfolgreich importiert!', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    console.error('Error importing settings:', error);
+                    window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
+                }
             };
             input.click();
         };
