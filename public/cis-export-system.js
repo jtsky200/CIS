@@ -22,7 +22,9 @@
         
         for (let i = 0; i < jsonString.length; i++) {
             const charCode = jsonString.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-            encrypted += String.fromCharCode(charCode);
+            // Ensure character code is within valid range (0-255)
+            const validCharCode = charCode & 0xFF;
+            encrypted += String.fromCharCode(validCharCode);
         }
         
         return btoa(encrypted); // Base64 encode
