@@ -25,6 +25,94 @@ let systemSettings = {
 // Make systemSettings globally accessible
 window.systemSettings = systemSettings;
 
+// Define toggleTheme function early to ensure it's available immediately
+window.toggleTheme = async function() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    console.log('🎨 Theme toggle clicked! Current:', currentTheme, '→ New:', newTheme);
+    
+    // Apply theme to html and body
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+    
+    // Apply theme to all page containers
+    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
+    pageContainers.forEach(container => {
+        container.setAttribute('data-theme', newTheme);
+    });
+    
+    // Save theme to localStorage for immediate persistence
+    localStorage.setItem('theme', newTheme);
+    
+    // Update theme toggle button appearance
+    updateThemeToggle(newTheme);
+    
+    // Save theme to database (non-blocking)
+    try {
+        const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding');
+        if (response.ok) {
+            const data = await response.json();
+            const settings = data.branding;
+            settings.theme = newTheme;
+            
+            // Save updated settings
+            await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(settings)
+            });
+            
+            console.log('✅ Theme saved to database:', newTheme);
+        }
+    } catch (error) {
+        console.error('Error saving theme to database:', error);
+    }
+    
+    console.log('✅ Theme switched to:', newTheme);
+};
+
+// Define updateThemeToggle function early
+function updateThemeToggle(theme) {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        if (theme === 'dark') {
+            themeToggle.setAttribute('data-theme', 'dark');
+        } else {
+            themeToggle.setAttribute('data-theme', 'light');
+        }
+    }
+}
+
+// Make updateThemeToggle globally accessible
+window.updateThemeToggle = updateThemeToggle;
+
+// Ensure functions are immediately available
+console.log('🎨 Theme functions defined:', {
+    toggleTheme: typeof window.toggleTheme,
+    updateThemeToggle: typeof window.updateThemeToggle
+});
+
+// Immediate theme initialization
+(function() {
+    console.log('🎨 Immediate theme initialization...');
+    
+    // Initialize theme from localStorage immediately
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+    
+    // Apply theme to all page containers
+    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
+    pageContainers.forEach(container => {
+        container.setAttribute('data-theme', savedTheme);
+    });
+    
+    console.log('✅ Theme initialized immediately:', savedTheme);
+})();
+
 // Branding functions
 function initBrandingSystem() {
     console.log('🎨 Initializing branding system...');
@@ -2924,66 +3012,9 @@ async function initializeTheme() {
     }
 }
 
-// Update theme toggle button appearance
-function updateThemeToggle(theme) {
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        if (theme === 'dark') {
-            themeToggle.setAttribute('data-theme', 'dark');
-                } else {
-            themeToggle.setAttribute('data-theme', 'light');
-        }
-    }
-}
+// Update theme toggle button appearance - Already defined above
 
-// Toggle theme - Unified implementation
-window.toggleTheme = async function() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    console.log('🎨 Theme toggle clicked! Current:', currentTheme, '→ New:', newTheme);
-    
-    // Apply theme to html and body
-    document.documentElement.setAttribute('data-theme', newTheme);
-    document.body.setAttribute('data-theme', newTheme);
-    
-    // Apply theme to all page containers
-    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
-    pageContainers.forEach(container => {
-        container.setAttribute('data-theme', newTheme);
-    });
-    
-    // Save theme to localStorage for immediate persistence
-    localStorage.setItem('theme', newTheme);
-    
-    // Update theme toggle button appearance
-    updateThemeToggle(newTheme);
-    
-    // Save theme to database (non-blocking)
-    try {
-        const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding');
-        if (response.ok) {
-            const data = await response.json();
-            const settings = data.branding;
-            settings.theme = newTheme;
-            
-            // Save updated settings
-            await fetch('https://us-central1-cis-de.cloudfunctions.net/branding', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(settings)
-            });
-            
-            console.log('✅ Theme saved to database:', newTheme);
-        }
-    } catch (error) {
-        console.error('Error saving theme to database:', error);
-    }
-    
-    console.log('✅ Theme switched to:', newTheme);
-};
+// Toggle theme - Already defined above
 
 // Initialize theme on page load
 function initializeTheme() {
