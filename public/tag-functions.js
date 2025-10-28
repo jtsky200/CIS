@@ -393,8 +393,49 @@ window.showTagDocuments = async function(tagName) {
             matchType: doc.matchType
         })));
         
-        // Show modal with documents
-        showTagModal(tagName, matchingDocs, false);
+        // Clean and enhance document data before showing
+        const cleanedDocs = matchingDocs.map(doc => {
+            // Ensure we have a valid date
+            let uploadDate = null;
+            if (doc.uploadDate) {
+                const date = new Date(doc.uploadDate);
+                if (!isNaN(date.getTime())) {
+                    uploadDate = doc.uploadDate;
+                }
+            }
+            if (!uploadDate && doc.uploadedAt) {
+                const date = new Date(doc.uploadedAt);
+                if (!isNaN(date.getTime())) {
+                    uploadDate = doc.uploadedAt;
+                }
+            }
+            
+            // If still no valid date, use current date as fallback
+            if (!uploadDate) {
+                uploadDate = new Date().toISOString();
+            }
+            
+            // Ensure we have a valid size
+            let size = doc.size || 0;
+            if (typeof size === 'string') {
+                size = parseInt(size) || 0;
+            }
+            
+            return {
+                ...doc,
+                uploadDate: uploadDate,
+                size: size
+            };
+        });
+        
+        console.log('📋 Cleaned documents:', cleanedDocs.map(doc => ({
+            name: doc.name || doc.filename || doc.title,
+            uploadDate: doc.uploadDate,
+            size: doc.size
+        })));
+        
+        // Show modal with cleaned documents
+        showTagModal(tagName, cleanedDocs, false);
         
     } catch (error) {
         console.error('❌ Error loading documents for tag:', error);
@@ -520,26 +561,19 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
                 }
             }
             
-            // Fix date parsing
+            // Fix date parsing - should now always have a valid date
             let uploadDate = 'Unbekannt';
-            if (doc.uploadDate) {
-                try {
-                    const date = new Date(doc.uploadDate);
-                    if (!isNaN(date.getTime())) {
-                        uploadDate = date.toLocaleDateString('de-DE');
-                    }
-                } catch (e) {
-                    uploadDate = 'Unbekannt';
+            try {
+                const date = new Date(doc.uploadDate || doc.uploadedAt);
+                if (!isNaN(date.getTime())) {
+                    uploadDate = date.toLocaleDateString('de-DE');
+                } else {
+                    // Fallback to current date if still invalid
+                    uploadDate = new Date().toLocaleDateString('de-DE');
                 }
-            } else if (doc.uploadedAt) {
-                try {
-                    const date = new Date(doc.uploadedAt);
-                    if (!isNaN(date.getTime())) {
-                        uploadDate = date.toLocaleDateString('de-DE');
-                    }
-                } catch (e) {
-                    uploadDate = 'Unbekannt';
-                }
+            } catch (e) {
+                // Fallback to current date
+                uploadDate = new Date().toLocaleDateString('de-DE');
             }
             
             const docName = doc.name || doc.filename || doc.title || 'Unbenanntes Dokument';
