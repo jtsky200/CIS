@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Cadillac EV Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=1730000010">
-    <link rel="stylesheet" href="settings-redesign.css?v=1730000010">
-    <script src="app.js?v=1730000010"></script>
-    <script src="kb-functions.js?v=1730000014"></script>
-    <script src="td-functions.js?v=1730000010"></script>
-    <script src="branding-functions.js?v=1730000010"></script>
-    <script src="tag-functions.js?v=1730000014"></script>
-    <script src="js/i18n.js?v=1730000020"></script>
+    <link rel="stylesheet" href="styles.css?v=1730000016">
+    <link rel="stylesheet" href="settings-redesign.css?v=1730000016">
+    <script src="app.js?v=1730000016"></script>
+    <script src="kb-functions.js?v=1730000016"></script>
+    <script src="td-functions.js?v=1730000016"></script>
+    <script src="branding-functions.js?v=1730000016"></script>
+    <script src="tag-functions.js?v=1730000016"></script>
+    <script src="js/i18n.js?v=1730000016"></script>
     <style>
         .settings-container {
             max-width: 1200px;
@@ -1038,8 +1038,11 @@
                             </button>
                         </div>
                     </div>
-                    <div id="tagsList" style="min-height: 100px;">
+                    <div id="tagsContainer" style="min-height: 100px;">
                         <!-- Tags will be loaded here -->
+                        <div id="tagList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <!-- Individual tag items will be inserted here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2444,45 +2447,22 @@
                 document.body.setAttribute('data-theme', 'light');
             }
             
-            // Setup theme toggle button - Direct fallback with multiple attempts
+            // Setup theme toggle - Simple approach
             console.log('🔧 Setting up theme toggle...');
             
-            const attachThemeToggle = () => {
-                const themeToggle = document.getElementById('themeToggle');
-                const toggleThemeFunc = typeof window.toggleTheme === 'function' ? window.toggleTheme : null;
-                
-                console.log('   - Button exists:', !!themeToggle);
-                console.log('   - toggleTheme function exists:', !!toggleThemeFunc);
-                
-                if (themeToggle && toggleThemeFunc) {
-                    // Remove any existing listeners first
-                    themeToggle.removeEventListener('click', toggleThemeFunc);
-                    // Attach new listener
-                    themeToggle.addEventListener('click', function() {
-                        console.log('🌙 Theme button clicked!');
-                        toggleThemeFunc();
-                    });
-                    console.log('✅ Theme toggle listener attached successfully');
-                    return true;
+            setTimeout(() => {
+                const btn = document.getElementById('themeToggle');
+                if (btn && typeof window.toggleTheme === 'function') {
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        console.log('🌙 Theme button CLICKED');
+                        window.toggleTheme();
+                    };
+                    console.log('✅ Theme button setup complete');
+                } else {
+                    console.error('❌ Theme button or function missing');
                 }
-                return false;
-            };
-            
-            // Try immediate attachment
-            if (!attachThemeToggle()) {
-                console.log('⚠️  Initial attach failed, retrying...');
-                // Retry with intervals
-                let attempts = 0;
-                const retryInterval = setInterval(() => {
-                    attempts++;
-                    if (attachThemeToggle() || attempts >= 10) {
-                        clearInterval(retryInterval);
-                        if (attempts >= 10) {
-                            console.error('❌ Failed to attach theme toggle after 10 attempts');
-                        }
-                    }
-                }, 200);
-            }
+            }, 500);
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
