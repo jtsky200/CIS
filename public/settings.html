@@ -2435,33 +2435,48 @@
             console.log('Settings page loaded');
             
             // Initialize theme FIRST
-            if (typeof initializeTheme === 'function') {
+            if (typeof window.initializeTheme === 'function') {
                 console.log('✅ Initializing theme...');
-                initializeTheme();
+                window.initializeTheme();
             } else {
                 console.log('⚠️ initializeTheme not found, applying default theme');
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.body.setAttribute('data-theme', 'light');
             }
             
-            // Setup theme toggle button - Use global from app.js
+            // Setup theme toggle button - Use global from app.js with retry
             console.log('🔧 Setting up theme toggle...');
             console.log('   window.setupThemeToggle exists:', typeof window.setupThemeToggle);
             console.log('   window.toggleTheme exists:', typeof window.toggleTheme);
             
-            if (window.setupThemeToggle) {
-                console.log('✅ Calling window.setupThemeToggle()...');
-                window.setupThemeToggle();
-            } else {
-                console.log('⚠️ setupThemeToggle not yet available, will retry...');
-                setTimeout(() => {
-                    if (window.setupThemeToggle) {
-                        console.log('✅ Retry successful, calling window.setupThemeToggle()...');
+            // Try to call setupThemeToggle with retry logic
+            const setupTheme = () => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    console.log('✅ Calling window.setupThemeToggle()...');
+                    try {
                         window.setupThemeToggle();
-                    } else {
-                        console.error('❌ setupThemeToggle still not available after retry');
+                        return true;
+                    } catch (error) {
+                        console.error('Error calling setupThemeToggle:', error);
+                        return false;
                     }
-                }, 1000);
+                }
+                return false;
+            };
+            
+            if (!setupTheme()) {
+                console.log('⚠️ setupThemeToggle not yet available, will retry...');
+                let retries = 0;
+                const retryInterval = setInterval(() => {
+                    retries++;
+                    if (setupTheme()) {
+                        console.log(`✅ Retry ${retries} successful!`);
+                        clearInterval(retryInterval);
+                    } else if (retries >= 10) {
+                        console.error(`❌ setupThemeToggle still not available after ${retries} retries`);
+                        clearInterval(retryInterval);
+                    }
+                }, 200);
             }
             
             // Setup language dropdown event listener
