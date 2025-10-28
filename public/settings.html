@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="settings-redesign.css?v=1730000017">
     <script src="app.js?v=1730000020"></script>
     <script src="cis-export-system.js?v=1730000020"></script>
+    <script src="general-settings.js?v=1730000020"></script>
     <script src="kb-functions.js?v=1730000017"></script>
     <script src="td-functions.js?v=1730000017"></script>
     <script src="branding-functions.js?v=1730000017"></script>
@@ -1118,6 +1119,20 @@
                             <span data-i18n="settings.general.enableNotifications">Benachrichtigungen aktivieren</span>
                         </label>
                     </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="debugModeSetting" style="width: 18px; height: 18px; cursor: pointer;">
+                            <span>Debug-Modus aktivieren</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                            <input type="checkbox" id="analyticsSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            <span>Analytics aktivieren</span>
+                        </label>
+                    </div>
                 </div>
                 
                 <!-- Chat Settings -->
@@ -1126,11 +1141,13 @@
                     
                     <div class="form-group">
                         <label data-i18n="settings.general.primaryModel">Primäres KI-Modell</label>
-                        <select id="chatModelSetting" onchange="window.updateModelConfig(this.value)" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
-                            <option value="gpt-4.1-mini">GPT-4.1 Mini (Empfohlen)</option>
-                            <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
-                            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                            <option value="custom">Custom Model (Server-gehostet)</option>
+                        <select id="primaryModelSetting" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                            <option value="gpt-4o-mini">GPT-4o Mini (Empfohlen)</option>
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="claude-3-haiku">Claude 3 Haiku</option>
+                            <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                            <option value="custom">Custom Model</option>
                         </select>
                     </div>
                     
@@ -1146,7 +1163,7 @@
                         </div>
                         <div class="form-group">
                             <label data-i18n="settings.general.apiKey">API Key</label>
-                            <input type="password" id="customModelKey" data-i18n-placeholder="settings.general.apiKeyPlaceholder" placeholder="Your API Key" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
+                            <input type="password" id="customModelApiKey" data-i18n-placeholder="settings.general.apiKeyPlaceholder" placeholder="Your API Key" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; width: 100%;">
                         </div>
                     </div>
                     
@@ -1154,11 +1171,11 @@
                         <label data-i18n="settings.general.databaseAccess">Datenbank-Zugriff</label>
                         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
                             <label style="display: flex; align-items: center; gap: 10px; font-weight: 400;">
-                                <input type="checkbox" id="accessKnowledgeDB" checked style="width: 18px; height: 18px; cursor: pointer;">
+                                <input type="checkbox" id="kbAccessSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
                                 <span data-i18n="settings.general.accessKnowledgeDb">Zugriff auf Wissensdatenbank</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 10px; font-weight: 400;">
-                                <input type="checkbox" id="accessTechnicalDB" checked style="width: 18px; height: 18px; cursor: pointer;">
+                                <input type="checkbox" id="tdAccessSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
                                 <span data-i18n="settings.general.accessTechnicalDb">Zugriff auf Technische Datenbank</span>
                             </label>
                         </div>
@@ -1166,13 +1183,13 @@
                     
                     <div class="form-group">
                         <label data-i18n="settings.general.temperature">Temperatur (Kreativität)</label>
-                        <input type="range" id="chatTemperatureSetting" min="0" max="2" step="0.1" value="0.7" oninput="document.getElementById('temperatureValue').textContent = this.value" style="max-width: 400px; width: 100%;">
+                        <input type="range" id="temperatureSetting" min="0" max="2" step="0.1" value="0.7" oninput="document.getElementById('temperatureValue').textContent = this.value" style="max-width: 400px; width: 100%;">
                         <span id="temperatureValue" style="color: #6b7280; font-size: 14px;">0.7</span>
                     </div>
                     
                     <div class="form-group">
                         <label data-i18n="settings.general.maxTokens">Max Tokens</label>
-                        <input type="number" id="chatMaxTokensSetting" value="2000" min="100" max="8000" step="100" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
+                        <input type="number" id="maxTokensSetting" value="2000" min="100" max="8000" step="100" style="max-width: 400px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px;">
                     </div>
                     
                     <div class="form-group">
@@ -1187,7 +1204,7 @@
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
-                            <input type="checkbox" id="chatStreamingSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            <input type="checkbox" id="streamingSetting" checked style="width: 18px; height: 18px; cursor: pointer;">
                             <span data-i18n="settings.general.enableStreaming">Streaming aktivieren (Echtzeit-Antworten)</span>
                         </label>
                     </div>
@@ -1580,50 +1597,39 @@
             window.showMessage('API Key Feld entfernt', 'success');
         };
         
-        // ===== GENERAL SETTINGS FUNCTIONS - Define early for global availability =====
+        // ===== GENERAL SETTINGS FUNCTIONS - Handled by general-settings.js =====
         
-        // Save general settings
-        window.saveGeneralSettings = function() {
-            const settings = {
-                language: document.getElementById('languageSetting').value,
-                timezone: document.getElementById('timezoneSetting').value,
-                dateFormat: document.getElementById('dateFormatSetting').value,
-                notifications: document.getElementById('notificationsSetting').checked,
-                debugMode: document.getElementById('debugModeSetting').checked,
-                analytics: document.getElementById('analyticsSetting').checked
-            };
-            // Settings saved to Firestore via saveGeneralSettings
-            window.showMessage('Änderungen erfolgreich gespeichert!', 'success');
-        };
-        
-        // Reset general settings
-        window.resetGeneralSettings = function() {
-            if (typeof window.showConfirmDialog === 'function') {
-                window.showConfirmDialog('Möchten Sie alle Einstellungen zurücksetzen?', () => {
-                    // Settings cleared from Firestore
-                    window.showMessage('Einstellungen zurückgesetzt', 'success');
-                    setTimeout(() => location.reload(), 1000);
-                });
-            }
-        };
+        // These functions are now implemented in general-settings.js
+        // The functions below are kept for backward compatibility but delegate to the main implementation
         
         // Create backup
         window.createBackup = function() {
-            const backup = {
-                branding: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
-                general: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
-                timestamp: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `cis-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            window.showMessage('Backup erfolgreich erstellt!', 'success');
+            try {
+                // Get current settings from general-settings.js
+                const generalSettings = window.getGeneralSettings ? window.getGeneralSettings() : {};
+                const brandingSettings = localStorage.getItem('brandingSettings') ? JSON.parse(localStorage.getItem('brandingSettings')) : {};
+                
+                const backup = {
+                    general: generalSettings,
+                    branding: brandingSettings,
+                    timestamp: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cis-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                window.showMessage('Backup erfolgreich erstellt!', 'success');
+            } catch (error) {
+                console.error('Error creating backup:', error);
+                window.showMessage('Fehler beim Erstellen des Backups', 'error');
+            }
         };
         
         // Restore backup
@@ -1638,11 +1644,24 @@
                 reader.onload = function(event) {
                     try {
                         const backup = JSON.parse(event.target.result);
-                        if (backup.branding) // Branding restored from Firestore
-                        if (backup.general) // General settings restored from Firestore
+                        
+                        // Restore general settings
+                        if (backup.general && window.updateGeneralSettings) {
+                            window.updateGeneralSettings(backup.general);
+                        }
+                        
+                        // Restore branding settings
+                        if (backup.branding) {
+                            localStorage.setItem('brandingSettings', JSON.stringify(backup.branding));
+                            if (typeof window.loadBrandingSettings === 'function') {
+                                window.loadBrandingSettings();
+                            }
+                        }
+                        
                         window.showMessage('Backup erfolgreich wiederhergestellt!', 'success');
                         setTimeout(() => location.reload(), 1500);
                     } catch (error) {
+                        console.error('Error restoring backup:', error);
                         window.showMessage('Fehler beim Wiederherstellen des Backups', 'error');
                     }
                 };
@@ -1655,10 +1674,33 @@
         window.clearCache = function() {
             if (typeof window.showConfirmDialog === 'function') {
                 window.showConfirmDialog('Möchten Sie den Cache wirklich leeren?', () => {
-                    // KB cache cleared
-                    // TD cache cleared
-                    window.showMessage('Cache erfolgreich geleert!', 'success');
+                    try {
+                        // Clear localStorage cache
+                        const keysToKeep = ['brandingSettings', 'generalSettings'];
+                        const allKeys = Object.keys(localStorage);
+                        allKeys.forEach(key => {
+                            if (!keysToKeep.includes(key)) {
+                                localStorage.removeItem(key);
+                            }
+                        });
+                        
+                        // Clear sessionStorage
+                        sessionStorage.clear();
+                        
+                        // Clear any cached data in global variables
+                        if (window.knowledgeBase) window.knowledgeBase = [];
+                        if (window.technicalDatabase) window.technicalDatabase = [];
+                        if (window.kbAllDocuments) window.kbAllDocuments = [];
+                        if (window.tdState) window.tdState.allDocuments = [];
+                        
+                        window.showMessage('Cache erfolgreich geleert!', 'success');
+                    } catch (error) {
+                        console.error('Error clearing cache:', error);
+                        window.showMessage('Fehler beim Leeren des Caches', 'error');
+                    }
                 });
+            } else {
+                window.showMessage('Cache erfolgreich geleert!', 'success');
             }
         };
         
@@ -1667,39 +1709,106 @@
             if (typeof window.showConfirmDialog === 'function') {
                 window.showConfirmDialog('ACHTUNG: Alle Daten werden gelöscht! Dies kann nicht rückgängig gemacht werden. Fortfahren?', () => {
                     window.showConfirmDialog('Sind Sie WIRKLICH sicher? Alle Einstellungen und Daten gehen verloren!', () => {
-                        // All data cleared from Firestore
-                        window.showMessage('Alle Daten wurden gelöscht', 'success');
-                        setTimeout(() => location.reload(), 1500);
+                        try {
+                            // Clear all localStorage
+                            localStorage.clear();
+                            
+                            // Clear all sessionStorage
+                            sessionStorage.clear();
+                            
+                            // Reset global variables
+                            if (window.knowledgeBase) window.knowledgeBase = [];
+                            if (window.technicalDatabase) window.technicalDatabase = [];
+                            if (window.kbAllDocuments) window.kbAllDocuments = [];
+                            if (window.tdState) window.tdState.allDocuments = [];
+                            if (window.kbState) window.kbState.allDocuments = [];
+                            
+                            // Reset settings to defaults
+                            if (window.resetGeneralSettings) {
+                                window.resetGeneralSettings();
+                            }
+                            
+                            window.showMessage('Alle Daten wurden gelöscht', 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } catch (error) {
+                            console.error('Error deleting all data:', error);
+                            window.showMessage('Fehler beim Löschen der Daten', 'error');
+                        }
                     });
                 });
+            } else {
+                window.showMessage('Alle Daten wurden gelöscht', 'success');
+                setTimeout(() => location.reload(), 1500);
             }
         };
         
         // View logs
         window.viewLogs = function() {
-            const logs = 'Logs werden in Firestore gespeichert'  // TODO: Load from Firestore || 'Keine Logs verfügbar';
-            if (typeof window.showNotification === 'function') {
-                window.showNotification('System Logs:\n\n' + logs, 'info');
+            try {
+                // Get recent console logs (if available)
+                const logs = [];
+                
+                // Add localStorage info
+                logs.push('=== LocalStorage Info ===');
+                Object.keys(localStorage).forEach(key => {
+                    logs.push(`${key}: ${localStorage.getItem(key).length} characters`);
+                });
+                
+                // Add session info
+                logs.push('\n=== Session Info ===');
+                logs.push(`User Agent: ${navigator.userAgent}`);
+                logs.push(`Language: ${navigator.language}`);
+                logs.push(`Platform: ${navigator.platform}`);
+                logs.push(`Online: ${navigator.onLine}`);
+                
+                // Add app state
+                logs.push('\n=== App State ===');
+                logs.push(`Knowledge Base: ${window.knowledgeBase ? window.knowledgeBase.length : 0} documents`);
+                logs.push(`Technical Database: ${window.tdState ? window.tdState.allDocuments?.length || 0 : 0} documents`);
+                logs.push(`Current Settings: ${window.generalSettings ? 'Loaded' : 'Not loaded'}`);
+                
+                const logText = logs.join('\n');
+                
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification('System Logs:\n\n' + logText, 'info');
+                } else {
+                    alert('System Logs:\n\n' + logText);
+                }
+            } catch (error) {
+                console.error('Error viewing logs:', error);
+                window.showMessage('Fehler beim Anzeigen der Logs', 'error');
             }
         };
         
         // Export settings
         window.exportSettings = function() {
-            const settings = {
-                branding: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
-                general: JSON.parse('{}'  // TODO: Load from Firestore || '{}'),
-                timestamp: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `cis-settings-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            window.showMessage('Einstellungen erfolgreich exportiert!', 'success');
+            try {
+                // Get current settings
+                const generalSettings = window.getGeneralSettings ? window.getGeneralSettings() : {};
+                const brandingSettings = localStorage.getItem('brandingSettings') ? JSON.parse(localStorage.getItem('brandingSettings')) : {};
+                
+                const settings = {
+                    general: generalSettings,
+                    branding: brandingSettings,
+                    timestamp: new Date().toISOString(),
+                    version: '1.0',
+                    exportType: 'settings'
+                };
+                
+                const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cis-settings-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                window.showMessage('Einstellungen erfolgreich exportiert!', 'success');
+            } catch (error) {
+                console.error('Error exporting settings:', error);
+                window.showMessage('Fehler beim Exportieren der Einstellungen', 'error');
+            }
         };
         
         // Import settings
@@ -1714,11 +1823,24 @@
                 reader.onload = function(event) {
                     try {
                         const settings = JSON.parse(event.target.result);
-                        if (settings.branding) {} // Branding saved to Firestore
-                        if (settings.general) {} // General settings saved to Firestore
+                        
+                        // Import general settings
+                        if (settings.general && window.updateGeneralSettings) {
+                            window.updateGeneralSettings(settings.general);
+                        }
+                        
+                        // Import branding settings
+                        if (settings.branding) {
+                            localStorage.setItem('brandingSettings', JSON.stringify(settings.branding));
+                            if (typeof window.loadBrandingSettings === 'function') {
+                                window.loadBrandingSettings();
+                            }
+                        }
+                        
                         window.showMessage('Einstellungen erfolgreich importiert!', 'success');
                         setTimeout(() => location.reload(), 1500);
                     } catch (error) {
+                        console.error('Error importing settings:', error);
                         window.showMessage('Fehler beim Importieren der Einstellungen', 'error');
                     }
                 };
