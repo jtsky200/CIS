@@ -2444,25 +2444,44 @@
                 document.body.setAttribute('data-theme', 'light');
             }
             
-            // Setup theme toggle button - Use global from app.js
-            // app.js already has retry logic in setupThemeToggle, so just call it
+            // Setup theme toggle button - Direct fallback with multiple attempts
             console.log('🔧 Setting up theme toggle...');
             
-            if (typeof window.setupThemeToggle === 'function') {
-                console.log('✅ Calling window.setupThemeToggle()...');
-                try {
-                    window.setupThemeToggle();
-                } catch (error) {
-                    console.error('❌ Error calling setupThemeToggle:', error);
-                }
-            } else {
-                console.error('❌ window.setupThemeToggle not available');
-                // Fallback: Manually attach event listener
+            const attachThemeToggle = () => {
                 const themeToggle = document.getElementById('themeToggle');
-                if (themeToggle && typeof window.toggleTheme === 'function') {
-                    console.log('⚠️  Fallback: Manually attaching event listener...');
-                    themeToggle.addEventListener('click', window.toggleTheme);
+                const toggleThemeFunc = typeof window.toggleTheme === 'function' ? window.toggleTheme : null;
+                
+                console.log('   - Button exists:', !!themeToggle);
+                console.log('   - toggleTheme function exists:', !!toggleThemeFunc);
+                
+                if (themeToggle && toggleThemeFunc) {
+                    // Remove any existing listeners first
+                    themeToggle.removeEventListener('click', toggleThemeFunc);
+                    // Attach new listener
+                    themeToggle.addEventListener('click', function() {
+                        console.log('🌙 Theme button clicked!');
+                        toggleThemeFunc();
+                    });
+                    console.log('✅ Theme toggle listener attached successfully');
+                    return true;
                 }
+                return false;
+            };
+            
+            // Try immediate attachment
+            if (!attachThemeToggle()) {
+                console.log('⚠️  Initial attach failed, retrying...');
+                // Retry with intervals
+                let attempts = 0;
+                const retryInterval = setInterval(() => {
+                    attempts++;
+                    if (attachThemeToggle() || attempts >= 10) {
+                        clearInterval(retryInterval);
+                        if (attempts >= 10) {
+                            console.error('❌ Failed to attach theme toggle after 10 attempts');
+                        }
+                    }
+                }, 200);
             }
             
             // Setup language dropdown event listener
