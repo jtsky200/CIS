@@ -413,17 +413,19 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
     const modal = document.createElement('div');
     modal.id = 'tagDocumentsModal';
     modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        backdrop-filter: blur(4px);
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 10000 !important;
+        backdrop-filter: blur(4px) !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     `;
     
     const modalContent = document.createElement('div');
