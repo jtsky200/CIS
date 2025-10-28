@@ -248,7 +248,8 @@ window.refreshTags = async function() {
         html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">';
         categories.forEach(([category, count]) => {
             html += `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; transition: all 0.2s;" 
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; transition: all 0.2s; cursor: pointer;"
+                    onclick="window.showTagDocuments('${category.replace(/'/g, "\\'")}')"
                     onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(-1px)'" 
                     onmouseout="this.style.boxShadow=''; this.style.transform=''">
                     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
@@ -257,7 +258,7 @@ window.refreshTags = async function() {
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #92400e;">${count} Dok.</span>
-                        <button onclick="editTag('${category.replace(/'/g, "\\'")}', 'category')" 
+                        <button onclick="event.stopPropagation(); editTag('${category.replace(/'/g, "\\'")}', 'category')" 
                             style="padding: 6px; background: white; border: 1px solid #fde68a; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
                             onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='white'"
                             title="Bearbeiten">
@@ -280,7 +281,7 @@ window.refreshTags = async function() {
         tags.forEach(([tag, count]) => {
             html += `
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #dbeafe; border: 1px solid #bfdbfe; border-radius: 8px; transition: all 0.2s; cursor: pointer;" 
-                    onclick="showTagDocuments('${tag.replace(/'/g, "\\'")}')"
+                    onclick="window.showTagDocuments('${tag.replace(/'/g, "\\'")}')"
                     onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(-1px)'" 
                     onmouseout="this.style.boxShadow=''; this.style.transform=''">
                     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
