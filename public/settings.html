@@ -2445,13 +2445,21 @@
             }
             
             // Setup theme toggle button - Use global from app.js
+            console.log('🔧 Setting up theme toggle...');
+            console.log('   window.setupThemeToggle exists:', typeof window.setupThemeToggle);
+            console.log('   window.toggleTheme exists:', typeof window.toggleTheme);
+            
             if (window.setupThemeToggle) {
+                console.log('✅ Calling window.setupThemeToggle()...');
                 window.setupThemeToggle();
             } else {
                 console.log('⚠️ setupThemeToggle not yet available, will retry...');
                 setTimeout(() => {
                     if (window.setupThemeToggle) {
+                        console.log('✅ Retry successful, calling window.setupThemeToggle()...');
                         window.setupThemeToggle();
+                    } else {
+                        console.error('❌ setupThemeToggle still not available after retry');
                     }
                 }, 1000);
             }
