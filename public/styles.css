@@ -2200,6 +2200,7 @@ button, input, select, textarea, a, .clickable {
     border: 1px solid #e5e5e5;
     border-radius: 12px;
     padding: 20px;
+    margin-bottom: 16px;
     transition: all 0.2s;
     cursor: pointer;
 }
