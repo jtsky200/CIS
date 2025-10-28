@@ -222,15 +222,18 @@ window.loadAllTags = async function() {
 
 // Refresh tags list
 window.refreshTags = async function() {
-    const tagsList = document.getElementById('tagsList');
-    if (!tagsList) return;
+    const tagsContainer = document.getElementById('tagsContainer');
+    if (!tagsContainer) {
+        console.error('tagsContainer not found');
+        return;
+    }
     
-    tagsList.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-weight: 500;">Lade Tags...</div>';
+    tagsContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-weight: 500;">Lade Tags...</div>';
     
     const { tags, categories } = await window.loadAllTags();
     
     if (tags.length === 0 && categories.length === 0) {
-        tagsList.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280; font-weight: 500; background: #f9fafb; border-radius: 8px; border: 2px dashed #e5e7eb;">Keine Tags gefunden. Erstellen Sie Ihren ersten Tag!</div>';
+        tagsContainer.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280; font-weight: 500; background: #f9fafb; border-radius: 8px; border: 2px dashed #e5e7eb;">Keine Tags gefunden. Erstellen Sie Ihren ersten Tag!</div>';
         return;
     }
     
@@ -306,8 +309,19 @@ window.refreshTags = async function() {
         html += '</div></div>';
     }
     
-    tagsList.innerHTML = html;
+    tagsContainer.innerHTML = html;
 }
+
+// Auto-load tags when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for the page to fully load
+    setTimeout(() => {
+        if (typeof window.refreshTags === 'function') {
+            console.log('Auto-loading tags...');
+            window.refreshTags();
+        }
+    }, 1000);
+});
 
 // Show documents for a specific tag
 window.showTagDocuments = async function(tagName) {

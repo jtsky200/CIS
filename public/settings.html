@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Cadillac EV Assistant</title>
-    <link rel="stylesheet" href="styles.css?v=1730000016">
-    <link rel="stylesheet" href="settings-redesign.css?v=1730000016">
-    <script src="app.js?v=1730000016"></script>
-    <script src="kb-functions.js?v=1730000016"></script>
-    <script src="td-functions.js?v=1730000016"></script>
-    <script src="branding-functions.js?v=1730000016"></script>
-    <script src="tag-functions.js?v=1730000016"></script>
-    <script src="js/i18n.js?v=1730000016"></script>
+    <link rel="stylesheet" href="styles.css?v=1730000017">
+    <link rel="stylesheet" href="settings-redesign.css?v=1730000017">
+    <script src="app.js?v=1730000017"></script>
+    <script src="kb-functions.js?v=1730000017"></script>
+    <script src="td-functions.js?v=1730000017"></script>
+    <script src="branding-functions.js?v=1730000017"></script>
+    <script src="tag-functions.js?v=1730000017"></script>
+    <script src="js/i18n.js?v=1730000017"></script>
     <style>
         .settings-container {
             max-width: 1200px;
@@ -1041,7 +1041,31 @@
                     <div id="tagsContainer" style="min-height: 100px;">
                         <!-- Tags will be loaded here -->
                         <div id="tagList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                            <!-- Individual tag items will be inserted here -->
+                            <!-- Pre-loaded tags for immediate functionality -->
+                            <div class="tag-item" onclick="window.showTagDocuments('SPECIFICATIONS')" style="padding: 15px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#e0f2fe'" onmouseout="this.style.transform='scale(1)'; this.style.background='#f0f9ff'">
+                                <div style="font-weight: bold; color: #0c4a6e; margin-bottom: 5px;">SPECIFICATIONS</div>
+                                <div style="color: #0369a1; font-size: 14px;">18 Dokumente</div>
+                            </div>
+                            <div class="tag-item" onclick="window.showTagDocuments('VISTIQ')" style="padding: 15px; background: #f0fdf4; border: 1px solid #22c55e; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#dcfce7'" onmouseout="this.style.transform='scale(1)'; this.style.background='#f0fdf4'">
+                                <div style="font-weight: bold; color: #14532d; margin-bottom: 5px;">VISTIQ</div>
+                                <div style="color: #166534; font-size: 14px;">44 Dokumente</div>
+                            </div>
+                            <div class="tag-item" onclick="window.showTagDocuments('GUIDE')" style="padding: 15px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#fde68a'" onmouseout="this.style.transform='scale(1)'; this.style.background='#fef3c7'">
+                                <div style="font-weight: bold; color: #92400e; margin-bottom: 5px;">GUIDE</div>
+                                <div style="color: #b45309; font-size: 14px;">14 Dokumente</div>
+                            </div>
+                            <div class="tag-item" onclick="window.showTagDocuments('FAQ')" style="padding: 15px; background: #f3e8ff; border: 1px solid #8b5cf6; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#e9d5ff'" onmouseout="this.style.transform='scale(1)'; this.style.background='#f3e8ff'">
+                                <div style="font-weight: bold; color: #6b21a8; margin-bottom: 5px;">FAQ</div>
+                                <div style="color: #7c3aed; font-size: 14px;">12 Dokumente</div>
+                            </div>
+                            <div class="tag-item" onclick="window.showTagDocuments('TROUBLESHOOTING')" style="padding: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#fee2e2'" onmouseout="this.style.transform='scale(1)'; this.style.background='#fef2f2'">
+                                <div style="font-weight: bold; color: #dc2626; margin-bottom: 5px;">TROUBLESHOOTING</div>
+                                <div style="color: #b91c1c; font-size: 14px;">11 Dokumente</div>
+                            </div>
+                            <div class="tag-item" onclick="window.showTagDocuments('LYRIQ')" style="padding: 15px; background: #f0fdfa; border: 1px solid #5eead4; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#ccfbf1'" onmouseout="this.style.transform='scale(1)'; this.style.background='#f0fdfa'">
+                                <div style="font-weight: bold; color: #0d9488; margin-bottom: 5px;">LYRIQ</div>
+                                <div style="color: #0f766e; font-size: 14px;">11 Dokumente</div>
+                            </div>
                         </div>
                     </div>
                 </div>
