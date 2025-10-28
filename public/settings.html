@@ -1786,7 +1786,7 @@
                 existingModal.remove();
             }
             
-            // Create modal overlay
+            // Create modal overlay - matching website design
             const modalOverlay = document.createElement('div');
             modalOverlay.id = 'logsModal';
             modalOverlay.style.cssText = `
@@ -1800,65 +1800,70 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             `;
             
-            // Create modal content
+            // Create modal content - matching website design system
             const modalContent = document.createElement('div');
             modalContent.style.cssText = `
                 background: white;
-                border-radius: 8px;
+                border-radius: 12px;
                 padding: 0;
                 max-width: 80%;
                 max-height: 80%;
-                width: 600px;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                width: 700px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e5e7eb;
                 display: flex;
                 flex-direction: column;
+                animation: fadeIn 0.3s ease;
             `;
             
-            // Create modal header
+            // Create modal header - matching website design
             const modalHeader = document.createElement('div');
             modalHeader.style.cssText = `
-                background: #3b82f6;
-                color: white;
-                padding: 16px 20px;
-                border-radius: 8px 8px 0 0;
+                background: white;
+                color: #2d2d2d;
+                padding: 28px 28px 0 28px;
+                border-radius: 12px 12px 0 0;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                border-bottom: 1px solid #e5e7eb;
             `;
             modalHeader.innerHTML = `
-                <h3 style="margin: 0; font-size: 18px; font-weight: 500;">System Logs</h3>
-                <button id="closeLogsModal" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">×</button>
+                <h3 style="margin: 0; font-size: 20px; font-weight: 500; color: #2d2d2d;">System Logs</h3>
+                <button id="closeLogsModal" style="background: none; border: none; color: #6b7280; font-size: 24px; cursor: pointer; padding: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='none'">×</button>
             `;
             
-            // Create modal body
+            // Create modal body - matching website design
             const modalBody = document.createElement('div');
             modalBody.style.cssText = `
-                padding: 20px;
+                padding: 28px;
                 flex: 1;
                 overflow-y: auto;
-                font-family: 'Courier New', monospace;
+                font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
                 font-size: 14px;
-                line-height: 1.4;
-                background: #f8f9fa;
-                color: #333;
+                line-height: 1.6;
+                background: #fafafa;
+                color: #2d2d2d;
+                border-radius: 0;
             `;
             modalBody.textContent = logText;
             
-            // Create modal footer
+            // Create modal footer - matching website design
             const modalFooter = document.createElement('div');
             modalFooter.style.cssText = `
-                padding: 16px 20px;
-                border-top: 1px solid #e5e7eb;
+                padding: 0 28px 28px 28px;
                 display: flex;
                 justify-content: flex-end;
+                gap: 12px;
                 background: white;
-                border-radius: 0 0 8px 8px;
+                border-radius: 0 0 12px 12px;
             `;
             modalFooter.innerHTML = `
-                <button id="copyLogs" style="background: #6b7280; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 8px;">Copy Logs</button>
-                <button id="closeLogsModalBtn" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">OK</button>
+                <button id="copyLogs" style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;" onmouseover="this.style.background='#4b5563'" onmouseout="this.style.background='#6b7280'">Copy Logs</button>
+                <button id="closeLogsModalBtn" style="background: #2d2d2d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#2d2d2d'">OK</button>
             `;
             
             // Assemble modal
@@ -1872,7 +1877,10 @@
             
             // Add event listeners
             const closeModal = () => {
-                modalOverlay.remove();
+                modalOverlay.style.animation = 'fadeOut 0.2s ease';
+                setTimeout(() => {
+                    modalOverlay.remove();
+                }, 200);
             };
             
             document.getElementById('closeLogsModal').addEventListener('click', closeModal);
@@ -1880,7 +1888,8 @@
             
             document.getElementById('copyLogs').addEventListener('click', () => {
                 navigator.clipboard.writeText(logText).then(() => {
-                    window.showMessage('Logs copied to clipboard', 'success');
+                    // Show success message matching website design
+                    showMessage('Logs copied to clipboard', 'success');
                 }).catch(() => {
                     // Fallback for older browsers
                     const textArea = document.createElement('textarea');
@@ -1889,7 +1898,7 @@
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    window.showMessage('Logs copied to clipboard', 'success');
+                    showMessage('Logs copied to clipboard', 'success');
                 });
             });
             
@@ -1908,6 +1917,16 @@
                 }
             };
             document.addEventListener('keydown', handleEscape);
+            
+            // Add fadeOut animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: scale(1); }
+                    to { opacity: 0; transform: scale(0.95); }
+                }
+            `;
+            document.head.appendChild(style);
         }
         
         // Export settings
