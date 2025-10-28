@@ -487,30 +487,30 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
         position: relative !important;
     `;
     
-    let content = `
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <h2 style="margin: 0; color: #1f2937; font-size: 22px; font-weight: 700; letter-spacing: -0.025em;">
-                    ${tagName}
-                </h2>
-            </div>
-            <button onclick="closeTagModal()" style="
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 8px;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.2s;
-            " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
-                <svg width="20" height="20" fill="#6b7280" viewBox="0 0 24 24">
-                    <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
-                </svg>
-            </button>
-        </div>
-    `;
+     let content = `
+         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+             <div style="display: flex; align-items: center; gap: 12px;">
+                 <h2 style="margin: 0; color: #1f2937; font-size: 22px; font-weight: 700; letter-spacing: -0.025em;">
+                     ${tagName}
+                 </h2>
+             </div>
+             <button onclick="closeTagModal()" style="
+                 background: none;
+                 border: none;
+                 cursor: pointer;
+                 padding: 8px;
+                 border-radius: 8px;
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 transition: background 0.2s;
+             " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                 <svg width="20" height="20" fill="#6b7280" viewBox="0 0 24 24">
+                     <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                 </svg>
+             </button>
+         </div>
+     `;
     
     if (isLoading) {
         content += `
