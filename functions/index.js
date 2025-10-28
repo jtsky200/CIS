@@ -4986,7 +4986,7 @@ exports.smartCategorize = functions.runWith({
                 ...tdSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id, db: 'technicalDatabase', ref: doc.ref }))
             ].filter(doc => {
                 const cat = (doc.category || '').toUpperCase();
-                return cat === 'GENERAL';
+                return cat === 'GENERAL' || cat === '';
             });
             
             console.log(`Found ${allDocs.length} documents with GENERAL category`);
