@@ -493,6 +493,9 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
                  <h2 style="margin: 0; color: #1f2937; font-size: 22px; font-weight: 700; letter-spacing: -0.025em;">
                      ${tagName}
                  </h2>
+                 <span style="color: #6b7280; font-size: 14px; font-weight: 500;">
+                     ${documents.length} Dokumente
+                 </span>
              </div>
              <button onclick="closeTagModal()" style="
                  background: none;
