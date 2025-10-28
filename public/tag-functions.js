@@ -472,15 +472,20 @@ function showTagModal(tagName, documents, isLoading = false, errorMessage = null
     
     const modalContent = document.createElement('div');
     modalContent.style.cssText = `
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        max-width: 800px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        position: relative;
+        background: white !important;
+        border-radius: 16px !important;
+        border-top-left-radius: 16px !important;
+        border-top-right-radius: 16px !important;
+        border-bottom-left-radius: 16px !important;
+        border-bottom-right-radius: 16px !important;
+        padding: 24px !important;
+        max-width: 800px !important;
+        width: 90% !important;
+        max-height: 80vh !important;
+        overflow-y: auto !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        position: relative !important;
+        overflow: hidden !important;
     `;
     
     let content = `
