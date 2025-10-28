@@ -276,7 +276,8 @@ window.refreshTags = async function() {
         html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">';
         tags.forEach(([tag, count]) => {
             html += `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #dbeafe; border: 1px solid #bfdbfe; border-radius: 8px; transition: all 0.2s;" 
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #dbeafe; border: 1px solid #bfdbfe; border-radius: 8px; transition: all 0.2s; cursor: pointer;" 
+                    onclick="showTagDocuments('${tag.replace(/'/g, "\\'")}')"
                     onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(-1px)'" 
                     onmouseout="this.style.boxShadow=''; this.style.transform=''">
                     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
@@ -285,13 +286,13 @@ window.refreshTags = async function() {
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #1e40af;">${count} Dok.</span>
-                        <button onclick="editTag('${tag.replace(/'/g, "\\'")}', 'tag')" 
+                        <button onclick="event.stopPropagation(); editTag('${tag.replace(/'/g, "\\'")}', 'tag')" 
                             style="padding: 6px; background: white; border: 1px solid #bfdbfe; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
                             onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='white'"
                             title="Bearbeiten">
                             <svg width="14" height="14" fill="#1e40af" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/></svg>
                         </button>
-                        <button onclick="deleteTag('${tag.replace(/'/g, "\\'")}', 'tag', ${count})" 
+                        <button onclick="event.stopPropagation(); deleteTag('${tag.replace(/'/g, "\\'")}', 'tag', ${count})" 
                             style="padding: 6px; background: white; border: 1px solid #bfdbfe; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
                             onmouseover="this.style.background='#fee2e2'; this.style.borderColor='#fecaca'" 
                             onmouseout="this.style.background='white'; this.style.borderColor='#bfdbfe'"
@@ -307,6 +308,254 @@ window.refreshTags = async function() {
     
     tagsList.innerHTML = html;
 }
+
+// Show documents for a specific tag
+window.showTagDocuments = async function(tagName) {
+    console.log('🔍 Loading documents for tag:', tagName);
+    
+    try {
+        // Show loading modal
+        showTagModal(tagName, [], true);
+        
+        // Load documents from both databases
+        const [kbResponse, tdResponse] = await Promise.all([
+            fetch(`${API_BASE}/knowledgebase`),
+            fetch(`${API_BASE}/technicalDatabase`)
+        ]);
+        
+        const kbData = await kbResponse.json();
+        const tdData = await tdResponse.json();
+        
+        const kbDocs = kbData.documents || [];
+        const tdDocs = tdData.documents || [];
+        
+        // Filter documents that contain this tag
+        const matchingDocs = [];
+        
+        // Check Knowledge Base documents
+        kbDocs.forEach(doc => {
+            if (doc.tags && doc.tags.includes(tagName)) {
+                matchingDocs.push({
+                    ...doc,
+                    source: 'Knowledge Base',
+                    sourceColor: '#3b82f6'
+                });
+            }
+        });
+        
+        // Check Technical Database documents
+        tdDocs.forEach(doc => {
+            if (doc.tags && doc.tags.includes(tagName)) {
+                matchingDocs.push({
+                    ...doc,
+                    source: 'Technical Database',
+                    sourceColor: '#10b981'
+                });
+            }
+        });
+        
+        console.log(`✅ Found ${matchingDocs.length} documents for tag "${tagName}"`);
+        
+        // Show modal with documents
+        showTagModal(tagName, matchingDocs, false);
+        
+    } catch (error) {
+        console.error('❌ Error loading documents for tag:', error);
+        showTagModal(tagName, [], false, 'Fehler beim Laden der Dokumente');
+    }
+};
+
+// Show tag modal with documents
+function showTagModal(tagName, documents, isLoading = false, errorMessage = null) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('tagDocumentsModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.id = 'tagDocumentsModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(4px);
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        position: relative;
+    `;
+    
+    let content = `
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <svg width="24" height="24" fill="#1e40af" viewBox="0 0 24 24">
+                    <path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                </svg>
+                <h2 style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 600;">
+                    ${tagName.toUpperCase()}
+                </h2>
+                <span style="padding: 4px 12px; background: #dbeafe; color: #1e40af; border-radius: 12px; font-size: 14px; font-weight: 600;">
+                    ${documents.length} Dokumente
+                </span>
+            </div>
+            <button onclick="closeTagModal()" style="
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+            " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                <svg width="20" height="20" fill="#6b7280" viewBox="0 0 24 24">
+                    <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                </svg>
+            </button>
+        </div>
+    `;
+    
+    if (isLoading) {
+        content += `
+            <div style="text-align: center; padding: 40px;">
+                <div style="width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid #1e40af; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+                <p style="color: #6b7280; margin: 0;">Lade Dokumente...</p>
+            </div>
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+        `;
+    } else if (errorMessage) {
+        content += `
+            <div style="text-align: center; padding: 40px;">
+                <svg width="48" height="48" fill="#ef4444" viewBox="0 0 24 24" style="margin-bottom: 16px;">
+                    <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M13,17H11V15H13V17M13,13H11V7H13V13Z"/>
+                </svg>
+                <p style="color: #ef4444; margin: 0;">${errorMessage}</p>
+            </div>
+        `;
+    } else if (documents.length === 0) {
+        content += `
+            <div style="text-align: center; padding: 40px;">
+                <svg width="48" height="48" fill="#6b7280" viewBox="0 0 24 24" style="margin-bottom: 16px;">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,11L9,14H11V18H13V14H15L12,11Z"/>
+                </svg>
+                <p style="color: #6b7280; margin: 0;">Keine Dokumente für diesen Tag gefunden</p>
+            </div>
+        `;
+    } else {
+        content += '<div style="display: flex; flex-direction: column; gap: 12px;">';
+        
+        documents.forEach((doc, index) => {
+            const fileSize = doc.size ? (doc.size / 1024 / 1024).toFixed(1) + ' MB' : 'Unbekannt';
+            const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString('de-DE') : 'Unbekannt';
+            
+            content += `
+                <div style="
+                    padding: 16px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    background: #f9fafb;
+                    transition: all 0.2s;
+                    cursor: pointer;
+                " onmouseover="this.style.borderColor='#1e40af'; this.style.background='#f0f9ff'" 
+                   onmouseout="this.style.borderColor='#e5e7eb'; this.style.background='#f9fafb'"
+                   onclick="viewDocument('${doc.id}', '${doc.source}')">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <h3 style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 600; flex: 1; margin-right: 16px;">
+                            ${doc.name || doc.title || 'Unbenanntes Dokument'}
+                        </h3>
+                        <span style="
+                            padding: 4px 8px;
+                            background: ${doc.sourceColor};
+                            color: white;
+                            border-radius: 6px;
+                            font-size: 12px;
+                            font-weight: 600;
+                        ">
+                            ${doc.source}
+                        </span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px;">
+                        <span>📄 ${fileSize}</span>
+                        <span>📅 ${uploadDate}</span>
+                        ${doc.tags && doc.tags.length > 1 ? `<span>🏷️ ${doc.tags.filter(t => t !== tagName).join(', ')}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        content += '</div>';
+    }
+    
+    modalContent.innerHTML = content;
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeTagModal();
+        }
+    });
+}
+
+// Close tag modal
+window.closeTagModal = function() {
+    const modal = document.getElementById('tagDocumentsModal');
+    if (modal) {
+        modal.remove();
+    }
+};
+
+// View document function
+window.viewDocument = function(docId, source) {
+    console.log('📄 Viewing document:', docId, 'from', source);
+    
+    // Close the modal first
+    closeTagModal();
+    
+    // Navigate to the appropriate page based on source
+    if (source === 'Knowledge Base') {
+        window.location.href = 'settings.html#knowledgebase';
+    } else if (source === 'Technical Database') {
+        window.location.href = 'settings.html#technicalDatabase';
+    }
+    
+    // Scroll to the document after navigation
+    setTimeout(() => {
+        const docElement = document.querySelector(`[data-doc-id="${docId}"]`);
+        if (docElement) {
+            docElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            docElement.style.background = '#fef3c7';
+            setTimeout(() => {
+                docElement.style.background = '';
+            }, 2000);
+        }
+    }, 500);
+};
 
 // Create new tag
 window.createNewTag = async function() {

@@ -1585,6 +1585,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('🔄 Starting basic setup...');
 
         // Setup basic functionality
+        initializeTheme(); // Initialize theme first
         setupNavigation();
         setupThemeToggle();
         setupChatFunctionality();
@@ -2926,8 +2927,8 @@ function updateThemeToggle(theme) {
     }
 }
 
-// Toggle theme
-async function toggleTheme() {
+// Toggle theme - Unified implementation
+window.toggleTheme = async function() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
@@ -2937,21 +2938,19 @@ async function toggleTheme() {
     document.documentElement.setAttribute('data-theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
     
-    // Theme saved to Firestore
-    // Theme saved to Firestore
-    
-    // Force style recalculation
-    document.body.style.display = 'none';
-    document.body.offsetHeight; // Trigger reflow
-    document.body.style.display = '';
-    
     // Apply theme to all page containers
     const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
     pageContainers.forEach(container => {
         container.setAttribute('data-theme', newTheme);
     });
     
-    // Save theme to database
+    // Save theme to localStorage for immediate persistence
+    localStorage.setItem('theme', newTheme);
+    
+    // Update theme toggle button appearance
+    updateThemeToggle(newTheme);
+    
+    // Save theme to database (non-blocking)
     try {
         const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/branding');
         if (response.ok) {
@@ -2974,26 +2973,52 @@ async function toggleTheme() {
         console.error('Error saving theme to database:', error);
     }
     
-    updateThemeToggle(newTheme);
-    console.log('Theme switched to:', newTheme);
+    console.log('✅ Theme switched to:', newTheme);
+};
+
+// Initialize theme on page load
+function initializeTheme() {
+    // Get saved theme from localStorage or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    console.log('🎨 Initializing theme:', savedTheme);
+    
+    // Apply theme to html and body
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+    
+    // Apply theme to all page containers
+    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
+    pageContainers.forEach(container => {
+        container.setAttribute('data-theme', savedTheme);
+    });
+    
+    // Update theme toggle button appearance
+    updateThemeToggle(savedTheme);
+    
+    console.log('✅ Theme initialized:', savedTheme);
 }
 
-// Setup theme toggle functionality
+// Setup theme toggle functionality - Improved
 function setupThemeToggle() {
     const attemptSetup = () => {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             // Remove any existing listeners to avoid duplicates
-            themeToggle.removeEventListener('click', toggleTheme);
-            themeToggle.addEventListener('click', toggleTheme);
+            const newToggle = themeToggle.cloneNode(true);
+            themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+            
+            // Add the click listener
+            newToggle.addEventListener('click', window.toggleTheme);
             console.log('✅ Theme toggle setup complete');
             return true;
         } else {
             // Try to find it by class name
             const themeToggleByClass = document.querySelector('.theme-toggle');
             if (themeToggleByClass) {
-                themeToggleByClass.removeEventListener('click', toggleTheme);
-                themeToggleByClass.addEventListener('click', toggleTheme);
+                const newToggle = themeToggleByClass.cloneNode(true);
+                themeToggleByClass.parentNode.replaceChild(newToggle, themeToggleByClass);
+                newToggle.addEventListener('click', window.toggleTheme);
                 console.log('✅ Theme toggle setup by class complete');
                 return true;
             }
