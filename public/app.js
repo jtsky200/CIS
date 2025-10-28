@@ -1189,8 +1189,19 @@ function displayKnowledgeBase(documents) {
                 itemsPerPage: 10
             };
         }
-        // Store full documents list
+        // Store full documents list in multiple locations for compatibility
         window.kbAllDocuments = documents;
+        window.knowledgeBase = documents;
+        
+        // Also update kbState if it exists
+        if (window.kbState) {
+            window.kbState.allDocuments = documents;
+        }
+        
+        // Call loadKbDocuments if it exists to sync the kb-functions.js state
+        if (typeof window.loadKbDocuments === 'function') {
+            window.loadKbDocuments(documents);
+        }
     }
     
     // Update stats with all documents
@@ -1799,6 +1810,11 @@ async function loadKnowledgeBase() {
             // Refresh the list if on settings page
             // Always try to display, even if element is hidden
             displayKnowledgeBase(knowledgeBase);
+            
+            // Also update kbState for export functionality
+            if (window.kbState) {
+                window.kbState.allDocuments = knowledgeBase;
+            }
         } else {
             console.error('❌ Failed to load knowledge base:', response.status, response.statusText);
         }

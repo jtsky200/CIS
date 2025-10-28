@@ -553,7 +553,20 @@
     }
     
     function handleExport() {
-        const docs = window.kbState.allDocuments;
+        // Try multiple sources for documents
+        const docs = window.kbState?.allDocuments || window.kbAllDocuments || window.knowledgeBase || [];
+        
+        console.log('🔐 Export attempt:', {
+            kbStateDocs: window.kbState?.allDocuments?.length || 0,
+            kbAllDocs: window.kbAllDocuments?.length || 0,
+            knowledgeBase: window.knowledgeBase?.length || 0,
+            finalDocs: docs.length
+        });
+        
+        if (!docs || docs.length === 0) {
+            showNotification('Keine Dokumente zum Exportieren gefunden', 'error');
+            return;
+        }
         
         // Use CIS proprietary format instead of JSON
         const success = window.exportToCIS(docs, 'knowledge-base', `wissensdatenbank-export-${new Date().toISOString().split('T')[0]}.cis`);
