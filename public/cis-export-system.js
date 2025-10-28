@@ -66,6 +66,8 @@
      */
     function createCISFile(data, databaseType) {
         try {
+            console.log('🔐 createCISFile called with:', { dataLength: data?.length, databaseType });
+            
             // Prepare export data
             const exportData = {
                 databaseType: databaseType,
@@ -79,15 +81,19 @@
                 }
             };
             
+            console.log('🔐 Export data prepared:', { totalDocuments: exportData.metadata.totalDocuments });
+            
             // Encrypt the data
             const encryptedData = encryptData(exportData, CIS_ENCRYPTION_KEY);
+            console.log('🔐 Data encrypted, length:', encryptedData?.length);
             
             // Create CIS file content
             const cisContent = `${CIS_MAGIC_HEADER}|${CIS_VERSION}|${encryptedData}|${generateChecksum(exportData)}`;
+            console.log('🔐 CIS content created, total length:', cisContent?.length);
             
             return cisContent;
         } catch (error) {
-            console.error('Error creating CIS file:', error);
+            console.error('🔐 Error creating CIS file:', error);
             throw new Error('Failed to create CIS export file');
         }
     }
@@ -137,12 +143,16 @@
      */
     window.exportToCIS = function(documents, databaseType, filename) {
         try {
+            console.log('🔐 exportToCIS called with:', { documents: documents?.length, databaseType, filename });
+            
             const cisContent = createCISFile(documents, databaseType);
+            console.log('🔐 CIS content created, length:', cisContent?.length);
             
             // Create blob with CIS content
             const blob = new Blob([cisContent], { 
                 type: 'application/octet-stream' 
             });
+            console.log('🔐 Blob created, size:', blob.size);
             
             // Create download link
             const url = URL.createObjectURL(blob);
@@ -150,15 +160,18 @@
             a.href = url;
             a.download = filename || `${databaseType}-export-${new Date().toISOString().split('T')[0]}.cis`;
             
+            console.log('🔐 Download link created:', a.download);
+            
             // Trigger download
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
+            console.log('🔐 Export completed successfully');
             return true;
         } catch (error) {
-            console.error('Export error:', error);
+            console.error('🔐 Export error:', error);
             return false;
         }
     };
