@@ -553,15 +553,55 @@
     }
     
     function handleExport() {
-        const docs = window.kbState.allDocuments;
-        
-        // Use CIS proprietary format instead of JSON
-        const success = window.exportToCIS(docs, 'knowledge-base', `wissensdatenbank-export-${new Date().toISOString().split('T')[0]}.cis`);
-        
-        if (success) {
-            showNotification('Wissensdatenbank erfolgreich als CIS-Datei exportiert', 'success');
-        } else {
-            showNotification('Fehler beim Exportieren der Wissensdatenbank', 'error');
+        try {
+            const docs = window.kbState?.allDocuments || [];
+            
+            if (!docs || docs.length === 0) {
+                showNotification('Keine Dokumente zum Exportieren gefunden', 'error');
+                return;
+            }
+            
+            // Check if CIS export system is available
+            if (typeof window.exportToCIS !== 'function') {
+                console.warn('CIS Export System not available, falling back to JSON export');
+                // Fallback to JSON export
+                const dataStr = JSON.stringify(docs, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `knowledge-base-export-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                showNotification('Wissensdatenbank als JSON exportiert (Fallback)', 'success');
+                return;
+            }
+            
+            // Use CIS proprietary format
+            const success = window.exportToCIS(docs, 'knowledge-base', `wissensdatenbank-export-${new Date().toISOString().split('T')[0]}.cis`);
+            
+            if (success) {
+                showNotification('Wissensdatenbank erfolgreich als CIS-Datei exportiert', 'success');
+            } else {
+                console.warn('CIS export failed, falling back to JSON export');
+                // Fallback to JSON export
+                const dataStr = JSON.stringify(docs, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `knowledge-base-export-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                showNotification('Wissensdatenbank als JSON exportiert (Fallback)', 'success');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('Fehler beim Exportieren der Wissensdatenbank: ' + error.message, 'error');
         }
     }
     

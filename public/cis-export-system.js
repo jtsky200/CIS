@@ -66,6 +66,17 @@
      */
     function createCISFile(data, databaseType) {
         try {
+            // Validate input
+            if (!data || !Array.isArray(data)) {
+                throw new Error('Invalid data: must be an array');
+            }
+            
+            if (!databaseType || typeof databaseType !== 'string') {
+                throw new Error('Invalid databaseType: must be a string');
+            }
+            
+            console.log('🔐 Creating CIS file for:', databaseType, 'with', data.length, 'documents');
+            
             // Prepare export data
             const exportData = {
                 databaseType: databaseType,
@@ -79,16 +90,27 @@
                 }
             };
             
+            console.log('🔐 Export data prepared:', {
+                databaseType: exportData.databaseType,
+                documentCount: exportData.metadata.totalDocuments,
+                timestamp: exportData.timestamp
+            });
+            
             // Encrypt the data
             const encryptedData = encryptData(exportData, CIS_ENCRYPTION_KEY);
+            
+            if (!encryptedData) {
+                throw new Error('Failed to encrypt data');
+            }
             
             // Create CIS file content
             const cisContent = `${CIS_MAGIC_HEADER}|${CIS_VERSION}|${encryptedData}|${generateChecksum(exportData)}`;
             
+            console.log('🔐 CIS file content created, length:', cisContent.length);
             return cisContent;
         } catch (error) {
             console.error('Error creating CIS file:', error);
-            throw new Error('Failed to create CIS export file');
+            throw new Error('Failed to create CIS export file: ' + error.message);
         }
     }
     
@@ -137,7 +159,29 @@
      */
     window.exportToCIS = function(documents, databaseType, filename) {
         try {
+            // Validate input parameters
+            if (!documents || !Array.isArray(documents)) {
+                console.error('Invalid documents parameter:', documents);
+                return false;
+            }
+            
+            if (!databaseType || typeof databaseType !== 'string') {
+                console.error('Invalid databaseType parameter:', databaseType);
+                return false;
+            }
+            
+            console.log('🔐 Exporting CIS file:', {
+                documentCount: documents.length,
+                databaseType: databaseType,
+                filename: filename
+            });
+            
             const cisContent = createCISFile(documents, databaseType);
+            
+            if (!cisContent) {
+                console.error('Failed to create CIS content');
+                return false;
+            }
             
             // Create blob with CIS content
             const blob = new Blob([cisContent], { 
@@ -156,6 +200,7 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
+            console.log('✅ CIS export successful');
             return true;
         } catch (error) {
             console.error('Export error:', error);
