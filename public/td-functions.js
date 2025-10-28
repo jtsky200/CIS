@@ -460,45 +460,117 @@
     
     function handleExport() {
         const docs = window.tdState.allDocuments;
-        const csv = 'Dateiname,Typ,Größe,Hochgeladen\n' + docs.map(doc => 
-            `"${doc.filename || doc.name}","${doc.fileType || doc.type}","${doc.size}","${formatDate(doc.uploadedAt)}"`
-        ).join('\n');
         
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'technische-datenbank.csv';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        // Use CIS proprietary format instead of CSV
+        const success = window.exportToCIS(docs, 'technical-database', `technische-datenbank-export-${new Date().toISOString().split('T')[0]}.cis`);
+        
+        if (success) {
+            showNotification('Technische Datenbank erfolgreich als CIS-Datei exportiert', 'success');
+        } else {
+            showNotification('Fehler beim Exportieren der technischen Datenbank', 'error');
+        }
     }
     
     async function handleImport() {
         // Show tag selection modal first
         const tags = await getAvailableTags();
         
-        if (tags.length === 0) {
-            // No tags available, proceed with upload
-            await performFileUpload([], null);
-            return;
-        }
-        
-        // Create modal for tag selection
-        const selectedTags = await showTagSelectionModal(tags);
-        
         // Proceed with file selection
         const input = document.createElement('input');
         input.type = 'file';
         input.multiple = true;
+        input.accept = '.cis,.pdf,.txt,.md,.xlsx,.docx';
         input.onchange = async (e) => {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
             
-            await performFileUpload(files, selectedTags);
+            // Check if any file is a CIS file
+            const cisFiles = files.filter(file => file.name.endsWith('.cis'));
+            const regularFiles = files.filter(file => !file.name.endsWith('.cis'));
+            
+            try {
+                // Handle CIS files first
+                for (const cisFile of cisFiles) {
+                    const result = await window.importFromCIS(cisFile);
+                    
+                    if (result.success) {
+                        // Validate that it's a technical database file
+                        if (result.databaseType !== 'technical-database') {
+                            showNotification(`CIS-Datei "${cisFile.name}" ist nicht für die technische Datenbank bestimmt`, 'error');
+                            continue;
+                        }
+                        
+                        // Show import confirmation with file info
+                        const confirmMessage = `CIS-Datei gefunden: ${cisFile.name}\n` +
+                            `Typ: ${result.databaseType}\n` +
+                            `Dokumente: ${result.metadata.totalDocuments}\n` +
+                            `Exportiert: ${new Date(result.metadata.timestamp).toLocaleString('de-DE')}\n\n` +
+                            `Möchten Sie diese Daten importieren?`;
+                        
+                        if (confirm(confirmMessage)) {
+                            // Process the imported documents
+                            await processImportedDocuments(result.data.documents, 'technical');
+                            showNotification(`${result.data.documents.length} Dokumente aus "${cisFile.name}" erfolgreich importiert`, 'success');
+                        }
+                    } else {
+                        showNotification(`Fehler beim Lesen der CIS-Datei "${cisFile.name}": ${result.error}`, 'error');
+                    }
+                }
+                
+                // Handle regular files
+                if (regularFiles.length > 0) {
+                    if (tags.length === 0) {
+                        // No tags available, proceed with upload
+                        await performFileUpload(regularFiles, null);
+                    } else {
+                        // Create modal for tag selection
+                        const selectedTags = await showTagSelectionModal(tags);
+                        await performFileUpload(regularFiles, selectedTags);
+                    }
+                }
+            } catch (error) {
+                console.error('Error importing files:', error);
+                showNotification('Fehler beim Importieren der Dateien.', 'error');
+            }
         };
         input.click();
+    }
+    
+    // Process imported documents from CIS files
+    async function processImportedDocuments(documents, databaseType) {
+        try {
+            // Add documents to the appropriate database
+            for (const doc of documents) {
+                // Ensure document has required fields
+                if (!doc.id) {
+                    doc.id = generateDocumentId();
+                }
+                if (!doc.uploadedAt) {
+                    doc.uploadedAt = new Date().toISOString();
+                }
+                
+                // Add to local state
+                if (databaseType === 'technical') {
+                    window.tdState.allDocuments.push(doc);
+                }
+            }
+            
+            // Refresh the display
+            if (databaseType === 'technical') {
+                window.tdState.filteredDocuments = [...window.tdState.allDocuments];
+                renderDocuments();
+                renderPagination();
+            }
+            
+        } catch (error) {
+            console.error('Error processing imported documents:', error);
+            throw error;
+        }
+    }
+    
+    // Generate unique document ID
+    function generateDocumentId() {
+        return 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
     
     async function getAvailableTags() {

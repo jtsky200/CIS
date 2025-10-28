@@ -3534,23 +3534,17 @@ async function exportDatabase(type) {
         const response = await fetch(`${API_BASE}${endpoint}`);
         const data = await response.json();
         
-        const exportData = {
-            type: type,
-            timestamp: new Date().toISOString(),
-            documents: data.documents || []
-        };
+        // Use CIS proprietary format instead of JSON
+        const databaseType = type === 'knowledge' ? 'knowledge-base' : 'technical-database';
+        const filename = `${databaseType}-export-${new Date().toISOString().split('T')[0]}.cis`;
         
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${type}-export-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const success = window.exportToCIS(data.documents || [], databaseType, filename);
         
-        showMessage(`Datenbank erfolgreich exportiert`, 'success');
+        if (success) {
+            showMessage(`Datenbank erfolgreich als CIS-Datei exportiert`, 'success');
+        } else {
+            showMessage('Fehler beim Exportieren', 'error');
+        }
     } catch (error) {
         console.error('Export error:', error);
         showMessage('Fehler beim Exportieren', 'error');

@@ -554,50 +554,126 @@
     
     function handleExport() {
         const docs = window.kbState.allDocuments;
-        const dataStr = JSON.stringify(docs, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(dataBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `knowledge-base-export-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        
+        // Use CIS proprietary format instead of JSON
+        const success = window.exportToCIS(docs, 'knowledge-base', `wissensdatenbank-export-${new Date().toISOString().split('T')[0]}.cis`);
+        
+        if (success) {
+            showNotification('Wissensdatenbank erfolgreich als CIS-Datei exportiert', 'success');
+        } else {
+            showNotification('Fehler beim Exportieren der Wissensdatenbank', 'error');
+        }
     }
     
     function handleImport() {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = '.json,.pdf,.txt,.md,.xlsx,.docx';
+        input.accept = '.cis,.json,.pdf,.txt,.md,.xlsx,.docx';
         input.multiple = true;
         input.onchange = async (e) => {
             const files = e.target.files;
             if (!files || files.length === 0) return;
             
-            const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
-            }
+            // Check if any file is a CIS file
+            const cisFiles = Array.from(files).filter(file => file.name.endsWith('.cis'));
+            const regularFiles = Array.from(files).filter(file => !file.name.endsWith('.cis'));
             
             try {
-                const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/upload', {
-                    method: 'POST',
-                    body: formData
-                });
+                // Handle CIS files first
+                for (const cisFile of cisFiles) {
+                    const result = await window.importFromCIS(cisFile);
+                    
+                    if (result.success) {
+                        // Validate that it's a knowledge base file
+                        if (result.databaseType !== 'knowledge-base') {
+                            showNotification(`CIS-Datei "${cisFile.name}" ist nicht für die Wissensdatenbank bestimmt`, 'error');
+                            continue;
+                        }
+                        
+                        // Show import confirmation with file info
+                        const confirmMessage = `CIS-Datei gefunden: ${cisFile.name}\n` +
+                            `Typ: ${result.databaseType}\n` +
+                            `Dokumente: ${result.metadata.totalDocuments}\n` +
+                            `Exportiert: ${new Date(result.metadata.timestamp).toLocaleString('de-DE')}\n\n` +
+                            `Möchten Sie diese Daten importieren?`;
+                        
+                        if (confirm(confirmMessage)) {
+                            // Process the imported documents
+                            await processImportedDocuments(result.data.documents, 'knowledge');
+                            showNotification(`${result.data.documents.length} Dokumente aus "${cisFile.name}" erfolgreich importiert`, 'success');
+                        }
+                    } else {
+                        showNotification(`Fehler beim Lesen der CIS-Datei "${cisFile.name}": ${result.error}`, 'error');
+                    }
+                }
                 
-                if (response.ok) {
-                    showNotification(`${files.length} Datei(en) erfolgreich hochgeladen.`, 'success');
-                    window.refreshKnowledgeBase();
-                } else {
-                    showNotification('Fehler beim Hochladen der Dateien.', 'error');
+                // Handle regular files
+                if (regularFiles.length > 0) {
+                    const formData = new FormData();
+                    for (let i = 0; i < regularFiles.length; i++) {
+                        formData.append('files', regularFiles[i]);
+                    }
+                    
+                    const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        showNotification(`${regularFiles.length} reguläre Datei(en) erfolgreich hochgeladen.`, 'success');
+                        window.refreshKnowledgeBase();
+                    } else {
+                        showNotification('Fehler beim Hochladen der regulären Dateien.', 'error');
+                    }
                 }
             } catch (error) {
                 console.error('Error importing files:', error);
-                showNotification('Fehler beim Hochladen der Dateien.', 'error');
+                showNotification('Fehler beim Importieren der Dateien.', 'error');
             }
         };
         input.click();
+    }
+    
+    // Process imported documents from CIS files
+    async function processImportedDocuments(documents, databaseType) {
+        try {
+            // Add documents to the appropriate database
+            for (const doc of documents) {
+                // Ensure document has required fields
+                if (!doc.id) {
+                    doc.id = generateDocumentId();
+                }
+                if (!doc.uploadedAt) {
+                    doc.uploadedAt = new Date().toISOString();
+                }
+                
+                // Add to local state
+                if (databaseType === 'knowledge') {
+                    window.kbState.allDocuments.push(doc);
+                } else if (databaseType === 'technical') {
+                    window.tdState.allDocuments.push(doc);
+                }
+            }
+            
+            // Refresh the display
+            if (databaseType === 'knowledge') {
+                applyFiltersAndSort();
+                renderDocuments();
+            } else if (databaseType === 'technical') {
+                // Similar refresh for technical database
+                window.tdState.filteredDocuments = [...window.tdState.allDocuments];
+                renderDocuments();
+            }
+            
+        } catch (error) {
+            console.error('Error processing imported documents:', error);
+            throw error;
+        }
+    }
+    
+    // Generate unique document ID
+    function generateDocumentId() {
+        return 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
     
     // Utility functions
