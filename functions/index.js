@@ -5006,8 +5006,68 @@ exports.smartCategorize = functions.runWith({
                 
                 console.log(`Analyzing: ${filename}`);
                 
-                if (upperFilename.includes('LYRIQ') || 
-                    tags.some(t => t.toUpperCase().includes('LYRIQ'))) {
+                // PRIORITY: Check for FAQ first (very specific)
+                if (upperFilename.includes('FAQ') || 
+                    upperFilename.includes('COMMON-QUESTIONS') ||
+                    upperFilename.includes('QUESTION')) {
+                    newCategory = 'FAQ';
+                    console.log(`  → Categorized as FAQ`);
+                }
+                // Then check for GUIDEs
+                else if (upperFilename.includes('GUIDE') || 
+                         upperFilename.includes('ACTIVATION') ||
+                         upperFilename.includes('HOW-TO') ||
+                         upperFilename.includes('QUICK START') ||
+                         upperFilename.includes('QUICKSTART')) {
+                    newCategory = 'GUIDE';
+                    console.log(`  → Categorized as GUIDE`);
+                }
+                // Charging documents
+                else if (upperFilename.includes('CHARGE') || 
+                         upperFilename.includes('BATTERY') ||
+                         tags.some(t => t.toUpperCase().includes('CHARGE'))) {
+                    newCategory = 'CHARGING';
+                    console.log(`  → Categorized as CHARGING`);
+                }
+                // Troubleshooting
+                else if (upperFilename.includes('TROUBLESHOOT') || 
+                         upperFilename.includes('DIAGNOSE') ||
+                         tags.some(t => t.toUpperCase().includes('TROUBLESHOOT'))) {
+                    newCategory = 'TROUBLESHOOTING';
+                    console.log(`  → Categorized as TROUBLESHOOTING`);
+                }
+                // Specifications
+                else if (upperFilename.includes('SPECIFICATION') || 
+                         upperFilename.includes('SPECS') ||
+                         upperFilename.includes('SPEC') ||
+                         fileType === 'XLS' || fileType === 'XLSX') {
+                    newCategory = 'SPECIFICATIONS';
+                    console.log(`  → Categorized as SPECIFICATIONS`);
+                }
+                // Warranty
+                else if (upperFilename.includes('WARRANTY') ||
+                         upperFilename.includes('GARANTIE')) {
+                    newCategory = 'WARRANTY';
+                    console.log(`  → Categorized as WARRANTY`);
+                }
+                // Service Manuals
+                else if (upperFilename.includes('SERVICE') || 
+                         upperFilename.includes('REPAIR') ||
+                         upperFilename.includes('MAINTENANCE')) {
+                    newCategory = 'SERVICE MANUAL';
+                    console.log(`  → Categorized as SERVICE MANUAL`);
+                }
+                // Resources
+                else if (upperFilename.includes('WEBSITE') ||
+                         upperFilename.includes('DATA') ||
+                         upperFilename.includes('LINK') ||
+                         upperFilename.includes('LIBRARY')) {
+                    newCategory = 'RESOURCES';
+                    console.log(`  → Categorized as RESOURCES`);
+                }
+                // Car models - check after specific categories
+                else if (upperFilename.includes('LYRIQ') || 
+                          tags.some(t => t.toUpperCase().includes('LYRIQ'))) {
                     newCategory = 'LYRIQ';
                     console.log(`  → Categorized as LYRIQ`);
                 } else if (upperFilename.includes('VISTIQ') || 
@@ -5018,49 +5078,6 @@ exports.smartCategorize = functions.runWith({
                            tags.some(t => t.toUpperCase().includes('OPTIQ'))) {
                     newCategory = 'OPTIQ';
                     console.log(`  → Categorized as OPTIQ`);
-                } else if (upperFilename.includes('SPECIFICATION') || 
-                           upperFilename.includes('SPECS') || 
-                           fileType === 'XLS' || fileType === 'XLSX') {
-                    newCategory = 'SPECIFICATIONS';
-                    console.log(`  → Categorized as SPECIFICATIONS`);
-                } else if (upperFilename.includes('TROUBLESHOOT') || 
-                           upperFilename.includes('DIAGNOSE') || 
-                           tags.some(t => t.toUpperCase().includes('TROUBLESHOOT'))) {
-                    newCategory = 'TROUBLESHOOTING';
-                    console.log(`  → Categorized as TROUBLESHOOTING`);
-                } else if (upperFilename.includes('SERVICE') || 
-                           upperFilename.includes('REPAIR') || 
-                           upperFilename.includes('MAINTENANCE')) {
-                    newCategory = 'SERVICE MANUAL';
-                    console.log(`  → Categorized as SERVICE MANUAL`);
-                } else if (upperFilename.includes('CHARGE') || 
-                           upperFilename.includes('BATTERY') || 
-                           tags.some(t => t.toUpperCase().includes('CHARGE'))) {
-                    newCategory = 'CHARGING';
-                    console.log(`  → Categorized as CHARGING`);
-                } else if (upperFilename.includes('FAQ')) {
-                    newCategory = 'FAQ';
-                    console.log(`  → Categorized as FAQ`);
-                } else if (upperFilename.includes('GUIDE') || 
-                           upperFilename.includes('ACTIVATION') ||
-                           upperFilename.includes('HOW-TO')) {
-                    newCategory = 'GUIDE';
-                    console.log(`  → Categorized as GUIDE`);
-                } else if (upperFilename.includes('WARRANTY') ||
-                           upperFilename.includes('GARANTIE')) {
-                    newCategory = 'WARRANTY';
-                    console.log(`  → Categorized as WARRANTY`);
-                } else if (upperFilename.includes('WEBSITE') ||
-                           upperFilename.includes('DATA') ||
-                           upperFilename.includes('LINK') ||
-                           upperFilename.includes('MOLO') ||
-                           upperFilename.includes('LIBRARY')) {
-                    newCategory = 'RESOURCES';
-                    console.log(`  → Categorized as RESOURCES`);
-                } else if (upperFilename.includes('TROUBLESHOOT') ||
-                           upperFilename.includes('DIAGNOSE')) {
-                    newCategory = 'TROUBLESHOOTING';
-                    console.log(`  → Categorized as TROUBLESHOOTING`);
                 }
                 
                 // Update if we found a more specific category
