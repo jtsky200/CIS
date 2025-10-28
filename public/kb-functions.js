@@ -245,25 +245,25 @@
         let paginationHtml = '';
         if (totalPages > 1) {
             paginationHtml = `
-            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-top: 20px; background: #f9fafb; border-radius: 8px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; margin-top: 24px; background: white; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
                 <button onclick="window.goToKbPage(1)" ${currentPage === 1 ? 'disabled' : ''} 
-                    style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
-                    ⏮ Erste
+                    style="padding: 8px 16px; background: ${currentPage === 1 ? '#f3f4f6' : '#ffffff'}; color: ${currentPage === 1 ? '#9ca3af' : '#374151'}; border: 1px solid ${currentPage === 1 ? '#e5e7eb' : '#d1d5db'}; border-radius: 8px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px; transition: all 0.2s;">
+                    Erste
                 </button>
                 <button onclick="window.goToKbPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                    style="padding: 10px 18px; background: ${currentPage === 1 ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === 1 ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
-                    ← Zurück
+                    style="padding: 8px 16px; background: ${currentPage === 1 ? '#f3f4f6' : '#ffffff'}; color: ${currentPage === 1 ? '#9ca3af' : '#374151'}; border: 1px solid ${currentPage === 1 ? '#e5e7eb' : '#d1d5db'}; border-radius: 8px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px; transition: all 0.2s;">
+                    Zurück
                 </button>
-                <span style="padding: 10px 18px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                <span style="padding: 8px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 600; font-size: 14px; color: #475569;">
                     Seite ${currentPage} von ${totalPages}
                 </span>
                 <button onclick="window.goToKbPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                    style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
-                    Weiter →
+                    style="padding: 8px 16px; background: ${currentPage === totalPages ? '#f3f4f6' : '#ffffff'}; color: ${currentPage === totalPages ? '#9ca3af' : '#374151'}; border: 1px solid ${currentPage === totalPages ? '#e5e7eb' : '#d1d5db'}; border-radius: 8px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px; transition: all 0.2s;">
+                    Weiter
                 </button>
                 <button onclick="window.goToKbPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} 
-                    style="padding: 10px 18px; background: ${currentPage === totalPages ? '#e5e7eb' : '#3b82f6'}; color: ${currentPage === totalPages ? '#9ca3af' : 'white'}; border: none; border-radius: 6px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px;">
-                    Letzte ⏭
+                    style="padding: 8px 16px; background: ${currentPage === totalPages ? '#f3f4f6' : '#ffffff'}; color: ${currentPage === totalPages ? '#9ca3af' : '#374151'}; border: 1px solid ${currentPage === totalPages ? '#e5e7eb' : '#d1d5db'}; border-radius: 8px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-weight: 500; font-size: 14px; transition: all 0.2s;">
+                    Letzte
                 </button>
             </div>
         `;
