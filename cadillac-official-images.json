@@ -1,0 +1,52 @@
+{
+  "source": "Cadillac Europe Official Website",
+  "scraped": "2025-10-29",
+  "models": {
+    "LYRIQ": {
+      "exterior": [
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/hotspot-exterior/lyriq-exterior-bg-21-9.jpg?imwidth=1920",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/hotspot-exterior/lyriq-exterior-bg-5-4-m.jpg?imwidth=1200"
+      ],
+      "interior": [
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/hotspot-interior/lyriq-interior-01-bg-21-9.jpg?imwidth=1280",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/hotspot-interior/lyriq-interior-01-bg-5-4-m.jpg?imwidth=1200",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-interior-02-4-3.png?imwidth=960"
+      ],
+      "charging": [
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-charging-bg-21-9.jpg?imwidth=1280"
+      ],
+      "performance": [
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-performance-02-16-9.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-performance-03-16-9.png?imwidth=981"
+      ],
+      "technology": [
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-technology-01-16-9.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-technology-02-16-9.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-technology-04-16-9-.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/shared-assets/lyriq-technology/lyriq-technology-04-16-9.png?imwidth=981"
+      ],
+      "safety": [
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-safety-01-16-9.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-safety-02-16-9.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-safety-03-16-9.png?imwidth=981",
+        "https://www.cadillaceurope.com/content/dam/cadillac/eu/europe/lyriq/main/lyriq-safety-04-16-9.png?imwidth=981"
+      ]
+    },
+    "LYRIQ-V": {
+      "exterior": [],
+      "interior": [],
+      "performance": [],
+      "technology": []
+    },
+    "VISTIQ": {
+      "exterior": [],
+      "interior": [],
+      "technology": []
+    },
+    "OPTIQ": {
+      "exterior": [],
+      "interior": [],
+      "technology": []
+    }
+  }
+}

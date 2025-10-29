@@ -1551,6 +1551,48 @@ exports.uploadWithOverwrite = functions.https.onRequest((req, res) => {
 // TECHNICAL DATABASE ENDPOINTS
 // ============================================================================
 
+// Knowledge Base API endpoint for chat
+exports.knowledgeBase = functions.runWith({
+    memory: '512MB',
+    timeoutSeconds: 60
+}).https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        if (req.method === 'GET') {
+            try {
+                console.log('📚 Fetching Knowledge Base documents for chat...');
+                const snapshot = await db.collection('knowledge-base')
+                    .limit(100)
+                    .get();
+                    
+                const documents = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    documents.push({
+                        id: doc.id,
+                        title: data.title || 'Untitled',
+                        content: data.content || '',
+                        fullContent: data.fullContent || data.content || '',
+                        category: data.category || 'General',
+                        tags: data.tags || [],
+                        source: data.source || 'Knowledge Base',
+                        images: data.images || [],
+                        fileType: data.fileType || 'Document',
+                        dateAdded: data.dateAdded
+                    });
+                });
+
+                console.log(`✅ Returning ${documents.length} knowledge base documents`);
+                return res.json({ documents });
+            } catch (error) {
+                console.error('❌ Error fetching knowledge base documents:', error);
+                return res.status(500).json({ error: 'Failed to fetch knowledge base documents' });
+            }
+        } else {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+    });
+});
+
 exports.technicalDatabase = functions.runWith({
     memory: '512MB',
     timeoutSeconds: 60
@@ -1558,33 +1600,36 @@ exports.technicalDatabase = functions.runWith({
     cors(req, res, async () => {
             if (req.method === 'GET') {
             try {
-                // Limit documents to prevent memory issues
-                const snapshot = await db.collection('technicalDatabase')
-                    .where('isActive', '==', true)
-                    .limit(50)
+                console.log('🔧 Fetching Technical Database documents for chat...');
+                const snapshot = await db.collection('technical-database')
+                    .limit(100)
                     .get();
                     
                 const documents = [];
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    // Only include essential fields to reduce memory usage
                     documents.push({
                         id: doc.id,
+                        title: data.title || data.name || data.filename || 'Untitled',
+                        content: data.content || '',
+                        fullContent: data.fullContent || data.content || '',
                         name: data.name || data.filename || 'Unnamed Document',
                         fileType: data.fileType || 'unknown',
                         category: data.category || 'General',
                         subcategory: data.subcategory || 'General',
                         tags: data.tags || [],
                         vehicleType: data.vehicleType || 'General',
+                        images: data.images || [],
                         uploadedAt: data.uploadedAt,
                         size: data.size || 0,
                         isActive: data.isActive
                     });
                 });
 
+                console.log(`✅ Returning ${documents.length} technical database documents`);
                 return res.json({ documents });
             } catch (error) {
-                console.error('Error fetching technical documents:', error);
+                console.error('❌ Error fetching technical documents:', error);
                 return res.status(500).json({ error: 'Failed to fetch technical documents' });
             }
         } else {
