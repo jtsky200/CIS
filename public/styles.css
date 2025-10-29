@@ -3675,3 +3675,152 @@ button, input, select, textarea, a, .clickable {
 .document-list-hidden-scroll::-webkit-scrollbar {
     display: none; /* WebKit browsers */
 }
+
+/* ========================================
+   AI Chat Message Styling
+   ======================================== */
+
+/* AI Image Gallery */
+.ai-image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+    padding: 0;
+}
+
+.ai-image-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #f9fafb;
+}
+
+.ai-image-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.ai-image {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.ai-image:hover {
+    opacity: 0.95;
+}
+
+/* AI Text Formatting */
+.ai-paragraph {
+    margin: 12px 0;
+    line-height: 1.7;
+    color: #374151;
+    font-size: 15px;
+}
+
+.ai-heading-1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 24px 0 16px 0;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 8px;
+}
+
+.ai-heading-2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 20px 0 12px 0;
+    color: #1f2937;
+}
+
+.ai-heading-3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 16px 0 8px 0;
+    color: #374151;
+}
+
+.ai-list {
+    margin: 12px 0;
+    padding-left: 24px;
+}
+
+.ai-list-item {
+    margin: 8px 0;
+    line-height: 1.6;
+    color: #374151;
+}
+
+.ai-bold {
+    font-weight: 600;
+    color: #111827;
+}
+
+.ai-italic {
+    font-style: italic;
+    color: #6b7280;
+}
+
+.ai-code {
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #dc2626;
+}
+
+.ai-pre {
+    background: #1f2937;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 16px 0;
+}
+
+.ai-pre code {
+    color: #f3f4f6;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.ai-quote {
+    border-left: 4px solid #3b82f6;
+    padding: 12px 16px;
+    margin: 16px 0;
+    background: #eff6ff;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #1e40af;
+}
+
+.ai-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ai-table-header {
+    background: #f3f4f6;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.ai-table-cell {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+}

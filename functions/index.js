@@ -596,12 +596,25 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
                 return res.status(500).json({ error: 'OpenAI API key not configured' });
             }
 
-            // Build context from knowledge base
+            // Build context from the provided context array (from frontend search)
             let context = '';
-            if (knowledgeBase === true) {
-                // If knowledgeBase is true, we'll add a note that we have access to it
+            if (userContext && Array.isArray(userContext) && userContext.length > 0) {
+                console.log('📚 Using context from frontend search:', userContext.length, 'documents');
+                context += '=== RELEVANT DOCUMENTS FROM DATABASE ===\n\n';
+                userContext.forEach((doc, index) => {
+                    context += `Document ${index + 1} - [${doc.source}]\n`;
+                    context += `Title: ${doc.title}\n`;
+                    if (doc.category) context += `Category: ${doc.category}\n`;
+                    if (doc.tags && doc.tags.length > 0) context += `Tags: ${doc.tags.join(', ')}\n`;
+                    context += `Content:\n${doc.content || doc.fullContent}\n`;
+                    context += '\n' + '='.repeat(80) + '\n\n';
+                });
+            }
+            
+            // Fallback to old format if no context array provided
+            if (!context && knowledgeBase === true) {
                 context += 'Knowledge Base Information: Available\n';
-            } else if (knowledgeBase && knowledgeBase.length > 0) {
+            } else if (!context && knowledgeBase && knowledgeBase.length > 0) {
                 context += 'Knowledge Base Information:\n';
                 knowledgeBase.forEach((doc, index) => {
                     context += `Document ${index + 1}: ${doc.filename}\n`;
@@ -611,7 +624,6 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
 
             // Add technical context if provided
             if (technicalContext === true) {
-                // If technicalContext is true, we'll add a note that we have access to it
                 context += 'Technical Database Information: Available\n';
             } else if (technicalContext && technicalContext.length > 0) {
                 context += 'Technical Database Information:\n';
@@ -641,25 +653,31 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
             
             let systemContext = '';
             if (isGerman) {
-                systemContext = `Sie sind C.I.S (Cadillac Information System), ein KI-Assistent spezialisiert auf Cadillac Elektrofahrzeuge für den europäischen Markt. Sie haben Zugang zu einer umfassenden Wissensdatenbank und technischen Datenbank.
+                systemContext = `Sie sind C.I.S (Cadillac Information System), ein KI-Assistent spezialisiert auf Cadillac Elektrofahrzeuge für den europäischen Markt (Schweiz/Deutschland). Sie haben Zugang zu einer umfassenden Wissensdatenbank und technischen Datenbank mit AKTUELLEN offiziellen Preisen und Spezifikationen.
 
-WICHTIGE HINWEISE:
+KRITISCHE HINWEISE:
 - Antworten Sie IMMER auf Deutsch
-- Verwenden Sie europäische Einheiten (km, €, °C, Liter)
-- Beziehen Sie sich auf den deutschen/europäischen Markt
-- Verwenden Sie die Wissensdatenbank und Technische Datenbank für präzise Informationen
-- Formatieren Sie Antworten schön mit Markdown (Überschriften, Listen, Tabellen)
-- Verwenden Sie professionelle, hilfreiche Sprache`;
+- Verwenden Sie SCHWEIZER Preise in CHF (Schweizer Franken) - dies ist PRIORITÄT!
+- Verwenden Sie europäische Einheiten (km, kWh, °C)
+- Beziehen Sie sich auf den Schweizer/europäischen Markt
+- Verwenden Sie AUSSCHLIESSLICH die bereitgestellten Dokumente für Preise und technische Daten
+- Wenn Preise in den Dokumenten stehen, geben Sie diese GENAU an (z.B. "Ab CHF 90'100")
+- Formatieren Sie Antworten schön mit Markdown (## Überschriften, Listen, **Fettdruck**)
+- Verwenden Sie professionelle, hilfreiche Sprache
+- Fügen Sie [QUELLE: Dokumentname] am Ende relevanter Abschnitte hinzu`;
             } else {
-                systemContext = `You are C.I.S (Cadillac Information System), an AI assistant specialized in Cadillac EV vehicles. You have access to a comprehensive knowledge base and technical database.
+                systemContext = `You are C.I.S (Cadillac Information System), an AI assistant specialized in Cadillac EV vehicles for the European market (Switzerland/Germany). You have access to a comprehensive knowledge base and technical database with CURRENT official prices and specifications.
 
-IMPORTANT NOTES:
+CRITICAL NOTES:
 - Always respond in German
-- Use European units (km, €, °C, liters)
-- Reference the German/European market
-- Use the knowledge base and technical database for accurate information
-- Format responses beautifully with Markdown (headings, lists, tables)
-- Use professional, helpful language`;
+- Use SWISS prices in CHF (Swiss Francs) - this is PRIORITY!
+- Use European units (km, kWh, °C)
+- Reference the Swiss/European market
+- Use ONLY the provided documents for prices and technical data
+- If prices are in the documents, state them EXACTLY (e.g. "Ab CHF 90'100")
+- Format responses beautifully with Markdown (## Headings, Lists, **Bold**)
+- Use professional, helpful language
+- Add [SOURCE: Document name] at the end of relevant sections`;
             }
             
             let prompt = `${systemContext}

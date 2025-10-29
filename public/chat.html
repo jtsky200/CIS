@@ -443,8 +443,8 @@
         }
         
         // Add message to chat
-        function addMessage(content, sender) {
-            console.log('💬 Adding message:', content, sender);
+        function addMessage(content, sender, images = []) {
+            console.log('💬 Adding message:', content, sender, 'Images:', images.length);
             
             const chatMessages = document.getElementById('chatMessages');
             if (!chatMessages) {
@@ -475,7 +475,23 @@
             } else {
                 // Format AI response with markdown
                 const formattedContent = formatMessage(content);
+                
+                // Create image gallery if images are available
+                let imageGalleryHTML = '';
+                if (images && images.length > 0) {
+                    imageGalleryHTML = '<div class="ai-image-gallery">';
+                    images.forEach((img, index) => {
+                        imageGalleryHTML += `
+                            <div class="ai-image-container">
+                                <img src="${img}" alt="Cadillac Model Image ${index + 1}" class="ai-image" loading="lazy" onerror="this.style.display='none'">
+                            </div>
+                        `;
+                    });
+                    imageGalleryHTML += '</div>';
+                }
+                
                 messageDiv.innerHTML = `
+                    ${imageGalleryHTML}
                     <div class="message-content">${formattedContent}</div>
                 `;
             }
@@ -542,7 +558,8 @@
                         fullContent: doc.content, // Include full content
                         score: score,
                         category: doc.category,
-                        tags: doc.tags
+                        tags: doc.tags,
+                        images: doc.images || [] // Include images if available
                     });
                 }
             });
@@ -632,9 +649,23 @@
                     typingIndicator.style.display = 'none';
                 }
                 
-                // Add AI response with sources
+                // Add AI response with sources and images
                 if (data.response) {
                     let responseWithSources = data.response;
+                    
+                    // Collect all images from relevant documents
+                    const allImages = [];
+                    if (relevantContext && relevantContext.length > 0) {
+                        relevantContext.forEach(doc => {
+                            if (doc.images && doc.images.length > 0) {
+                                doc.images.forEach(img => {
+                                    if (img && !allImages.includes(img)) {
+                                        allImages.push(img);
+                                    }
+                                });
+                            }
+                        });
+                    }
                     
                     // Add source references if relevant context was found
                     if (relevantContext && relevantContext.length > 0) {
@@ -644,7 +675,7 @@
                         });
                     }
                     
-                    addMessage(responseWithSources, 'assistant');
+                    addMessage(responseWithSources, 'assistant', allImages);
                 } else {
                     addMessage('Entschuldigung, ich konnte keine Antwort generieren.', 'assistant');
                 }
