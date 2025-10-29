@@ -3886,11 +3886,16 @@ button, input, select, textarea, a, .clickable {
     flex: 1;
     text-align: center;
     padding: 40px 20px;
+    flex-direction: column;
 }
 
 .welcome-content {
     max-width: 600px;
     padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .welcome-title {
@@ -3911,6 +3916,8 @@ button, input, select, textarea, a, .clickable {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
     max-width: 100%;
+    margin-bottom: 40px;
+    width: 100%;
 }
 
 .quick-question-btn {
@@ -3937,6 +3944,14 @@ button, input, select, textarea, a, .clickable {
 .quick-question-btn svg {
     color: var(--primary-color);
     flex-shrink: 0;
+}
+
+/* Input Wrapper - Initial Position (Position 1) */
+.input-wrapper-initial {
+    margin-top: 40px;
+    position: relative;
+    width: 100%;
+    max-width: 768px;
 }
 
 /* Messages */
@@ -4091,11 +4106,28 @@ button, input, select, textarea, a, .clickable {
     border: none !important;
     border-top: none !important;
     background: transparent;
-    padding: 40px 0 20px 0;
-    margin-top: auto;
+    padding: 0;
+    margin-top: 0;
     position: relative;
     width: 100%;
-    transition: padding 0.3s ease, margin 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-chat-input-wrapper.slid-down {
+    padding: 0 0 20px 0;
+    margin-top: 0;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    z-index: 100;
+    background: var(--background-color);
+    width: 100%;
+    max-width: 768px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
 }
 
 .modern-chat-input-container {
@@ -4181,8 +4213,8 @@ button, input, select, textarea, a, .clickable {
     transform: translateY(-50%);
 }
 
-.input-action-right:nth-of-type(1) { right: 52px; }
-.input-action-right:nth-of-type(2) { right: 100px; } /* Increased spacing from 88px to 100px */
+.input-action-right:nth-of-type(1) { right: 52px; } /* Mic button - closer to send */
+.input-action-right:nth-of-type(2) { right: 80px; } /* Search button - side by side with mic (52px + 32px mic width - 4px gap = 80px, so search's right edge is just before mic's left edge at 84px) */
 
 .input-action-right:hover {
     opacity: 1;
@@ -4206,7 +4238,7 @@ button, input, select, textarea, a, .clickable {
     outline: none;
     min-height: 52px;
     max-height: 200px;
-    padding: 14px 144px 14px 80px; /* Increased right padding from 132px to 144px for better spacing */
+    padding: 14px 120px 14px 80px; /* Left: 80px for 2 buttons, Right: 120px for 2 buttons + send (80px + 32px button width + 8px extra) */
     line-height: 1.5;
     border-radius: 24px;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -4387,10 +4419,10 @@ button, input, select, textarea, a, .clickable {
     .input-action-left:nth-of-type(2) { left: 36px; }
     
     .input-action-right:nth-of-type(1) { right: 48px; }
-    .input-action-right:nth-of-type(2) { right: 92px; } /* Increased spacing for mobile */
+    .input-action-right:nth-of-type(2) { right: 76px; } /* Side by side: 48px + 28px button width = 76px */
     
     .modern-chat-input {
-        padding: 12px 128px 12px 72px; /* Adjusted for better spacing */
+        padding: 12px 112px 12px 72px; /* Adjusted for button spacing (76px + 28px button width + 8px extra) */
         min-height: 48px;
         overflow-y: auto;
         scrollbar-width: none;

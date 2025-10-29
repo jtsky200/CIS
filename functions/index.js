@@ -603,7 +603,7 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
             // Detect which model user is asking about from the message
             const messageLower = message.toLowerCase();
             const requestedModel = 
-                messageLower.includes('lyriq-v') ? 'LYRIQ-V' :
+                messageLower.includes('lyriq-v') || messageLower.includes('lyriq v') ? 'LYRIQ-V' :
                 messageLower.includes('lyriq') ? 'LYRIQ' :
                 messageLower.includes('vistiq') ? 'VISTIQ' :
                 messageLower.includes('optiq') ? 'OPTIQ' : null;
@@ -612,30 +612,47 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
                 console.log('📚 Using context from frontend search:', userContext.length, 'documents');
                 console.log('🚗 Detected requested model:', requestedModel || 'None detected');
                 
+                // Filter documents to only include requested model (if detected)
+                let filteredContext = userContext;
+                if (requestedModel) {
+                    filteredContext = userContext.filter(doc => {
+                        const docTitle = (doc.title || '').toUpperCase();
+                        return docTitle.includes(requestedModel);
+                    });
+                    console.log(`✂️  Filtered to ${filteredContext.length} documents matching ${requestedModel}`);
+                }
+                
+                // Fetch images from Firestore for filtered documents
+                if (requestedModel && filteredContext.length > 0) {
+                    try {
+                        const docId = `cadillac-${requestedModel.toLowerCase()}-swiss-2025`;
+                        const docSnapshot = await db.collection('knowledge-base').doc(docId).get();
+                        
+                        if (docSnapshot.exists) {
+                            const docData = docSnapshot.data();
+                            if (docData.images && docData.images.length > 0) {
+                                console.log(`✅ Loaded ${docData.images.length} images from Firestore for ${requestedModel}`);
+                                docData.images.forEach(imgUrl => {
+                                    availableImages.push({ url: imgUrl, title: requestedModel, category: 'Official' });
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('❌ Error fetching images from Firestore:', error);
+                    }
+                }
+                
                 context += '=== RELEVANT DOCUMENTS FROM DATABASE ===\n\n';
-                userContext.forEach((doc, index) => {
+                filteredContext.forEach((doc, index) => {
                     context += `Document ${index + 1} - [${doc.source}]\n`;
                     context += `Title: ${doc.title}\n`;
                     if (doc.category) context += `Category: ${doc.category}\n`;
                     if (doc.tags && doc.tags.length > 0) context += `Tags: ${doc.tags.join(', ')}\n`;
                     context += `Content:\n${doc.content || doc.fullContent}\n`;
-                    
-                    // Only collect images if this document matches the requested model
-                    const docTitle = (doc.title || '').toUpperCase();
-                    const docMatchesModel = !requestedModel || docTitle.includes(requestedModel);
-                    
-                    if (docMatchesModel && doc.images && doc.images.length > 0) {
-                        context += `\nAVAILABLE IMAGES FOR THIS DOCUMENT:\n`;
-                        doc.images.forEach((imgUrl, imgIndex) => {
-                            context += `Image ${imgIndex + 1}: ${imgUrl}\n`;
-                            availableImages.push({ url: imgUrl, title: doc.title, category: doc.category });
-                        });
-                    }
-                    
                     context += '\n' + '='.repeat(80) + '\n\n';
                 });
                 
-                console.log('🖼️  Filtered images count:', availableImages.length);
+                console.log('🖼️  Total images available:', availableImages.length);
             }
             
             // Fallback to old format if no context array provided
@@ -694,14 +711,13 @@ KRITISCHE REGELN - STRIKT BEFOLGEN:
 - Wenn eine Information NICHT in den Dokumenten steht, sagen Sie das klar
 - Verwenden Sie professionelle, hilfreiche Sprache
 
-FORMATIERUNG & BILDER:
-- Erstellen Sie STRUKTURIERTE HTML-Infopage mit Markdown
-- Verwenden Sie ## Überschriften, ### Unterüberschriften, Listen, **Fettdruck**
-- WICHTIG: Wenn Bilder verfügbar sind, betten Sie diese KONTEXTBEZOGEN ein!
-- Verwenden Sie: ![Beschreibung](IMAGE_URL) um Bilder an relevanten Stellen einzufügen
-- Beispiel: Bei "Exterieur" → ![LYRIQ Exterieur](image_url), bei "Interieur" → ![LYRIQ Interieur](image_url)
-- Platzieren Sie Bilder DIREKT bei den relevanten Abschnitten, NICHT alle am Anfang!
-- Zeigen Sie NUR Bilder des gefragten Fahrzeugmodells
+FORMATIERUNG - STRUKTURIERTE ANTWORT:
+- Erstellen Sie eine STRUKTURIERTE, professionelle Antwort mit Markdown
+- Verwenden Sie ## Überschriften für Hauptabschnitte (z.B. ## Exterieur, ## Interieur, ## Technologie)
+- Verwenden Sie ### für Unterabschnitte
+- Nutzen Sie Listen, **Fettdruck**, und klare Struktur
+- WICHTIG: Fügen Sie KEINE Bilder ein! (Das System fügt diese automatisch hinzu)
+- Strukturieren Sie nach Themen: Preis, Exterieur, Interieur, Technologie, Performance, Reichweite, Laden
 
 VERBOTEN:
 - KEINE Leistungsangaben (PS, kW) erfinden wenn sie nicht in den Dokumenten stehen
@@ -777,13 +793,18 @@ Please provide a helpful response based on the available information.`;
             const completion = await openai.chat.completions.create({
                 model: 'gpt-4',
                 messages: messages,
-                max_tokens: 1000,
-                temperature: 0.7
+                max_tokens: 2000,
+                temperature: 0.5
             });
 
             const response = completion.choices[0].message.content;
 
-            return res.json({ response });
+            // Return response with filtered images array for frontend placement
+            return res.json({ 
+                response: response,
+                images: availableImages.map(img => img.url),
+                model: requestedModel
+            });
 
         } catch (error) {
             console.error('Error generating chat response:', error);
