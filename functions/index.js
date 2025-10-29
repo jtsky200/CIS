@@ -598,6 +598,7 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
 
             // Build context from the provided context array (from frontend search)
             let context = '';
+            let availableImages = [];
             if (userContext && Array.isArray(userContext) && userContext.length > 0) {
                 console.log('📚 Using context from frontend search:', userContext.length, 'documents');
                 context += '=== RELEVANT DOCUMENTS FROM DATABASE ===\n\n';
@@ -607,6 +608,16 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
                     if (doc.category) context += `Category: ${doc.category}\n`;
                     if (doc.tags && doc.tags.length > 0) context += `Tags: ${doc.tags.join(', ')}\n`;
                     context += `Content:\n${doc.content || doc.fullContent}\n`;
+                    
+                    // Collect images from this document
+                    if (doc.images && doc.images.length > 0) {
+                        context += `\nAVAILABLE IMAGES FOR THIS DOCUMENT:\n`;
+                        doc.images.forEach((imgUrl, imgIndex) => {
+                            context += `Image ${imgIndex + 1}: ${imgUrl}\n`;
+                            availableImages.push({ url: imgUrl, title: doc.title, category: doc.category });
+                        });
+                    }
+                    
                     context += '\n' + '='.repeat(80) + '\n\n';
                 });
             }
@@ -665,15 +676,23 @@ KRITISCHE REGELN - STRIKT BEFOLGEN:
 - Wenn Zahlen in den Dokumenten stehen, zitieren Sie diese EXAKT wie sie in den Dokumenten stehen
 - Wenn Preise in den Dokumenten stehen, geben Sie diese GENAU an (z.B. "Ab CHF 90'100")
 - Wenn eine Information NICHT in den Dokumenten steht, sagen Sie das klar
-- Formatieren Sie Antworten schön mit Markdown (## Überschriften, Listen, **Fettdruck**)
 - Verwenden Sie professionelle, hilfreiche Sprache
-- Fügen Sie [QUELLE: Dokumentname] am Ende relevanter Abschnitte hinzu
+
+FORMATIERUNG & BILDER:
+- Erstellen Sie STRUKTURIERTE HTML-Infopage mit Markdown
+- Verwenden Sie ## Überschriften, ### Unterüberschriften, Listen, **Fettdruck**
+- WICHTIG: Wenn Bilder verfügbar sind, betten Sie diese KONTEXTBEZOGEN ein!
+- Verwenden Sie: ![Beschreibung](IMAGE_URL) um Bilder an relevanten Stellen einzufügen
+- Beispiel: Bei "Exterieur" → ![LYRIQ Exterieur](image_url), bei "Interieur" → ![LYRIQ Interieur](image_url)
+- Platzieren Sie Bilder DIREKT bei den relevanten Abschnitten, NICHT alle am Anfang!
+- Zeigen Sie NUR Bilder des gefragten Fahrzeugmodells
 
 VERBOTEN:
 - KEINE Leistungsangaben (PS, kW) erfinden wenn sie nicht in den Dokumenten stehen
 - KEINE ungefähren Zahlen verwenden wenn exakte Zahlen vorhanden sind
 - KEINE Informationen aus Ihrem allgemeinen Wissen hinzufügen
-- NIEMALS "483 Kilometer" als Reichweite nennen - die korrekte LYRIQ Reichweite ist 530 km!`;
+- NIEMALS "483 Kilometer" als Reichweite nennen - die korrekte LYRIQ Reichweite ist 530 km!
+- KEINE Bilder von anderen Modellen zeigen wenn nach einem spezifischen Modell gefragt wurde`;
             } else {
                 systemContext = `You are C.I.S (Cadillac Information System), an AI assistant specialized in Cadillac EV vehicles for the European market (Switzerland/Germany). You have access to a comprehensive knowledge base and technical database with CURRENT official prices and specifications.
 

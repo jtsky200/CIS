@@ -3695,6 +3695,8 @@ button, input, select, textarea, a, .clickable {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: #f9fafb;
+    margin: 16px 0;
+    max-width: 100%;
 }
 
 .ai-image-container:hover {
@@ -3705,8 +3707,6 @@ button, input, select, textarea, a, .clickable {
 .ai-image {
     width: 100%;
     height: auto;
-    min-height: 200px;
-    object-fit: cover;
     display: block;
     cursor: pointer;
     transition: opacity 0.3s ease;

@@ -443,8 +443,8 @@
         }
         
         // Add message to chat
-        function addMessage(content, sender, images = []) {
-            console.log('💬 Adding message:', content, sender, 'Images:', images.length);
+        function addMessage(content, sender) {
+            console.log('💬 Adding message:', content, sender);
             
             const chatMessages = document.getElementById('chatMessages');
             if (!chatMessages) {
@@ -473,25 +473,10 @@
                     </div>
                 `;
             } else {
-                // Format AI response with markdown
+                // Format AI response with markdown (images are now embedded contextually by AI)
                 const formattedContent = formatMessage(content);
                 
-                // Create image gallery if images are available
-                let imageGalleryHTML = '';
-                if (images && images.length > 0) {
-                    imageGalleryHTML = '<div class="ai-image-gallery">';
-                    images.forEach((img, index) => {
-                        imageGalleryHTML += `
-                            <div class="ai-image-container">
-                                <img src="${img}" alt="Cadillac Model Image ${index + 1}" class="ai-image" loading="lazy" onerror="this.style.display='none'">
-                            </div>
-                        `;
-                    });
-                    imageGalleryHTML += '</div>';
-                }
-                
                 messageDiv.innerHTML = `
-                    ${imageGalleryHTML}
                     <div class="message-content">${formattedContent}</div>
                 `;
             }
@@ -649,23 +634,9 @@
                     typingIndicator.style.display = 'none';
                 }
                 
-                // Add AI response with sources and images
+                // Add AI response with sources (images are now embedded by AI in response)
                 if (data.response) {
                     let responseWithSources = data.response;
-                    
-                    // Collect all images from relevant documents
-                    const allImages = [];
-                    if (relevantContext && relevantContext.length > 0) {
-                        relevantContext.forEach(doc => {
-                            if (doc.images && doc.images.length > 0) {
-                                doc.images.forEach(img => {
-                                    if (img && !allImages.includes(img)) {
-                                        allImages.push(img);
-                                    }
-                                });
-                            }
-                        });
-                    }
                     
                     // Add source references if relevant context was found
                     if (relevantContext && relevantContext.length > 0) {
@@ -675,7 +646,7 @@
                         });
                     }
                     
-                    addMessage(responseWithSources, 'assistant', allImages);
+                    addMessage(responseWithSources, 'assistant');
                 } else {
                     addMessage('Entschuldigung, ich konnte keine Antwort generieren.', 'assistant');
                 }
@@ -729,6 +700,11 @@
                     formatted = formatted.replace(/<table>/g, '<table class="ai-table">');
                     formatted = formatted.replace(/<th>/g, '<th class="ai-table-header">');
                     formatted = formatted.replace(/<td>/g, '<td class="ai-table-cell">');
+                    
+                    // Style images beautifully - wrap in container with shadow and hover effects
+                    formatted = formatted.replace(/<img ([^>]*)>/g, (match, attrs) => {
+                        return `<div class="ai-image-container"><img ${attrs} class="ai-image" loading="lazy" onerror="this.style.display='none'"></div>`;
+                    });
                     
                     return formatted;
                 } catch (error) {
