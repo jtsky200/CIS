@@ -1468,10 +1468,11 @@ button, input, select, textarea, a, .clickable {
     background: #ffffff;
     border: 2px solid #e5e5e5;
     border-radius: 30px;
-    padding: 12px 16px;
+    padding: 16px 20px;
     transition: all 0.3s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     max-width: 700px;
+    min-height: 56px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1514,9 +1515,9 @@ button, input, select, textarea, a, .clickable {
 }
 
 .input-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     border: none;
     background: transparent;
     color: #8e8ea0;
@@ -1525,6 +1526,7 @@ button, input, select, textarea, a, .clickable {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .input-btn:hover {
@@ -1535,8 +1537,8 @@ button, input, select, textarea, a, .clickable {
 .input-btn.send-btn {
     background: #2d2d2d;
     color: white;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     transition: background 0.2s;
 }
