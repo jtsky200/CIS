@@ -599,8 +599,19 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
             // Build context from the provided context array (from frontend search)
             let context = '';
             let availableImages = [];
+            
+            // Detect which model user is asking about from the message
+            const messageLower = message.toLowerCase();
+            const requestedModel = 
+                messageLower.includes('lyriq-v') ? 'LYRIQ-V' :
+                messageLower.includes('lyriq') ? 'LYRIQ' :
+                messageLower.includes('vistiq') ? 'VISTIQ' :
+                messageLower.includes('optiq') ? 'OPTIQ' : null;
+            
             if (userContext && Array.isArray(userContext) && userContext.length > 0) {
                 console.log('📚 Using context from frontend search:', userContext.length, 'documents');
+                console.log('🚗 Detected requested model:', requestedModel || 'None detected');
+                
                 context += '=== RELEVANT DOCUMENTS FROM DATABASE ===\n\n';
                 userContext.forEach((doc, index) => {
                     context += `Document ${index + 1} - [${doc.source}]\n`;
@@ -609,8 +620,11 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
                     if (doc.tags && doc.tags.length > 0) context += `Tags: ${doc.tags.join(', ')}\n`;
                     context += `Content:\n${doc.content || doc.fullContent}\n`;
                     
-                    // Collect images from this document
-                    if (doc.images && doc.images.length > 0) {
+                    // Only collect images if this document matches the requested model
+                    const docTitle = (doc.title || '').toUpperCase();
+                    const docMatchesModel = !requestedModel || docTitle.includes(requestedModel);
+                    
+                    if (docMatchesModel && doc.images && doc.images.length > 0) {
                         context += `\nAVAILABLE IMAGES FOR THIS DOCUMENT:\n`;
                         doc.images.forEach((imgUrl, imgIndex) => {
                             context += `Image ${imgIndex + 1}: ${imgUrl}\n`;
@@ -620,6 +634,8 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
                     
                     context += '\n' + '='.repeat(80) + '\n\n';
                 });
+                
+                console.log('🖼️  Filtered images count:', availableImages.length);
             }
             
             // Fallback to old format if no context array provided
