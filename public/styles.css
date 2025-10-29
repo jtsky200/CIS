@@ -4155,6 +4155,8 @@ button, input, select, textarea, a, .clickable {
     border-top: 1px solid var(--border-color);
     margin-top: 0;
     border-radius: 0 0 24px 24px;
+    flex-shrink: 0;
+    order: 2;
 }
 
 .control-bar-left,
@@ -4210,6 +4212,8 @@ button, input, select, textarea, a, .clickable {
 .modern-chat-input {
     flex: 1;
     border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
     background: transparent;
     font-size: 15px;
     font-family: inherit;
@@ -4227,6 +4231,7 @@ button, input, select, textarea, a, .clickable {
     overflow-y: auto; /* Allow scrolling but hide scrollbar */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
+    order: 1;
 }
 
 .modern-chat-input::-webkit-scrollbar {
@@ -4234,8 +4239,10 @@ button, input, select, textarea, a, .clickable {
 }
 
 .modern-chat-input:focus {
-    border-color: transparent;
-    box-shadow: none;
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    box-shadow: none !important;
     outline: none;
 }
 
@@ -4314,15 +4321,37 @@ button, input, select, textarea, a, .clickable {
 [data-theme="dark"] .modern-chat-input {
     background: transparent;
     color: #f9fafb;
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
 }
 
 [data-theme="dark"] .modern-chat-input:focus {
-    border-color: transparent;
-    box-shadow: none;
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    box-shadow: none !important;
+    outline: none;
 }
 
 [data-theme="dark"] .modern-chat-input::placeholder {
     color: #9ca3af;
+}
+
+/* Override any global textarea styles */
+.modern-chat-input-container textarea.modern-chat-input {
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+}
+
+[data-theme="dark"] .modern-chat-input-container textarea.modern-chat-input {
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    background: transparent !important;
 }
 
 [data-theme="dark"] .modern-chat-input-container {
