@@ -4214,7 +4214,11 @@ button, input, select, textarea, a, .clickable {
 }
 
 .input-action-right:nth-of-type(1) { right: 52px; } /* Mic button - closer to send */
-.input-action-right:nth-of-type(2) { right: 80px; } /* Search button - side by side with mic (52px + 32px mic width - 4px gap = 80px, so search's right edge is just before mic's left edge at 84px) */
+.input-action-right:nth-of-type(2) { right: 92px; } /* Search button - side by side with mic (52px + 32px mic width + 8px gap = 92px) */
+
+/* Specific button positioning using IDs for reliability */
+#micBtn.input-action-right { right: 52px !important; }
+#searchBtn.input-action-right { right: 92px !important; }
 
 .input-action-right:hover {
     opacity: 1;
@@ -4238,7 +4242,7 @@ button, input, select, textarea, a, .clickable {
     outline: none;
     min-height: 52px;
     max-height: 200px;
-    padding: 14px 120px 14px 80px; /* Left: 80px for 2 buttons, Right: 120px for 2 buttons + send (80px + 32px button width + 8px extra) */
+    padding: 14px 132px 14px 80px; /* Left: 80px for 2 buttons, Right: 132px for 2 buttons + send (92px + 32px button width + 8px extra) */
     line-height: 1.5;
     border-radius: 24px;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -4419,10 +4423,10 @@ button, input, select, textarea, a, .clickable {
     .input-action-left:nth-of-type(2) { left: 36px; }
     
     .input-action-right:nth-of-type(1) { right: 48px; }
-    .input-action-right:nth-of-type(2) { right: 76px; } /* Side by side: 48px + 28px button width = 76px */
+    .input-action-right:nth-of-type(2) { right: 84px; } /* Side by side: 48px + 28px button width + 8px gap = 84px */
     
     .modern-chat-input {
-        padding: 12px 112px 12px 72px; /* Adjusted for button spacing (76px + 28px button width + 8px extra) */
+        padding: 12px 120px 12px 72px; /* Adjusted for button spacing (84px + 28px button width + 8px extra) */
         min-height: 48px;
         overflow-y: auto;
         scrollbar-width: none;
