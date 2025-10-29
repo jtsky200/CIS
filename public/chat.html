@@ -79,6 +79,9 @@
                         <!-- Input Area - Initially inside welcome state (Position 1) -->
                         <div class="modern-chat-input-wrapper input-wrapper-initial" id="chatInputWrapper">
                             <div class="modern-chat-input-container">
+                                <!-- Badges Container - Above Input -->
+                                <div class="chat-attachments-badges" id="attachmentsBadges"></div>
+                                
                                 <!-- Text Input Field - Full Width -->
                                 <textarea 
                                     class="modern-chat-input" 
@@ -102,9 +105,9 @@
                                         </button>
                                     </div>
                                     <div class="control-bar-right">
-                                        <button class="control-bar-btn" id="searchBtn" title="Websuche">
+                                        <button class="control-bar-btn" id="searchBtn" title="Websuche aktivieren">
                                             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
                                             </svg>
                                         </button>
                                         <button class="control-bar-btn" id="micBtn" title="Spracheingabe">
@@ -220,6 +223,101 @@
             console.log('✅ Chat initialized');
         }
         
+        // Attachment management
+        let attachments = {
+            images: [],
+            files: [],
+            webSearch: false
+        };
+        
+        // Add badge to container
+        function addBadge(type, data) {
+            const badgesContainer = document.getElementById('attachmentsBadges');
+            if (!badgesContainer) return;
+            
+            const badge = document.createElement('div');
+            badge.className = `attachment-badge ${type}`;
+            badge.dataset.type = type;
+            
+            if (type === 'image') {
+                badge.innerHTML = `
+                    <img src="${data.url}" alt="${data.name}">
+                    <span class="attachment-badge-name">${data.name}</span>
+                    <button class="attachment-badge-remove" data-badge-type="image" data-badge-id="${data.id}">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                `;
+                badge.dataset.id = data.id;
+            } else if (type === 'file') {
+                badge.innerHTML = `
+                    <div class="attachment-badge-file">
+                        <svg class="attachment-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="attachment-badge-name">${data.name}</span>
+                        <span style="font-size: 11px; color: #999; margin-left: 4px;">${data.size}</span>
+                    </div>
+                    <button class="attachment-badge-remove" onclick="removeBadge('file', '${data.id}')">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                `;
+                badge.dataset.id = data.id;
+            } else if (type === 'web-search') {
+                badge.className += ' active';
+                badge.innerHTML = `
+                    <svg class="attachment-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                    </svg>
+                    <span>Websuche aktiviert</span>
+                    <button class="attachment-badge-remove" onclick="removeBadge('web-search', '')">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                `;
+            }
+            
+            badgesContainer.appendChild(badge);
+        }
+        
+        // Remove badge
+        function removeBadge(type, id) {
+            const badgesContainer = document.getElementById('attachmentsBadges');
+            if (!badgesContainer) return;
+            
+            if (type === 'image') {
+                attachments.images = attachments.images.filter(img => img.id !== id);
+                const badge = badgesContainer.querySelector(`[data-type="image"][data-id="${id}"]`);
+                if (badge) badge.remove();
+            } else if (type === 'file') {
+                attachments.files = attachments.files.filter(file => file.id !== id);
+                const badge = badgesContainer.querySelector(`[data-type="file"][data-id="${id}"]`);
+                if (badge) badge.remove();
+            } else if (type === 'web-search') {
+                attachments.webSearch = false;
+                const badge = badgesContainer.querySelector('[data-type="web-search"]');
+                if (badge) badge.remove();
+            }
+        }
+        
+        // Make removeBadge globally accessible
+        window.removeBadge = removeBadge;
+        
+        // Clear all badges
+        function clearBadges() {
+            attachments.images = [];
+            attachments.files = [];
+            attachments.webSearch = false;
+            const badgesContainer = document.getElementById('attachmentsBadges');
+            if (badgesContainer) {
+                badgesContainer.innerHTML = '';
+            }
+        }
+        
         // Handle file attachment
         function handleFileAttach() {
             const input = document.createElement('input');
@@ -228,9 +326,15 @@
             input.onchange = function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    const message = `📎 Datei angehängt: ${file.name} (${formatFileSize(file.size)})`;
-                    addUserMessage(message);
-                    // Here you would upload the file to backend
+                    const fileId = 'file-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    const fileData = {
+                        id: fileId,
+                        name: file.name,
+                        size: formatFileSize(file.size),
+                        file: file
+                    };
+                    attachments.files.push(fileData);
+                    addBadge('file', fileData);
                 }
             };
             input.click();
@@ -246,9 +350,15 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        const message = `🖼️ Bild hochgeladen: ${file.name}`;
-                        addUserMessage(message);
-                        // Here you would upload the image to backend
+                        const imageId = 'image-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                        const imageData = {
+                            id: imageId,
+                            name: file.name,
+                            url: event.target.result,
+                            file: file
+                        };
+                        attachments.images.push(imageData);
+                        addBadge('image', imageData);
                     };
                     reader.readAsDataURL(file);
                 }
@@ -313,17 +423,18 @@
         
         // Handle web search
         function handleWebSearch() {
-            const messageInput = document.getElementById('messageInput');
-            const query = messageInput ? messageInput.value.trim() : '';
+            const badgesContainer = document.getElementById('attachmentsBadges');
+            if (!badgesContainer) return;
             
-            if (!query) {
-                alert('Bitte geben Sie eine Suche ein');
-                return;
+            // Toggle web search
+            if (attachments.webSearch) {
+                // Remove web search badge
+                removeBadge('web-search', '');
+            } else {
+                // Add web search badge
+                attachments.webSearch = true;
+                addBadge('web-search', {});
             }
-            
-            // Open search in new tab
-            const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-            window.open(searchUrl, '_blank');
         }
         
         // Format file size
@@ -364,11 +475,25 @@
             const messageInput = document.getElementById('messageInput');
             const message = messageInput ? messageInput.value.trim() : '';
             
-            if (!message || isProcessing) {
+            // Allow sending if there's a message OR attachments
+            if ((!message && attachments.images.length === 0 && attachments.files.length === 0) || isProcessing) {
                 return;
             }
             
             console.log('📤 Sending:', message);
+            console.log('📎 Attachments:', attachments);
+            
+            // Prepare message with attachment info
+            let fullMessage = message;
+            if (attachments.images.length > 0) {
+                fullMessage += (fullMessage ? '\n' : '') + `[${attachments.images.length} Bild(er) angehängt]`;
+            }
+            if (attachments.files.length > 0) {
+                fullMessage += (fullMessage ? '\n' : '') + `[${attachments.files.length} Datei(en) angehängt]`;
+            }
+            if (attachments.webSearch) {
+                fullMessage += (fullMessage ? '\n' : '') + '[Websuche aktiviert]';
+            }
             
             // Clear and reset input
             if (messageInput) {
@@ -377,7 +502,12 @@
             }
             
             addUserMessage(message);
-            processMessage(message);
+            
+            // Process message with attachments
+            processMessage(message, attachments);
+            
+            // Clear attachments after sending
+            clearBadges();
         }
         
         // Add user message to chat
@@ -488,7 +618,7 @@
         }
         
         // Process message
-        async function processMessage(message) {
+        async function processMessage(message, attachmentsData = null) {
             if (isProcessing) return;
             
             isProcessing = true;
@@ -498,20 +628,41 @@
                 const context = searchDatabases(message);
                 console.log('📚 Found', context.length, 'relevant documents');
                 
+                const requestBody = {
+                    message: message,
+                    context: context,
+                    knowledgeBase: true,
+                    technicalContext: true,
+                    chatId: 'modern-chat',
+                    conversationHistory: [],
+                    language: 'de',
+                    region: 'EU',
+                    units: 'metric'
+                };
+                
+                // Add web search flag if enabled
+                if (attachmentsData && attachmentsData.webSearch) {
+                    requestBody.webSearch = true;
+                }
+                
+                // Add attachments if present
+                if (attachmentsData) {
+                    if (attachmentsData.images && attachmentsData.images.length > 0) {
+                        requestBody.images = attachmentsData.images.map(img => img.url);
+                    }
+                    if (attachmentsData.files && attachmentsData.files.length > 0) {
+                        // Note: Files would need to be uploaded to backend first
+                        requestBody.files = attachmentsData.files.map(file => ({
+                            name: file.name,
+                            size: file.size
+                        }));
+                    }
+                }
+                
                 const response = await fetch('https://us-central1-cis-de.cloudfunctions.net/generateChatResponse', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: message,
-                        context: context,
-                        knowledgeBase: true,
-                        technicalContext: true,
-                        chatId: 'modern-chat',
-                        conversationHistory: [],
-                        language: 'de',
-                        region: 'EU',
-                        units: 'metric'
-                    })
+                    body: JSON.stringify(requestBody)
                 });
                 
                 if (!response.ok) {

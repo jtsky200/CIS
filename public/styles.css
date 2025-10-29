@@ -4146,6 +4146,118 @@ button, input, select, textarea, a, .clickable {
     transition: all 0.3s;
 }
 
+/* Badges Container - Above Input Field */
+.chat-attachments-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 16px;
+    background: transparent;
+    border-bottom: 1px solid #e5e5e5;
+    min-height: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    order: 0;
+}
+
+.chat-attachments-badges:empty {
+    display: none;
+    padding: 0;
+    border-bottom: none;
+}
+
+/* Badge Styles */
+.attachment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #f4f4f4;
+    border: 1px solid #e5e5e5;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #2a2a2a;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    max-width: 300px;
+}
+
+.attachment-badge:hover {
+    background: #e8e8e8;
+    border-color: #d0d0d0;
+}
+
+.attachment-badge img {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.attachment-badge-file {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.attachment-badge-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.attachment-badge-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.attachment-badge-remove {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.attachment-badge-remove:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+/* Web Search Badge */
+.attachment-badge.web-search {
+    background: #e8f4f8;
+    border-color: #10a37f;
+    color: #10a37f;
+}
+
+.attachment-badge.web-search:hover {
+    background: #d0e8f0;
+}
+
+.attachment-badge.web-search.active {
+    background: #10a37f;
+    color: white;
+    border-color: #10a37f;
+}
+
+.attachment-badge.web-search.active:hover {
+    background: #0d8a6b;
+}
+
 /* Control Bar - Below Input, Inside Same Container */
 .chat-control-bar {
     display: flex;
@@ -4201,8 +4313,8 @@ button, input, select, textarea, a, .clickable {
 }
 
 .control-bar-send:hover {
-    background: #2d2d2d;
-    opacity: 0.9;
+    background: #404040;
+    opacity: 1;
 }
 
 .modern-chat-input-container:focus-within {
@@ -4381,8 +4493,53 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .control-bar-send:hover {
+    background: #555555;
+    opacity: 1;
+}
+
+/* Dark Theme Badges */
+[data-theme="dark"] .chat-attachments-badges {
+    border-bottom-color: #404040;
+}
+
+[data-theme="dark"] .attachment-badge {
     background: #404040;
-    opacity: 0.9;
+    border-color: #555555;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .attachment-badge:hover {
+    background: #4a4a4a;
+    border-color: #666666;
+}
+
+[data-theme="dark"] .attachment-badge-remove {
+    color: #999;
+}
+
+[data-theme="dark"] .attachment-badge-remove:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .attachment-badge.web-search {
+    background: rgba(16, 163, 127, 0.2);
+    border-color: #10a37f;
+    color: #10a37f;
+}
+
+[data-theme="dark"] .attachment-badge.web-search:hover {
+    background: rgba(16, 163, 127, 0.3);
+}
+
+[data-theme="dark"] .attachment-badge.web-search.active {
+    background: #10a37f;
+    color: white;
+    border-color: #10a37f;
+}
+
+[data-theme="dark"] .attachment-badge.web-search.active:hover {
+    background: #0d8a6b;
 }
 
 /* Responsive */
