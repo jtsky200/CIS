@@ -1,0 +1,200 @@
+{
+  "dataSource": "Cadillac Europe Official Website (https://www.cadillaceurope.com/ch-de)",
+  "market": "Switzerland",
+  "currency": "CHF",
+  "lastUpdated": "2025-10-29",
+  "models": [
+    {
+      "name": "LYRIQ",
+      "type": "Vollelektrischer SUV",
+      "basePrice": "Ab CHF 90'100",
+      "version": "600 E4",
+      "specifications": {
+        "range": "530 km (WLTP)",
+        "power": "528 PS",
+        "acceleration": "5.3 Sekunden (0-100 km/h)",
+        "fastCharging": "200 km in 15 Minuten bei 190 kW",
+        "cargoVolume": "bis 1751 L",
+        "energyConsumption": "22.5 kWh/100km (WLTP)",
+        "co2Emissions": "0 g/km",
+        "co2EmissionsEnergyProduction": "25 g/km",
+        "fuelEquivalent": "2.48 l/100km",
+        "drivetrain": "Allradantrieb (serienmässig)"
+      },
+      "features": [
+        "33-Zoll-LED-Display in 9K-Auflösung",
+        "AKG Soundsystem",
+        "7 Kameras",
+        "12 Ultraschallsensoren",
+        "6 Radarsensoren",
+        "Brembo Hochleistungsbremsen",
+        "Adaptive Cruise Control",
+        "Automatischer Parkassistent",
+        "Aktive Geräuschunterdrückung",
+        "Memory-Sitze",
+        "Over-the-Air Software-Updates",
+        "Google Built-in"
+      ],
+      "awards": "GCOTY Award 2025 Gewinner (Luxus-Kategorie)",
+      "specialOffers": [
+        "Ab CHF 579/Monat mit 0% Leasing",
+        "Ab CHF 800/Monat (Special offer)"
+      ]
+    },
+    {
+      "name": "LYRIQ-V",
+      "type": "Vollelektrischer Performance SUV (V-Series)",
+      "basePrice": "Ab CHF 112'771",
+      "version": "Luxury",
+      "tagline": "Der schnellste Cadillac aller Zeiten",
+      "specifications": {
+        "range": "460 km (WLTP)",
+        "power": "615 PS (458 kW mit Velocity Max)",
+        "torque": "880 Nm",
+        "acceleration": "3.6 Sekunden (0-100 km/h)",
+        "fastCharging": "165 km in 15 Minuten bei 130 kW",
+        "energyConsumption": "21.8 kWh/100km (WLTP)",
+        "co2Emissions": "0 g/km",
+        "co2EmissionsEnergyProduction": "25 g/km",
+        "fuelEquivalent": "2.48 kWh/100km",
+        "drivetrain": "Dualmotor-Allradantrieb"
+      },
+      "features": [
+        "Launch Control",
+        "Velocity Max Mode",
+        "V-Mode",
+        "Competitive Mode",
+        "Brembo 6-Kolben-Festsattelbremsen",
+        "Continuous Damping Control (CDC)",
+        "Tiefergelegtes Fahrwerk",
+        "E-Rev Sound",
+        "Augmented-Reality-Head-up-Display",
+        "AKG Studio-Audiosystem mit 23 Lautsprechern und Dolby Atmos",
+        "7 Kameras",
+        "12 Ultraschallsensoren",
+        "6 Radarsensoren",
+        "Over-the-Air Software-Updates"
+      ],
+      "specialOffers": [
+        "0,99% Leasing"
+      ]
+    },
+    {
+      "name": "VISTIQ",
+      "type": "Luxuriöser 7-Sitzer-SUV",
+      "basePrice": "Ab CHF 108'800",
+      "version": "900 E4",
+      "tagline": "Die perfekte Kombination aus Luxus, Leistung, Technologie und Sicherheit",
+      "specifications": {
+        "seating": "7 Sitze (6 optional)",
+        "range": "460 km (WLTP)",
+        "power": "646 PS",
+        "torque": "880 Nm",
+        "acceleration": "4.1 Sekunden (0-100 km/h)",
+        "fastCharging": "159 km in 15 Minuten bei 130 kW",
+        "chargingCapacity": "bis zu 22 kW",
+        "energyConsumption": "21.8 kWh/100km (WLTP)",
+        "co2Emissions": "0 g/km",
+        "co2EmissionsEnergyProduction": "24 g/km",
+        "fuelEquivalent": "2.45 l/100km",
+        "drivetrain": "Dualmotor-Allradantrieb (serienmässig)"
+      },
+      "features": [
+        "Boost-V-Button",
+        "22'' Räder mit Diamantschliff",
+        "Schiebedach mit Doppelscheibe",
+        "33'' LED-Display",
+        "AKG Soundsystem mit Dolby Atmos",
+        "Aktive Geräuschunterdrückung",
+        "Brembo Bremsen",
+        "7 Kameras",
+        "12 Ultraschallsensoren",
+        "6 Radarsensoren",
+        "Nachtsicht-Technologie",
+        "Automatische Einparkhilfe",
+        "Over-the-Air Software-Updates"
+      ],
+      "interiorOptions": [
+        "7-Sitzer als Standard",
+        "6-Sitzer optional"
+      ],
+      "specialOffers": [
+        "0,99% Leasing"
+      ]
+    },
+    {
+      "name": "OPTIQ",
+      "type": "Vollelektrischer Kompakt-SUV",
+      "basePrice": "Ab CHF 66'680",
+      "version": "500 E4",
+      "tagline": "Der vollelektrische Kompakt-SUV von Cadillac",
+      "specifications": {
+        "range": "425 km (WLTP)",
+        "power": "304 PS",
+        "torque": "480 Nm",
+        "acceleration": "6.3 Sekunden (0-100 km/h)",
+        "fastCharging": "144 km in 15 Minuten bei 110 kW",
+        "chargingCapacity": "bis zu 22 kW",
+        "energyConsumption": "19.9 kWh/100km (WLTP)",
+        "co2Emissions": "0 g/km",
+        "co2EmissionsEnergyProduction": "22 g/km",
+        "fuelEquivalent": "2.15 l/100km",
+        "drivetrain": "Dual-Motor-Allradantrieb (Standard)"
+      },
+      "features": [
+        "33'' LED-Display in 9K-Auflösung (über 1 Milliarde Farben)",
+        "19-Lautsprecher AKG Studio-Audiosystem mit Dolby Atmos",
+        "Brembo Bremsen",
+        "21-Zoll-Leichtmetallfelgen",
+        "LED-Slimline-Scheinwerfer",
+        "Panoramschiebeadach",
+        "One-Pedal Driving",
+        "Regen on Demand",
+        "4 Fahrmodi (Tour, Sport, Schnee/Eis, Mein Modus)",
+        "Dual-Zone-Ambientebeleuchtung (126 Farben)",
+        "100% recycelte Materialien im Innenraum",
+        "Google Built-in Kompatibilität",
+        "Automatischer Parkassistent",
+        "Hands-On Lenkunterstützung",
+        "7 Kameras",
+        "12 Ultraschallsensoren",
+        "6 Radarsensoren",
+        "Over-the-Air Software-Updates"
+      ],
+      "variants": [
+        "Premium Sport",
+        "Premium Luxury"
+      ],
+      "launchEdition": "Verfügbar",
+      "events": "Premiere an der Auto Zürich (30. Okt. - 2. Nov.)"
+    }
+  ],
+  "generalInformation": {
+    "averageCO2Switzerland2025": "113 g/km (WLTP)",
+    "co2TargetSwitzerland2025": "93.6 g/km (WLTP)",
+    "allModelsFullyElectric": true,
+    "manufacture": "General Motors",
+    "heritage": "Seit 1902"
+  },
+  "services": {
+    "testDrive": "Probefahrt buchbar",
+    "configurator": "Online-Konfigurator verfügbar",
+    "inventory": "Vorkonfigurierte Neufahrzeuge",
+    "usedCars": "Zertifizierte Gebrauchtwagen",
+    "accessories": "Zubehör und Accessoires (KW Parts Partner)",
+    "warranty": "Umfassende Garantie- und Serviceleistungen",
+    "myCadillacApp": "Verfügbar für Apple und Android",
+    "connectedServices": "Connected Vehicle Services",
+    "businessFleet": "Geschäftskunden und Flottenservice"
+  },
+  "charging": {
+    "homeSolutions": "Cadillac Charge",
+    "publicCharging": "Europaweites Ladenetzwerk",
+    "notes": "Ladezeiten basieren auf Schätzungen. Tatsächliche Ladezeiten hängen vom Ladezustand, Batteriezustand, Ladegerät und Aussentemperatur ab."
+  },
+  "importantNotes": {
+    "range": "Die tatsächliche Reichweite kann je nach Fahrstil, Durchschnittsgeschwindigkeit, Wetterbedingungen, Zusatzausstattungen und externen Faktoren variieren.",
+    "pricing": "Alle Preise inkl. MWST. Änderungen in Modellvarianten, Konstruktion und Ausstattung bleiben vorbehalten.",
+    "images": "Abbildungen können US-Konfigurationen zeigen und von Schweizer/europäischen Produkten abweichen."
+  }
+}
