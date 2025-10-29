@@ -3875,7 +3875,7 @@ button, input, select, textarea, a, .clickable {
     max-width: 768px;
     margin: 0 auto;
     width: 100%;
-    padding-bottom: 120px; /* Space for fixed input */
+    padding-bottom: 40px; /* Space for input */
 }
 
 /* Welcome State */
@@ -4088,17 +4088,14 @@ button, input, select, textarea, a, .clickable {
 
 /* Input Area - OpenAI Style Free Floating */
 .modern-chat-input-wrapper {
-    border: none;
-    border-top: 0 !important;
+    border: none !important;
+    border-top: none !important;
     background: transparent;
-    padding: 0;
+    padding: 40px 0 20px 0;
     margin-top: auto;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    padding-bottom: 20px;
+    position: relative;
+    width: 100%;
+    transition: padding 0.3s ease, margin 0.3s ease;
 }
 
 .modern-chat-input-container {
@@ -4128,8 +4125,8 @@ button, input, select, textarea, a, .clickable {
     box-shadow: none;
 }
 
-/* Action Buttons - Inside Input Field */
-.input-action-btn {
+/* Action Buttons - Left Side (Attach & Image) */
+.input-action-left {
     position: absolute;
     left: 8px;
     width: 32px;
@@ -4149,19 +4146,52 @@ button, input, select, textarea, a, .clickable {
     transform: translateY(-50%);
 }
 
-.input-action-btn:nth-child(1) { left: 8px; }
-.input-action-btn:nth-child(2) { left: 42px; }
-.input-action-btn:nth-child(3) { left: 76px; }
-.input-action-btn:nth-child(4) { left: 110px; }
+.input-action-left:nth-of-type(1) { left: 8px; }
+.input-action-left:nth-of-type(2) { left: 42px; }
 
-.input-action-btn:hover {
+.input-action-left:hover {
     opacity: 1;
     background: var(--surface-color);
     color: var(--text-color);
     transform: translateY(-50%) scale(1.1);
 }
 
-.input-action-btn:active {
+.input-action-left:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Action Buttons - Right Side (Mic & Search) */
+.input-action-right {
+    position: absolute;
+    right: 52px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    opacity: 0.7;
+    z-index: 10;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.input-action-right:nth-of-type(1) { right: 52px; }
+.input-action-right:nth-of-type(2) { right: 88px; }
+
+.input-action-right:hover {
+    opacity: 1;
+    background: var(--surface-color);
+    color: var(--text-color);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.input-action-right:active {
     transform: translateY(-50%) scale(0.95);
 }
 
@@ -4176,7 +4206,7 @@ button, input, select, textarea, a, .clickable {
     outline: none;
     min-height: 52px;
     max-height: 200px;
-    padding: 14px 52px 14px 148px; /* Left padding for buttons, right for send */
+    padding: 14px 132px 14px 80px; /* Left: 80px for 2 buttons, Right: 132px for 2 buttons + send */
     line-height: 1.5;
     border-radius: 24px;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -4209,13 +4239,15 @@ button, input, select, textarea, a, .clickable {
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    opacity: 0.8;
+    opacity: 0.9;
     z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .modern-send-btn:hover {
     opacity: 1;
     transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .modern-send-btn:active {
@@ -4279,11 +4311,13 @@ button, input, select, textarea, a, .clickable {
     background: transparent;
 }
 
-[data-theme="dark"] .input-action-btn {
+[data-theme="dark"] .input-action-left,
+[data-theme="dark"] .input-action-right {
     color: #9ca3af;
 }
 
-[data-theme="dark"] .input-action-btn:hover {
+[data-theme="dark"] .input-action-left:hover,
+[data-theme="dark"] .input-action-right:hover {
     background: #4b5563;
     color: #f9fafb;
 }
@@ -4307,12 +4341,16 @@ button, input, select, textarea, a, .clickable {
 @media (max-width: 768px) {
     .modern-chat-messages {
         padding: 0;
-        padding-bottom: 140px; /* More space on mobile */
+        padding-bottom: 20px;
     }
     
     .modern-message-content {
         max-width: 90%;
         padding: 0 20px;
+    }
+    
+    .modern-chat-input-wrapper {
+        padding: 30px 0 15px 0;
     }
     
     .modern-chat-input-container {
@@ -4323,18 +4361,20 @@ button, input, select, textarea, a, .clickable {
         grid-template-columns: 1fr;
     }
     
-    .input-action-btn {
+    .input-action-left,
+    .input-action-right {
         width: 28px;
         height: 28px;
     }
     
-    .input-action-btn:nth-child(1) { left: 6px; }
-    .input-action-btn:nth-child(2) { left: 36px; }
-    .input-action-btn:nth-child(3) { left: 66px; }
-    .input-action-btn:nth-child(4) { left: 96px; }
+    .input-action-left:nth-of-type(1) { left: 6px; }
+    .input-action-left:nth-of-type(2) { left: 36px; }
+    
+    .input-action-right:nth-of-type(1) { right: 48px; }
+    .input-action-right:nth-of-type(2) { right: 80px; }
     
     .modern-chat-input {
-        padding: 12px 48px 12px 128px; /* Adjusted for smaller buttons */
+        padding: 12px 120px 12px 72px; /* Adjusted for smaller buttons */
         min-height: 48px;
     }
     
