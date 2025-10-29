@@ -1468,10 +1468,13 @@ button, input, select, textarea, a, .clickable {
     background: #ffffff;
     border: 2px solid #e5e5e5;
     border-radius: 30px;
-    padding: 12px 60px 12px 120px;
+    padding: 12px 16px;
     transition: all 0.3s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     max-width: 700px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .input-wrapper:focus-within {
@@ -1480,7 +1483,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 .input-field {
-    width: 100%;
+    flex: 1;
     background: transparent;
     border: none;
     color: #2a2a2a;
@@ -1499,19 +1502,12 @@ button, input, select, textarea, a, .clickable {
 }
 
 .input-buttons-left {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 
 .input-buttons-right {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
     gap: 8px;
     align-items: center;
