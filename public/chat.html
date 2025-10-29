@@ -543,8 +543,8 @@
                         fullContent: doc.content, // Include full content
                         score: score,
                         category: doc.category,
-                        tags: doc.tags,
-                        images: doc.images || [] // Include images if available
+                        tags: doc.tags
+                        // Note: images handled by backend filtering
                     });
                 }
             });
@@ -628,15 +628,21 @@
                 
                 const data = await response.json();
                 console.log('✅ API response received:', data);
+                console.log('🖼️ Filtered images:', data.images ? data.images.length : 0);
                 
                 // Hide typing indicator
                 if (typingIndicator) {
                     typingIndicator.style.display = 'none';
                 }
                 
-                // Add AI response with sources (images are now embedded by AI in response)
+                // Add AI response with sources and intelligently placed images
                 if (data.response) {
                     let responseWithSources = data.response;
+                    
+                    // Intelligently place images based on section keywords
+                    if (data.images && data.images.length > 0) {
+                        responseWithSources = embedImagesInResponse(responseWithSources, data.images);
+                    }
                     
                     // Add source references if relevant context was found
                     if (relevantContext && relevantContext.length > 0) {
@@ -667,6 +673,102 @@
             }
         }
         
+        // Intelligently embed images into response based on section keywords
+        function embedImagesInResponse(text, images) {
+            console.log('🎨 Embedding', images.length, 'images intelligently...');
+            
+            if (!images || images.length === 0) return text;
+            
+            // Limit to maximum 3 images for a clean, professional look
+            const maxImages = 3;
+            
+            // Define section keywords and their matching patterns
+            const sections = {
+                'exterieur': { keywords: ['exterieur', 'außen', 'design', 'karosserie', 'front', 'heck', 'außendesign'], images: [], priority: 1 },
+                'interieur': { keywords: ['interieur', 'innen', 'innenraum', 'sitze', 'cockpit', 'armaturenbrett', 'innendesign'], images: [], priority: 2 },
+                'technologie': { keywords: ['technologie', 'display', 'infotainment', 'konnektivität', 'google', 'bildschirm', 'tech'], images: [], priority: 3 },
+                'performance': { keywords: ['performance', 'leistung', 'antrieb', 'motor', 'beschleunigung', 'brembo', 'power'], images: [], priority: 4 },
+                'laden': { keywords: ['laden', 'charging', 'ladezeit', 'reichweite', 'batterie', 'akku'], images: [], priority: 5 }
+            };
+            
+            // Categorize images by URL patterns - be very selective
+            images.forEach((imgUrl) => {
+                const urlLower = imgUrl.toLowerCase();
+                
+                if (urlLower.includes('exterior') || urlLower.includes('launch-edition')) {
+                    sections.exterieur.images.push(imgUrl);
+                } else if (urlLower.includes('interior') || urlLower.includes('sunroof') || urlLower.includes('cockpit')) {
+                    sections.interieur.images.push(imgUrl);
+                } else if (urlLower.includes('technology') || urlLower.includes('display') || urlLower.includes('google') || urlLower.includes('screen')) {
+                    sections.technologie.images.push(imgUrl);
+                } else if (urlLower.includes('performance') || urlLower.includes('brakes') || urlLower.includes('wheel')) {
+                    sections.performance.images.push(imgUrl);
+                } else if (urlLower.includes('charging') || urlLower.includes('charge') || urlLower.includes('battery')) {
+                    sections.laden.images.push(imgUrl);
+                }
+                // DON'T add to default - only show categorized images
+            });
+            
+            // Analyze text to find which sections are relevant
+            const textLower = text.toLowerCase();
+            const relevantSections = [];
+            
+            for (const [sectionKey, sectionData] of Object.entries(sections)) {
+                const isRelevant = sectionData.keywords.some(keyword => textLower.includes(keyword));
+                if (isRelevant && sectionData.images.length > 0) {
+                    relevantSections.push({ key: sectionKey, data: sectionData });
+                }
+            }
+            
+            // If no relevant sections found, don't add any images - keep it professional
+            if (relevantSections.length === 0) {
+                console.log('✅ No relevant images for this response - keeping text-only for professionalism');
+                return text;
+            }
+            
+            // Sort by priority and limit to maxImages
+            relevantSections.sort((a, b) => a.data.priority - b.data.priority);
+            
+            // Collect images to display (max 1-2 per section, total max 3)
+            let selectedImages = [];
+            for (const section of relevantSections) {
+                if (selectedImages.length >= maxImages) break;
+                
+                // Take only the first image from each section
+                const imagesToAdd = section.data.images.slice(0, 1);
+                selectedImages = selectedImages.concat(imagesToAdd);
+                
+                if (selectedImages.length >= maxImages) {
+                    selectedImages = selectedImages.slice(0, maxImages);
+                    break;
+                }
+            }
+            
+            // If we have images, add them in a professional gallery at the end
+            if (selectedImages.length > 0) {
+                console.log(`✅ Adding ${selectedImages.length} professionally selected images`);
+                
+                // Add images in a clean gallery format at the end
+                text += '\n\n---\n\n';
+                
+                if (selectedImages.length === 1) {
+                    // Single image - display prominently
+                    text += `![Cadillac](${selectedImages[0]})`;
+                } else {
+                    // Multiple images - use gallery div
+                    text += '<div class="ai-image-gallery">\n';
+                    selectedImages.forEach(imgUrl => {
+                        text += `![Cadillac](${imgUrl})\n`;
+                    });
+                    text += '</div>';
+                }
+            } else {
+                console.log('✅ No relevant images to display - keeping response clean');
+            }
+            
+            return text;
+        }
+        
         // Format message with markdown and beautiful styling
         function formatMessage(content) {
             if (typeof marked !== 'undefined') {
@@ -676,7 +778,7 @@
                         breaks: true,
                         gfm: true,
                         tables: true,
-                        sanitize: false,
+                        sanitize: false, // Allow HTML for gallery div
                         smartLists: true,
                         smartypants: true
                     });
@@ -701,10 +803,24 @@
                     formatted = formatted.replace(/<th>/g, '<th class="ai-table-header">');
                     formatted = formatted.replace(/<td>/g, '<td class="ai-table-cell">');
                     
-                    // Style images beautifully - wrap in container with shadow and hover effects
+                    // Handle images - check if they're in a gallery or standalone
+                    // Images in gallery divs are already wrapped, don't double-wrap them
                     formatted = formatted.replace(/<img ([^>]*)>/g, (match, attrs) => {
-                        return `<div class="ai-image-container"><img ${attrs} class="ai-image" loading="lazy" onerror="this.style.display='none'"></div>`;
+                        // Check if this image is inside a gallery
+                        const imgTag = `<img ${attrs} class="ai-image" loading="lazy" onerror="this.style.display='none'">`;
+                        
+                        // If image has gallery in parent (rough check), don't wrap again
+                        if (formatted.includes('<div class="ai-image-gallery">') && 
+                            formatted.indexOf(match) > formatted.indexOf('<div class="ai-image-gallery">')) {
+                            return imgTag;
+                        }
+                        
+                        // Standalone image - wrap in container
+                        return `<div class="ai-image-container">${imgTag}</div>`;
                     });
+                    
+                    // Clean up paragraph tags around gallery divs
+                    formatted = formatted.replace(/<p>(<div class="ai-image-gallery">.*?<\/div>)<\/p>/gs, '$1');
                     
                     return formatted;
                 } catch (error) {

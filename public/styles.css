@@ -3685,23 +3685,25 @@ button, input, select, textarea, a, .clickable {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 16px;
-    margin: 20px 0;
+    margin: 24px 0;
     padding: 0;
+    max-width: 900px; /* Limit width for better appearance */
 }
 
+/* Single image or images within gallery */
 .ai-image-container {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: #f9fafb;
+    background: var(--background-color-card);
     margin: 16px 0;
-    max-width: 100%;
+    max-width: 600px; /* Limit single image width */
 }
 
 .ai-image-container:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
 }
 
 .ai-image {
@@ -3710,10 +3712,27 @@ button, input, select, textarea, a, .clickable {
     display: block;
     cursor: pointer;
     transition: opacity 0.3s ease;
+    object-fit: cover;
 }
 
 .ai-image:hover {
     opacity: 0.95;
+}
+
+/* Images in gallery should be smaller */
+.ai-image-gallery .ai-image-container {
+    margin: 0;
+    max-width: 100%;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .ai-image-container {
+    background: var(--background-color-secondary);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .ai-image-container:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 }
 
 /* AI Text Formatting */

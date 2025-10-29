@@ -16,5 +16,8 @@
     "jsdom": "^27.0.1",
     "path": "^0.12.7",
     "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.27.0"
   }
 }
