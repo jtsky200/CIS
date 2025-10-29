@@ -4133,16 +4133,17 @@ button, input, select, textarea, a, .clickable {
     flex-direction: column;
     gap: 0;
     align-items: stretch;
-    background: transparent;
-    border: none;
-    border-radius: 24px;
+    background: #ffffff;
+    border: 2px solid #e5e5e5;
+    border-radius: 30px;
     padding: 0;
     max-width: 768px;
     margin: 0 auto;
     width: 100%;
     position: relative;
-    box-shadow: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     overflow: hidden;
+    transition: all 0.3s;
 }
 
 /* Control Bar - Below Input, Inside Same Container */
@@ -4152,9 +4153,9 @@ button, input, select, textarea, a, .clickable {
     align-items: center;
     padding: 8px 12px;
     background: transparent;
-    border-top: none;
+    border-top: 1px solid #e5e5e5;
     margin-top: 0;
-    border-radius: 0 0 24px 24px;
+    border-radius: 0 0 30px 30px;
     flex-shrink: 0;
     order: 2;
 }
@@ -4194,19 +4195,19 @@ button, input, select, textarea, a, .clickable {
 }
 
 .control-bar-send {
-    background: var(--primary-color);
+    background: #2d2d2d;
     color: white;
     opacity: 1;
 }
 
 .control-bar-send:hover {
-    background: var(--primary-color);
+    background: #2d2d2d;
     opacity: 0.9;
 }
 
 .modern-chat-input-container:focus-within {
-    border-color: transparent;
-    box-shadow: none;
+    border-color: #10a37f;
+    box-shadow: 0 2px 6px rgba(16, 163, 127, 0.15);
 }
 
 .modern-chat-input {
@@ -4214,17 +4215,17 @@ button, input, select, textarea, a, .clickable {
     border: none !important;
     border-width: 0 !important;
     border-style: none !important;
-    background: rgba(0, 0, 0, 0.05);
-    font-size: 15px;
-    font-family: inherit;
-    color: var(--text-color);
+    background: transparent;
+    font-size: 16px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #2a2a2a;
     resize: none;
     outline: none;
     min-height: 52px;
     max-height: 200px;
     padding: 14px 16px; /* Minimal padding - full width for text */
     line-height: 1.5;
-    border-radius: 24px 24px 0 0;
+    border-radius: 30px 30px 0 0;
     transition: border-color 0.2s, box-shadow 0.2s;
     width: 100%;
     box-shadow: none !important;
@@ -4247,7 +4248,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 .modern-chat-input::placeholder {
-    color: var(--text-muted);
+    color: #999;
 }
 
 /* Dark Theme */
@@ -4319,8 +4320,8 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .modern-chat-input {
-    background: rgba(255, 255, 255, 0.05);
-    color: #f9fafb;
+    background: transparent;
+    color: #e0e0e0;
     border: none !important;
     border-width: 0 !important;
     border-style: none !important;
@@ -4335,7 +4336,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .modern-chat-input::placeholder {
-    color: #9ca3af;
+    color: #808080;
 }
 
 /* Override any global textarea styles */
@@ -4355,30 +4356,32 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .modern-chat-input-container {
-    background: transparent;
-    border: none;
+    background: #2a2a2a;
+    border-color: #404040;
 }
 
 [data-theme="dark"] .modern-chat-input-container:focus-within {
-    border: none;
-    box-shadow: none;
+    border-color: #10a37f;
+    box-shadow: 0 2px 6px rgba(16, 163, 127, 0.15);
 }
 
 [data-theme="dark"] .chat-control-bar {
     background: transparent;
-    border-top: none;
+    border-top-color: #404040;
 }
 
 [data-theme="dark"] .control-bar-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #404040;
+    color: #e0e0e0;
 }
 
 [data-theme="dark"] .control-bar-send {
-    background: var(--primary-color);
+    background: #404040;
+    color: #e0e0e0;
 }
 
 [data-theme="dark"] .control-bar-send:hover {
-    background: var(--primary-color);
+    background: #404040;
     opacity: 0.9;
 }
 
