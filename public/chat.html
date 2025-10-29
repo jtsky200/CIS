@@ -514,24 +514,35 @@
             const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
             const relevantDocs = [];
             
+            console.log('🔍 Searching databases for:', searchTerms);
+            
             // Search Knowledge Base
             knowledgeBaseData.forEach(doc => {
                 const title = (doc.title || '').toLowerCase();
                 const content = (doc.content || '').toLowerCase();
                 const tags = (doc.tags || []).join(' ').toLowerCase();
+                const category = (doc.category || '').toLowerCase();
                 
-                const score = searchTerms.reduce((acc, term) => {
-                    return acc + (title.includes(term) ? 3 : 0) + 
-                                 (content.includes(term) ? 1 : 0) + 
-                                 (tags.includes(term) ? 2 : 0);
-                }, 0);
+                let score = 0;
+                searchTerms.forEach(term => {
+                    // Higher weight for title matches
+                    if (title.includes(term)) score += 5;
+                    // Medium weight for tags and category
+                    if (tags.includes(term)) score += 3;
+                    if (category.includes(term)) score += 3;
+                    // Lower weight for content (but still important)
+                    if (content.includes(term)) score += 2;
+                });
                 
                 if (score > 0) {
                     relevantDocs.push({
                         source: 'Wissensdatenbank',
                         title: doc.title,
-                        content: doc.content?.substring(0, 500),
-                        score: score
+                        content: doc.content?.substring(0, 1500), // Increased from 500
+                        fullContent: doc.content, // Include full content
+                        score: score,
+                        category: doc.category,
+                        tags: doc.tags
                     });
                 }
             });
@@ -542,24 +553,30 @@
                 const content = (doc.content || doc.extractedText || '').toLowerCase();
                 const category = (doc.category || '').toLowerCase();
                 
-                const score = searchTerms.reduce((acc, term) => {
-                    return acc + (filename.includes(term) ? 3 : 0) + 
-                                 (content.includes(term) ? 1 : 0) + 
-                                 (category.includes(term) ? 2 : 0);
-                }, 0);
+                let score = 0;
+                searchTerms.forEach(term => {
+                    if (filename.includes(term)) score += 5;
+                    if (category.includes(term)) score += 3;
+                    if (content.includes(term)) score += 2;
+                });
                 
                 if (score > 0) {
                     relevantDocs.push({
                         source: 'Technische Datenbank',
                         title: doc.filename || doc.name,
-                        content: (doc.content || doc.extractedText || '').substring(0, 500),
-                        score: score
+                        content: (doc.content || doc.extractedText || '').substring(0, 1500),
+                        fullContent: doc.content || doc.extractedText,
+                        score: score,
+                        category: doc.category
                     });
                 }
             });
             
             // Sort by score and return top 5
-            return relevantDocs.sort((a, b) => b.score - a.score).slice(0, 5);
+            const topDocs = relevantDocs.sort((a, b) => b.score - a.score).slice(0, 5);
+            console.log('📚 Found', topDocs.length, 'relevant documents with scores:', topDocs.map(d => d.score));
+            
+            return topDocs;
         }
         
         // Process message with AI

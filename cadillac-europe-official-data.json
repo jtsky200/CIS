@@ -1,0 +1,117 @@
+{
+  "source": "Cadillac Europe Official Website (Switzerland)",
+  "url": "https://www.cadillaceurope.com/ch-de",
+  "lastUpdated": "2025-10-29",
+  "models": [
+    {
+      "name": "Cadillac LYRIQ",
+      "price": "Ab CHF 90'100",
+      "priceEuro": "ca. €95,000",
+      "leasing": "Ab CHF 579 pro Monat mit 0% Leasing",
+      "specialOffer": "Ab CHF 800 pro Monat",
+      "energyConsumption": "22.5 kWh/100km (WLTP)",
+      "co2Emissions": "0 g/km",
+      "co2Class": "A",
+      "range": "bis zu 483 Kilometer (WLTP)",
+      "battery": "100 kWh Lithium-Ionen-Batterie",
+      "charging": {
+        "level2_240V": "ca. 10 Stunden für volle Ladung",
+        "publicDC": "30 Minuten auf 80%",
+        "fastDC": "10 Minuten auf 80%"
+      },
+      "type": "Vollelektrischer SUV",
+      "description": "Technologie, die den Standard setzt. Der LYRIQ ist Cadillacs elektrischer SUV der Extraklasse mit innovativem Design und modernster Technologie.",
+      "features": [
+        "Modernste Elektrotechnologie",
+        "Luxuriöses Interieur",
+        "Fortschrittliches Infotainment-System",
+        "Umfassendes Sicherheitspaket",
+        "Cadillac Charge Ladenetzwerk"
+      ]
+    },
+    {
+      "name": "Cadillac LYRIQ-V",
+      "price": "Ab CHF 112'771",
+      "priceEuro": "ca. €119,000",
+      "type": "Hochleistungs-Elektro-SUV",
+      "description": "Die Performance-Version des LYRIQ mit noch mehr Leistung und sportlichem Design."
+    },
+    {
+      "name": "Cadillac VISTIQ",
+      "price": "Ab CHF 108'800",
+      "priceEuro": "ca. €115,000",
+      "leasing": "0,99% Leasing verfügbar",
+      "type": "Vollelektrischer 3-Reihen-SUV",
+      "description": "Der neue VISTIQ bietet Platz für die ganze Familie mit drei Sitzreihen und vollelektrischem Antrieb."
+    },
+    {
+      "name": "Cadillac OPTIQ",
+      "price": "Ab CHF 66'680",
+      "priceEuro": "ca. €70,000",
+      "energyConsumption": "22.5 kWh/100km (WLTP kombiniert)",
+      "co2Emissions": "0 g/km",
+      "co2Class": "A",
+      "type": "Vollelektrischer Kompakt-SUV",
+      "description": "Der vollelektrische Kompakt-SUV von Cadillac. Perfekt für die Stadt und darüber hinaus.",
+      "availability": "Launch Edition jetzt reservierbar"
+    }
+  ],
+  "services": {
+    "charging": {
+      "name": "Cadillac Charge",
+      "description": "Reichweite, die Sie auf der Straße hält. Zugang zu einem umfassenden Ladenetzwerk in ganz Europa.",
+      "features": [
+        "Zugang zu öffentlichen Ladestationen",
+        "Integration in myCadillac App",
+        "Echtzeit-Verfügbarkeit von Ladestationen",
+        "Routenplanung mit Ladestopps"
+      ]
+    },
+    "app": {
+      "name": "myCadillac App",
+      "platforms": ["iOS (App Store)", "Android (Google Play)"],
+      "features": [
+        "Fahrzeugstatus überwachen",
+        "Fernsteuerung",
+        "Ladestationen finden",
+        "Service-Termine vereinbaren"
+      ]
+    },
+    "probefahrt": {
+      "description": "Erleben Sie Cadillac hautnah. Buchen Sie Ihre Probefahrt online.",
+      "url": "Über Cadillac-Händler buchbar"
+    },
+    "inzahlungnahme": {
+      "description": "Geben Sie Ihr aktuelles Fahrzeug in Zahlung und profitieren Sie von attraktiven Konditionen."
+    }
+  },
+  "businessCustomers": {
+    "name": "Geschäftskunden und Flotte",
+    "description": "Entdecken Sie den LYRIQ 2024 als Firmenwagen mit speziellen Konditionen für Geschäftskunden.",
+    "benefits": [
+      "Attraktive Leasingraten",
+      "Steuervorteile für Elektrofahrzeuge",
+      "Flottenmanagement-Services"
+    ]
+  },
+  "warranty": {
+    "battery": "8 Jahre oder 160.000 km Batteriegarantie",
+    "vehicle": "Herstellergarantie gemäß Cadillac-Standards"
+  },
+  "importantInfo": {
+    "averageCO2_2025": "113 g/km (WLTP) - Durchschnitt aller in der Schweiz verkauften Neuwagen",
+    "targetCO2_2025": "93.6 g/km (WLTP) - CO2-Zielwert für alle in der Schweiz verkauften Neuwagen",
+    "realWorldRange": "Die tatsächliche Reichweite und der Energieverbrauch können unter realen Bedingungen je nach Fahrstil, Durchschnittsgeschwindigkeit, Wetterbedingungen, Zusatzausstattungen und Zubehör sowie verschiedenen externen Faktoren wie Witterungs- und Verkehrsbedingungen variieren.",
+    "chargingTimes": "Die Ladezeiten basieren auf Schätzungen. Die tatsächlichen Ladezeiten und die maximale Ladeleistung hängen von Faktoren wie dem anfänglichen Ladezustand der Batterie, dem Zustand der Batterie, der Leistung des Ladegeräts und der Außentemperatur ab.",
+    "batteryRecycling": "Informationen zur Entsorgung von Altbatterien verfügbar"
+  },
+  "heritage": {
+    "description": "Seit 1902 schaffen wir Design-Ikonen. Manche Dinge ändern sich nie.",
+    "racing": "Cadillac Racing - Der nächste Schritt in der Formel 1"
+  },
+  "country": "Schweiz (Switzerland)",
+  "currency": "CHF (Schweizer Franken)",
+  "language": "Deutsch",
+  "pricesIncludeVAT": true
+}
+
