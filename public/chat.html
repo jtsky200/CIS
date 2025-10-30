@@ -253,6 +253,58 @@
             initializeChat();
             initializeQuickQuestions();
             loadDatabases();
+            
+            // Setup theme toggle - Direct setup to ensure it works
+            console.log('🔧 Setting up theme toggle directly...');
+            
+            const setupThemeToggleDirect = () => {
+                const btn = document.getElementById('themeToggle');
+                if (btn && typeof window.toggleTheme === 'function') {
+                    // Remove any existing handlers
+                    btn.onclick = null;
+                    
+                    // Clone to remove all listeners
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    
+                    // Add click handler
+                    newBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        console.log('🌙 Theme button clicked directly!');
+                        try {
+                            if (typeof window.toggleTheme === 'function') {
+                                window.toggleTheme();
+                            } else {
+                                console.error('❌ toggleTheme not available');
+                            }
+                        } catch (error) {
+                            console.error('❌ Error calling toggleTheme:', error);
+                        }
+                        return false;
+                    });
+                    
+                    newBtn.setAttribute('data-listener-attached', 'true');
+                    console.log('✅ Theme toggle set up directly');
+                    return true;
+                }
+                return false;
+            };
+            
+            // Try immediately and with delays
+            if (!setupThemeToggleDirect()) {
+                setTimeout(setupThemeToggleDirect, 500);
+                setTimeout(setupThemeToggleDirect, 1500);
+                setTimeout(setupThemeToggleDirect, 2500);
+            }
+            
+            // Also call app.js setupThemeToggle as backup
+            setTimeout(() => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
+                }
+            }, 2000);
         });
         
         // Initialize chat
