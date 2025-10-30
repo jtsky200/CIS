@@ -35,6 +35,10 @@ const ASSISTANT_ID = 'asst_eGNzwjgQQU0sS2S6IDcnW4u6';
 // Let's try to find the correct Vector Store ID
 const VECTOR_STORE_ID = 'vs_68eab380f2888191a232d2caa815abcb';
 
+// Tavily API configuration for web search
+const TAVILY_API_KEY = process.env.TAVILY_API_KEY || functions.config().tavily?.key || '';
+const TAVILY_API_URL = 'https://api.tavily.com/search';
+
 // Debug function to check Vector Store
 async function debugVectorStore() {
     try {
@@ -472,6 +476,94 @@ exports.syncVectorStore = functions.https.onRequest((req, res) => {
 });
 
 // ============================================================================
+// WEB SEARCH FUNCTIONALITY
+// ============================================================================
+
+/**
+ * Perform web search using Tavily API
+ * @param {string} query - Search query
+ * @param {number} maxResults - Maximum number of results (default: 5)
+ * @returns {Promise<Array>} Array of search results
+ */
+async function performWebSearch(query, maxResults = 5) {
+    // Check API key with better logging
+    const apiKey = TAVILY_API_KEY || process.env.TAVILY_API_KEY || functions.config().tavily?.key;
+    
+    if (!apiKey) {
+        console.warn('⚠️ Tavily API key not configured, skipping web search');
+        console.warn('   Checked: TAVILY_API_KEY env var, functions.config().tavily.key');
+        return [];
+    }
+
+    console.log(`🔑 Using Tavily API key: ${apiKey.substring(0, 15)}...`);
+
+    try {
+        console.log(`🌐 Performing web search for: "${query}"`);
+        
+        // Use native fetch (Node 20+) or fallback to node-fetch
+        let fetchFn;
+        if (typeof fetch !== 'undefined') {
+            fetchFn = fetch;
+            console.log('📡 Using native fetch');
+        } else {
+            fetchFn = require('node-fetch');
+            console.log('📡 Using node-fetch');
+        }
+        
+        const requestBody = {
+            api_key: apiKey,
+            query: query,
+            search_depth: 'advanced',
+            include_answer: true,
+            include_raw_content: false,
+            max_results: maxResults,
+            include_domains: ['cadillac.com', 'gm.com', 'auto-motor-und-sport.de', 'autozeitung.de'],
+            exclude_domains: ['facebook.com', 'twitter.com', 'instagram.com']
+        };
+        
+        console.log(`📤 Sending request to Tavily API: ${TAVILY_API_URL}`);
+        
+        const response = await fetchFn(TAVILY_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        console.log(`📥 Response status: ${response.status} ${response.statusText}`);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`❌ Tavily API error response: ${errorText}`);
+            throw new Error(`Tavily API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log(`📊 Tavily API response:`, JSON.stringify(data, null, 2).substring(0, 500));
+        
+        if (data.results && data.results.length > 0) {
+            console.log(`✅ Found ${data.results.length} web search results`);
+            return data.results.map((result, index) => ({
+                title: result.title || 'Untitled',
+                url: result.url || '',
+                content: result.content || '',
+                score: result.score || 0,
+                publishedDate: result.published_date || null
+            }));
+        } else {
+            console.log('⚠️ No web search results found in response');
+            return [];
+        }
+    } catch (error) {
+        console.error('❌ Web search error:', error.message);
+        console.error('❌ Full error:', error);
+        // Return empty array on error, don't fail the whole request
+        return [];
+    }
+}
+
+// ============================================================================
 // CHAT ENDPOINT - OpenAI Assistants API
 // ============================================================================
 
@@ -586,7 +678,7 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
         }
 
         try {
-            const { message, knowledgeBase, technicalContext, chatId, conversationHistory, language, region, units, context: userContext } = req.body;
+            const { message, knowledgeBase, technicalContext, chatId, conversationHistory, language, region, units, context: userContext, webSearch } = req.body;
 
             if (!message) {
                 return res.status(400).json({ error: 'Message is required' });
@@ -678,6 +770,79 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
                 });
             }
 
+            // Add web search context if enabled
+            let webSearchContext = '';
+            let webSearchResults = [];
+            if (webSearch === true) {
+                console.log('🌐 Web search enabled - performing web search');
+                
+                // Perform actual web search with focused query
+                // Focus on current news, reviews, and updates
+                let searchQuery = message;
+                // Add model context if available
+                if (requestedModel) {
+                    searchQuery = `${message} Cadillac ${requestedModel}`;
+                } else if (message.toLowerCase().includes('cadillac')) {
+                    searchQuery = message;
+                } else {
+                    searchQuery = `${message} Cadillac EV`;
+                }
+                
+                console.log(`🔍 Web search query: "${searchQuery}"`);
+                webSearchResults = await performWebSearch(searchQuery, 5);
+                
+                if (webSearchResults.length > 0) {
+                    // Filter and limit web search results to most relevant ones
+                    const relevantResults = webSearchResults
+                        .filter(result => result.content && result.content.length > 50) // Filter out very short results
+                        .slice(0, 3); // Limit to top 3 most relevant results
+                    
+                    webSearchContext = '\n\n=== AKTUELLE WEB-SUCHERGEBNISSE ===\n';
+                    webSearchContext += 'WICHTIG: Die folgenden Web-Informationen sind ZUSÄTZLICH zu den Datenbank-Informationen oben.\n';
+                    webSearchContext += 'Verwenden Sie sie NUR um aktuelle Nachrichten, Bewertungen oder Updates zu ergänzen.\n';
+                    webSearchContext += 'Für Preise, Spezifikationen und technische Daten: Verwenden Sie IMMER die Datenbank-Informationen zuerst.\n\n';
+                    
+                    relevantResults.forEach((result, index) => {
+                        // Limit content length to avoid overwhelming context
+                        const maxContentLength = 500;
+                        const content = result.content.length > maxContentLength 
+                            ? result.content.substring(0, maxContentLength) + '...' 
+                            : result.content;
+                        
+                        webSearchContext += `[QUELLE ${index + 1}]: ${result.title}\n`;
+                        if (result.publishedDate) {
+                            webSearchContext += `Veröffentlicht: ${result.publishedDate}\n`;
+                        }
+                        webSearchContext += `Relevanter Inhalt: ${content}\n`;
+                        webSearchContext += `URL: ${result.url}\n`;
+                        webSearchContext += '\n';
+                    });
+                    
+                    webSearchContext += 'ANWEISUNGEN FÜR DIE VERWENDUNG:\n';
+                    webSearchContext += '1. Verwenden Sie Datenbank-Informationen für Preise, Spezifikationen und technische Details\n';
+                    webSearchContext += '2. Verwenden Sie Web-Informationen NUR für aktuelle Nachrichten, Bewertungen oder Updates\n';
+                    webSearchContext += '3. Wenn Web-Informationen den Datenbank-Informationen widersprechen, priorisieren Sie die Datenbank\n';
+                    webSearchContext += '4. KONVERTIEREN SIE ALLE EINHEITEN: Meilen zu km, Fahrenheit zu Celsius, USD zu CHF wenn nötig\n';
+                    webSearchContext += '5. Zitieren Sie Web-Quellen GENAU mit [QUELLE: Titel] Format (nicht [QUELLE 1: ...] oder ähnlich)\n';
+                    webSearchContext += '6. Verwenden Sie IMMER den genauen Titel aus der Quelle (z.B. [QUELLE: 2025 LYRIQ | All-Electric SUV])\n';
+                    webSearchContext += '7. Stellen Sie sicher, dass alle Informationen zusammenhängend und logisch sind\n';
+                    webSearchContext += '8. Antworten Sie in flüssigem, verständlichem Deutsch mit natürlichem Übergang zwischen Absätzen\n';
+                    webSearchContext += '9. Strukturieren Sie die Antwort klar mit Überschriften für verschiedene Modelle/Themen\n';
+                    webSearchContext += '==========================================\n\n';
+                    
+                    console.log(`✅ Added ${relevantResults.length} of ${webSearchResults.length} web search results to context (filtered to most relevant)`);
+                    console.log(`📝 Web search context length: ${webSearchContext.length} characters`);
+                    console.log(`📄 Web search context preview: ${webSearchContext.substring(0, 200)}...`);
+                } else {
+                    console.log('⚠️ No web search results found, continuing without web context');
+                    console.log(`🔍 Web search returned ${webSearchResults.length} results`);
+                    webSearchContext = '\n\n=== WEB-SUCHE AKTIVIERT ===\n';
+                    webSearchContext += 'Web-Suche wurde aktiviert, aber es wurden keine aktuellen Ergebnisse gefunden.\n';
+                    webSearchContext += 'Verwenden Sie Ihre Trainingsdaten für aktuelle Informationen, wenn verfügbar.\n';
+                    webSearchContext += '==================================\n\n';
+                }
+            }
+
             // Build conversation history for context (limit to last 10 messages to avoid token limit)
             let conversationContext = '';
             if (conversationHistory && conversationHistory.length > 0) {
@@ -697,19 +862,38 @@ exports.generateChatResponse = functions.https.onRequest((req, res) => {
             
             let systemContext = '';
             if (isGerman) {
-                systemContext = `Sie sind C.I.S (Cadillac Information System), ein KI-Assistent spezialisiert auf Cadillac Elektrofahrzeuge für den europäischen Markt (Schweiz/Deutschland). Sie haben Zugang zu einer umfassenden Wissensdatenbank und technischen Datenbank mit AKTUELLEN offiziellen Preisen und Spezifikationen.
+                const webSearchRules = webSearch === true ? `
+🌐 WEBSUCHE AKTIVIERT:
+- Diese Anfrage erfordert AKTUELLE Informationen aus dem Internet
+- WICHTIG: Web-Informationen sind ERGÄNZEND zu den Datenbank-Informationen
+- Für Preise, Spezifikationen und technische Daten: Verwenden Sie IMMER die Datenbank-Informationen zuerst
+- Verwenden Sie Web-Informationen NUR für aktuelle Nachrichten, Bewertungen, Updates oder Trends
+- Wenn Web-Informationen den Datenbank-Informationen widersprechen, priorisieren Sie die Datenbank
+- KONVERTIEREN SIE ALLE EINHEITEN: Meilen → km, Fahrenheit → Celsius, USD → CHF (mit aktuellen Wechselkursen)
+- Zitieren Sie Web-Quellen GENAU mit [QUELLE: Titel] Format - verwenden Sie den exakten Titel aus der Quelle
+- Stellen Sie sicher, dass alle Informationen zusammenhängend, logisch und verständlich sind
+- Antworten Sie in flüssigem, natürlichem Deutsch - keine zusammenhanglosen Informationen
+- Strukturieren Sie die Antwort klar mit Überschriften (## für Modelle, ### für Unterthemen)
+- Kombinieren Sie Informationen so, dass die Antwort einen roten Faden hat und Sinn ergibt
+` : `
+- Verwenden Sie AUSSCHLIESSLICH die bereitgestellten Dokumente - KEINE EIGENEN INFORMATIONEN HINZUFÜGEN!
+- KEINE Informationen aus Ihrem allgemeinen Wissen hinzufügen
+`;
+                
+                systemContext = `Sie sind C.I.S (Cadillac Information System), ein KI-Assistent spezialisiert auf Cadillac Elektrofahrzeuge für den europäischen Markt (Schweiz/Deutschland). Sie haben Zugang zu einer umfassenden Wissensdatenbank und technischen Datenbank mit AKTUELLEN offiziellen Preisen und Spezifikationen.${webSearch === true ? ' Zusätzlich haben Sie Zugriff auf Web-Suche für aktuelle Informationen.' : ''}
 
 KRITISCHE REGELN - STRIKT BEFOLGEN:
 - Antworten Sie IMMER auf Deutsch
 - Verwenden Sie SCHWEIZER Preise in CHF (Schweizer Franken) - dies ist PRIORITÄT!
 - Verwenden Sie europäische Einheiten (km, kWh, °C)
-- Beziehen Sie sich auf den Schweizer/europäischen Markt
-- Verwenden Sie AUSSCHLIESSLICH die bereitgestellten Dokumente - KEINE EIGENEN INFORMATIONEN HINZUFÜGEN!
-- ERFINDEN SIE KEINE SPEZIFIKATIONEN die nicht in den Dokumenten stehen
+- Beziehen Sie sich auf den Schweizer/europäischen Markt${webSearchRules}
+- ERFINDEN SIE KEINE SPEZIFIKATIONEN die nicht in den Dokumenten oder Web-Quellen stehen
 - Wenn Zahlen in den Dokumenten stehen, zitieren Sie diese EXAKT wie sie in den Dokumenten stehen
 - Wenn Preise in den Dokumenten stehen, geben Sie diese GENAU an (z.B. "Ab CHF 90'100")
-- Wenn eine Information NICHT in den Dokumenten steht, sagen Sie das klar
-- Verwenden Sie professionelle, hilfreiche Sprache
+- VERMEIDEN SIE unprofessionelle Formulierungen wie "Leider sind keine Informationen verfügbar" oder "nicht in den Dokumenten aufgelistet"
+- Antworten Sie SELBSTBEWUSST und PROFESSIONELL - präsentieren Sie die verfügbaren Informationen direkt und positiv
+- Wenn spezifische Informationen nicht verfügbar sind, geben Sie stattdessen die verfügbaren relevanten Informationen an
+- Verwenden Sie professionelle, hilfreiche Sprache ohne Entschuldigungen oder negative Formulierungen
 
 FORMATIERUNG - STRUKTURIERTE ANTWORT:
 - Erstellen Sie eine STRUKTURIERTE, professionelle Antwort mit Markdown
@@ -720,46 +904,91 @@ FORMATIERUNG - STRUKTURIERTE ANTWORT:
 - Strukturieren Sie nach Themen: Preis, Exterieur, Interieur, Technologie, Performance, Reichweite, Laden
 
 VERBOTEN:
-- KEINE Leistungsangaben (PS, kW) erfinden wenn sie nicht in den Dokumenten stehen
+- KEINE Leistungsangaben (PS, kW) erfinden wenn sie nicht in den Dokumenten oder Web-Quellen stehen
 - KEINE ungefähren Zahlen verwenden wenn exakte Zahlen vorhanden sind
-- KEINE Informationen aus Ihrem allgemeinen Wissen hinzufügen
 - NIEMALS "483 Kilometer" als Reichweite nennen - die korrekte LYRIQ Reichweite ist 530 km!
 - KEINE Bilder von anderen Modellen zeigen wenn nach einem spezifischen Modell gefragt wurde`;
             } else {
-                systemContext = `You are C.I.S (Cadillac Information System), an AI assistant specialized in Cadillac EV vehicles for the European market (Switzerland/Germany). You have access to a comprehensive knowledge base and technical database with CURRENT official prices and specifications.
+                const webSearchRules = webSearch === true ? `
+🌐 WEB SEARCH ENABLED:
+- This query requires CURRENT information from the web
+- You can now use current information, news, reviews, and updates
+- Combine web information with the database information above
+- Cite web sources when using web information (e.g. [SOURCE: Website Name])
+- Prioritize official Cadillac sources for Cadillac-specific questions
+- For prices and specifications: Use database information first, supplement with current web information if needed
+` : `
+- Use ONLY the provided documents for prices and technical data
+- Do not add information from general knowledge
+`;
+                
+                systemContext = `You are C.I.S (Cadillac Information System), an AI assistant specialized in Cadillac EV vehicles for the European market (Switzerland/Germany). You have access to a comprehensive knowledge base and technical database with CURRENT official prices and specifications.${webSearch === true ? ' Additionally, you have access to web search for current information.' : ''}
 
 CRITICAL NOTES:
 - Always respond in German
 - Use SWISS prices in CHF (Swiss Francs) - this is PRIORITY!
 - Use European units (km, kWh, °C)
-- Reference the Swiss/European market
-- Use ONLY the provided documents for prices and technical data
+- Reference the Swiss/European market${webSearchRules}
 - If prices are in the documents, state them EXACTLY (e.g. "Ab CHF 90'100")
 - Format responses beautifully with Markdown (## Headings, Lists, **Bold**)
 - Use professional, helpful language
 - Add [SOURCE: Document name] at the end of relevant sections`;
             }
             
+            // Log web search status before building prompt
+            if (webSearch === true) {
+                console.log(`🔍 Web search was enabled, context length: ${webSearchContext.length} characters`);
+                console.log(`📊 Web search results count: ${webSearchResults.length}`);
+            }
+            
             let prompt = `${systemContext}
 
-${conversationContext}${context}
+${conversationContext}${context}${webSearchContext}
 
 Current User Question: ${message}
 
-Please provide a detailed, helpful response based on the available information and conversation context. If you reference specific documents, include source citations in the format [SOURCE: filename] at the end of relevant sentences.`;
+WICHTIGE ANWEISUNGEN FÜR DIE ANTWORT:
+- Erstellen Sie eine KOHÄRENTE, logische Antwort die Sinn ergibt
+- Alle Informationen müssen zusammenhängend sein und einen roten Faden haben
+- Stellen Sie sicher, dass jede Information in den Kontext passt und verständlich ist
+- VERMEIDEN SIE unprofessionelle Formulierungen wie "Leider sind keine Informationen verfügbar" oder "nicht in den Dokumenten aufgelistet"
+- Antworten Sie SELBSTBEWUSST und PROFESSIONELL - präsentieren Sie die verfügbaren Informationen direkt und positiv
+- Wenn Sie Web-Informationen verwenden, integrieren Sie sie nahtlos in die Antwort
+- Verwenden Sie Datenbank-Informationen für Fakten, Web-Informationen für Aktualität
+- KONVERTIEREN SIE ALLE EINHEITEN: Meilen → km, Fahrenheit → Celsius, USD → CHF
+- Zitieren Sie Web-Quellen GENAU mit [QUELLE: Titel] Format - verwenden Sie den exakten Titel
+- Antworten Sie in flüssigem, natürlichem Deutsch - keine zusammenhanglosen Fakten
+- Strukturieren Sie klar mit Überschriften (## für Hauptthemen, ### für Unterthemen)
+- Machen Sie die Antwort verständlich und logisch strukturiert mit natürlichen Übergängen
+
+Please provide a detailed, helpful response based on the available information and conversation context.`;
 
             // Simple token estimation (roughly 4 characters per token)
             const estimatedTokens = Math.ceil(prompt.length / 4);
             if (estimatedTokens > 2000) {
                 // If context is too large, significantly reduce knowledge base content
                 console.log(`Context too large (${estimatedTokens} tokens), reducing knowledge base content`);
+                console.log(`⚠️ Web search context will be preserved: ${webSearchContext.length > 0 ? 'Yes' : 'No'}`);
                 const reducedContext = context.substring(0, context.length * 0.1); // Reduce by 90%
                 const reducedConversationContext = conversationContext.substring(0, conversationContext.length * 0.3); // Reduce conversation by 70%
+                // IMPORTANT: Keep webSearchContext even when reducing other context
                 prompt = `You are C.I.S (Cadillac Information System), an AI assistant specialized in Cadillac EV vehicles.
 
-${reducedConversationContext}${reducedContext}
+${reducedConversationContext}${reducedContext}${webSearchContext}
 
 Current User Question: ${message}
+
+WICHTIGE ANWEISUNGEN FÜR DIE ANTWORT:
+- Erstellen Sie eine KOHÄRENTE, logische Antwort die Sinn ergibt
+- Alle Informationen müssen zusammenhängend sein und einen roten Faden haben
+- Stellen Sie sicher, dass jede Information in den Kontext passt und verständlich ist
+- VERMEIDEN SIE unprofessionelle Formulierungen wie "Leider sind keine Informationen verfügbar"
+- Antworten Sie SELBSTBEWUSST und PROFESSIONELL - präsentieren Sie die verfügbaren Informationen direkt und positiv
+- Wenn Sie Web-Informationen verwenden, integrieren Sie sie nahtlos in die Antwort
+- Verwenden Sie Datenbank-Informationen für Fakten, Web-Informationen für Aktualität
+- Zitieren Sie Quellen präzise mit [QUELLE: Titel] am Ende relevanter Sätze
+- Antworten Sie in flüssigem, natürlichem Deutsch - keine zusammenhanglosen Fakten
+- Machen Sie die Antwort verständlich und logisch strukturiert
 
 Please provide a helpful response based on the available information.`;
             }

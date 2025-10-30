@@ -3876,6 +3876,12 @@ button, input, select, textarea, a, .clickable {
     margin: 0 auto;
     width: 100%;
     padding-bottom: 40px; /* Space for input */
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+.modern-chat-messages::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* Welcome State */
