@@ -415,11 +415,19 @@ body {
 }
 
 [data-theme="dark"] .input-btn {
-    color: #b0b0b0;
+    color: #9ca3af;
 }
 
 [data-theme="dark"] .input-btn:hover {
     background: #404040;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .input-btn svg {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .input-btn:hover svg {
     color: #e0e0e0;
 }
 
@@ -578,6 +586,15 @@ body {
     border-radius: 8px;
     color: #6b7280;
     flex-shrink: 0;
+}
+
+[data-theme="dark"] .quick-action-icon {
+    background: #374151;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .quick-action-icon svg {
+    color: #9ca3af;
 }
 
 .quick-action-content {
@@ -753,6 +770,18 @@ body {
 
 [data-theme="dark"] .file-icon {
     background: #404040 !important;
+}
+
+[data-theme="dark"] .file-icon svg {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .upload-icon {
+    opacity: 0.6;
+}
+
+[data-theme="dark"] .upload-icon svg {
+    color: #9ca3af;
 }
 
 [data-theme="dark"] .tech-item {
@@ -2940,6 +2969,11 @@ button, input, select, textarea, a, .clickable {
 
 [data-theme="dark"] .stat-icon {
     background: #374151;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .stat-icon svg {
+    color: #9ca3af;
 }
 
 [data-theme="dark"] .stat-value {
@@ -3953,9 +3987,25 @@ button, input, select, textarea, a, .clickable {
     opacity: 0.8;
 }
 
-[data-theme="dark"] .quick-question-btn svg {
+/* Global icon color consistency for dark mode */
+[data-theme="dark"] svg {
+    color: inherit;
+}
+
+/* Ensure icons in buttons and interactive elements match chat box color */
+[data-theme="dark"] button svg,
+[data-theme="dark"] .icon svg,
+[data-theme="dark"] .quick-action-btn svg,
+[data-theme="dark"] .kb-item svg,
+[data-theme="dark"] .tech-item svg {
     color: #9ca3af;
-    opacity: 0.9;
+}
+
+[data-theme="dark"] button:hover svg,
+[data-theme="dark"] .quick-action-btn:hover svg,
+[data-theme="dark"] .kb-item:hover svg,
+[data-theme="dark"] .tech-item:hover svg {
+    color: #e0e0e0;
 }
 
 /* Input Wrapper - Initial Position (Position 1) */
