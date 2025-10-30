@@ -1780,6 +1780,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         setupThemeToggle();
         setupChatFunctionality();
         
+        // Initialize page-specific functionality
+        const currentPage = getCurrentPage();
+        if (currentPage) {
+            console.log('📍 Detected current page:', currentPage);
+            initializePage(currentPage);
+        }
+        
         // Debug available functions after a delay
         setTimeout(() => {
             window.debugFunctions();
@@ -2364,6 +2371,13 @@ function initializePage(page) {
         // Only initialize chat history if function exists
         if (typeof initChatHistory === 'function') initChatHistory();
     } else if (page === 'settings') {
+        // Call settings page initialization if available
+        if (typeof window.initializeSettingsPage === 'function') {
+            console.log('🔄 Calling window.initializeSettingsPage from app.js...');
+            setTimeout(() => {
+                window.initializeSettingsPage();
+            }, 100);
+        }
         if (typeof loadKnowledgeBase === 'function') loadKnowledgeBase();
         if (typeof loadKnowledgeBaseStats === 'function') loadKnowledgeBaseStats();
     } else if (page === 'dashboard') {
