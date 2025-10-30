@@ -3211,10 +3211,13 @@
                 // Button exists and toggleTheme is available, but might not be initialized
                 if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
                     console.log('🔄 Immediate check: Button exists but no listener, initializing...');
+                    // Call initializeSettingsPage directly
                     if (typeof initializeSettingsPage === 'function') {
                         initializeSettingsPage();
                     } else if (typeof window.ensureSettingsThemeToggle === 'function') {
                         window.ensureSettingsThemeToggle();
+                    } else if (typeof window.initializeSettingsPage === 'function') {
+                        window.initializeSettingsPage();
                     }
                 }
             }
@@ -3223,7 +3226,7 @@
             if (immediateCheckAttempts >= 20) {
                 clearInterval(immediateCheck);
             }
-        }, 500);
+        }, 300); // Check more frequently - every 300ms
         
         // Clean up interval on page unload
         window.addEventListener('beforeunload', () => {
