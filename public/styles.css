@@ -3477,7 +3477,39 @@ button, input, select, textarea, a, .clickable {
     background: transparent;
 }
 
+/* Troubleshooting Page - Force Inter font consistency */
+.troubleshooting-container h1,
+.troubleshooting-container h1[data-i18n="troubleshooting.title"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-weight: 500 !important; /* Match body font-weight */
+}
+
+.troubleshooting-container p,
+.troubleshooting-container p[data-i18n="troubleshooting.subtitle"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-weight: 500 !important; /* Match body font-weight */
+}
+
+.troubleshooting-container h2,
+.troubleshooting-container h3 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
 /* Troubleshooting Dark Theme - Override inline styles */
+[data-theme="dark"] .troubleshooting-container h1,
+[data-theme="dark"] .troubleshooting-container h1[data-i18n="troubleshooting.title"] {
+    color: #e0e0e0 !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="dark"] .troubleshooting-container p,
+[data-theme="dark"] .troubleshooting-container p[data-i18n="troubleshooting.subtitle"] {
+    color: #9ca3af !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-weight: 500 !important;
+}
+
 [data-theme="dark"] #problemDescription,
 [data-theme="dark"] #vehicleModel,
 [data-theme="dark"] .troubleshooting-container textarea,
