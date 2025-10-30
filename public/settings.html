@@ -115,6 +115,54 @@
     <link rel="stylesheet" href="settings-redesign.css?v=1730000017">
     <script src="app.js?v=1730000020"></script>
     <script>
+        // CRITICAL: Attach theme toggle immediately when script loads
+        // This runs synchronously before DOMContentLoaded
+        (function() {
+            // Wait for app.js to load
+            function attachThemeToggle() {
+                const btn = document.getElementById('themeToggle');
+                if (btn && typeof window.toggleTheme === 'function') {
+                    // Remove inline onclick if it exists
+                    btn.removeAttribute('onclick');
+                    
+                    // Clone to remove all listeners
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    newBtn.id = 'themeToggle';
+                    
+                    // Add click handler
+                    const clickHandler = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🎨 Theme toggle clicked (direct handler)!');
+                        if (typeof window.toggleTheme === 'function') {
+                            window.toggleTheme();
+                        }
+                        return false;
+                    };
+                    
+                    newBtn.addEventListener('click', clickHandler, { capture: true });
+                    newBtn.onclick = clickHandler;
+                    newBtn.setAttribute('data-listener-attached', 'true');
+                    console.log('✅ Theme toggle attached immediately');
+                    return true;
+                }
+                return false;
+            }
+            
+            // Try immediately
+            if (!attachThemeToggle()) {
+                // Retry until app.js loads
+                let attempts = 0;
+                const retryInterval = setInterval(() => {
+                    attempts++;
+                    if (attachThemeToggle() || attempts >= 50) {
+                        clearInterval(retryInterval);
+                    }
+                }, 100);
+            }
+        })();
+        
         // Wait for app.js to load before initializing settings-specific code
         (function() {
             // Ensure app.js has loaded by checking for critical functions
