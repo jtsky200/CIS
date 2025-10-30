@@ -3163,6 +3163,25 @@
         
         // Make function globally accessible
         window.initializeSettingsPage = initializeSettingsPage;
+        
+        // CRITICAL: Immediate synchronous check when script loads
+        // This runs as soon as the script tag executes, before any events
+        (function immediateInitCheck() {
+            const btn = document.getElementById('themeToggle');
+            if (btn && typeof window.toggleTheme === 'function') {
+                if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
+                    console.log('🔄 IMMEDIATE INIT CHECK: Button exists but no listener, initializing NOW...');
+                    // Call initialization immediately
+                    setTimeout(() => {
+                        if (typeof initializeSettingsPage === 'function') {
+                            initializeSettingsPage();
+                        } else if (typeof window.initializeSettingsPage === 'function') {
+                            window.initializeSettingsPage();
+                        }
+                    }, 50); // Very short delay to ensure DOM is ready
+                }
+            }
+        })();
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
