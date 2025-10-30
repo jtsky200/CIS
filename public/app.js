@@ -3640,8 +3640,8 @@ async function bulkDelete(type) {
     }
 }
 
-// Document preview functionality - using webapp's modal pattern
-function previewDocument(docId, type) {
+// Document preview functionality - improved modal matching website design
+async function previewDocument(docId, type) {
     console.log('🔍 Previewing document:', docId, 'type:', type);
     
     // Find the document in the appropriate array
@@ -3657,54 +3657,88 @@ function previewDocument(docId, type) {
         return;
     }
     
-    // Create modal using webapp's pattern
+    // Fetch full document content if not available locally
+    let fullDoc = doc;
+    if (!doc.content && !doc.text && !doc.data) {
+        try {
+            console.log('📥 Fetching document content from API...');
+            const apiBase = window.API_BASE || API_BASE || 'https://us-central1-cis-de.cloudfunctions.net';
+            const response = await fetch(`${apiBase}/viewDocument?docId=${docId}&type=${type}&format=json`);
+            if (response.ok) {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    fullDoc = { ...doc, ...data };
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching document content:', error);
+        }
+    }
+    
+    // Create modal matching website design
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 800px; width: 95%;">
+        <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
             <div class="modal-header">
-                <h3>Vorschau: ${doc.filename || doc.name || 'Unbekannt'}</h3>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 500;">${escapeHtml(fullDoc.filename || fullDoc.name || 'Unbekannt')}</h3>
                 <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
-            <div class="modal-body">
-                <div style="display: flex; gap: 16px; margin-bottom: 20px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-                    <div style="flex: 1;">
-                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                            <svg width="16" height="16" fill="#6b7280" viewBox="0 0 24 24" style="margin-right: 8px;">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,11L9,14H11V18H13V14H15L12,11Z"/>
-                            </svg>
-                            <span style="font-weight: 200; color: #374151;">Dateityp:</span>
-                            <span style="margin-left: 8px; color: #1f2937;">${doc.fileType || 'Unbekannt'}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                            <svg width="16" height="16" fill="#6b7280" viewBox="0 0 24 24" style="margin-right: 8px;">
-                                <path d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z"/>
-                            </svg>
-                            <span style="font-weight: 200; color: #374151;">Größe:</span>
-                            <span style="margin-left: 8px; color: #1f2937;">${formatSize(doc.size)}</span>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <svg width="16" height="16" fill="#6b7280" viewBox="0 0 24 24" style="margin-right: 8px;">
-                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/>
-                            </svg>
-                            <span style="font-weight: 200; color: #374151;">Hochgeladen:</span>
-                            <span style="margin-left: 8px; color: #1f2937;">${formatDate(doc.uploadedAt)}</span>
+            <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; padding: 20px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" fill="#6b7280" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20"/>
+                        </svg>
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Dateityp</div>
+                            <div style="font-size: 14px; color: #1f2937; font-weight: 500;">${escapeHtml(fullDoc.fileType || 'Unbekannt')}</div>
                         </div>
                     </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" fill="#6b7280" viewBox="0 0 24 24">
+                            <path d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z"/>
+                        </svg>
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Größe</div>
+                            <div style="font-size: 14px; color: #1f2937; font-weight: 500;">${formatSize(fullDoc.size || 0)}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" fill="#6b7280" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/>
+                        </svg>
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Hochgeladen</div>
+                            <div style="font-size: 14px; color: #1f2937; font-weight: 500;">${formatDate(fullDoc.uploadedAt)}</div>
+                        </div>
+                    </div>
+                    ${fullDoc.category ? `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" fill="#6b7280" viewBox="0 0 24 24">
+                            <path d="M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.77 12.45,22 13,22C13.55,22 14.05,21.77 14.41,21.41L21.41,14.41C21.77,14.05 22,13.55 22,13C22,12.45 21.77,11.95 21.41,11.58Z"/>
+                        </svg>
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Kategorie</div>
+                            <div style="font-size: 14px; color: #1f2937; font-weight: 500;">${escapeHtml(fullDoc.category)}</div>
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
                 
-                <div id="previewContent-${docId}" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; background: #ffffff; min-height: 300px;">
+                <div id="previewContent-${docId}" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; background: #ffffff; min-height: 300px; max-height: 500px; overflow-y: auto;">
                     <div style="text-align: center; padding: 40px 20px;">
                         <div class="loading-spinner" style="margin: 0 auto 16px;"></div>
-                        <p style="margin: 0; color: #6b7280; font-size: 16px;">Vorschau wird generiert...</p>
+                        <p style="margin: 0; color: #6b7280; font-size: 16px;">Vorschau wird geladen...</p>
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
-                    <button onclick="this.closest('.modal').remove()" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 200;">
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                    <button onclick="this.closest('.modal').remove()" style="padding: 10px 24px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background 0.2s;">
                         Schließen
                     </button>
-                    <button onclick="downloadDocument('${docId}', '${type}'); this.closest('.modal').remove();" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 200;">
+                    <button onclick="if(typeof downloadDocument === 'function') { downloadDocument('${docId}', '${type}'); } else { const apiBase = window.API_BASE || 'https://us-central1-cis-de.cloudfunctions.net'; window.open(apiBase + '/downloadDocument?docId=${docId}&type=${type}', '_blank'); }" style="padding: 10px 24px; background: #2d2d2d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background 0.2s;">
                         Download
                     </button>
                 </div>
@@ -3718,12 +3752,26 @@ function previewDocument(docId, type) {
     modal.style.display = 'flex';
     modal.classList.add('active');
     
-    // Generate preview content immediately
-    generatePreviewContent(docId, doc, type);
+    // Close on overlay click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Generate preview content
+    await generatePreviewContent(docId, fullDoc, type);
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
 }
 
 // Generate preview content based on file type - FIXED VERSION
-function generatePreviewContent(docId, doc, type) {
+async function generatePreviewContent(docId, doc, type) {
     const previewContent = document.getElementById(`previewContent-${docId}`);
     if (!previewContent) return;
     
@@ -3750,63 +3798,108 @@ function generatePreviewContent(docId, doc, type) {
     
     console.log('File type detection:', { filename, extension, fileType, docFileType: doc.fileType });
     
+    // Fetch content if not available (for text files)
+    let textContent = doc.content || doc.text || doc.data || '';
+    if (!textContent && (fileType === 'text' || fileType === 'csv')) {
+        try {
+            console.log('📥 Fetching document content for preview...');
+            const apiBase = window.API_BASE || 'https://us-central1-cis-de.cloudfunctions.net';
+            const response = await fetch(`${apiBase}/viewDocument?docId=${docId}&type=${type}&format=json`);
+            if (response.ok) {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    textContent = data.content || data.text || '';
+                } else {
+                    // If not JSON, try to get as text
+                    textContent = await response.text();
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching content:', error);
+        }
+    }
+    
     let content = '';
     
     switch (fileType) {
         case 'pdf':
+            // For PDFs, show message and offer download link
+            const apiBase = window.API_BASE || 'https://us-central1-cis-de.cloudfunctions.net';
+            const pdfUrl = `${apiBase}/viewDocument?docId=${docId}&type=${type}`;
             content = `
                 <div style="text-align: center; padding: 40px 20px;">
                     <div style="width: 64px; height: 64px; margin: 0 auto 20px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                         <svg width="32" height="32" fill="#dc2626" viewBox="0 0 24 24">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,11L9,14H11V18H13V14H15L12,11Z"/>
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20"/>
                         </svg>
                     </div>
                     <h3 style="margin: 0 0 12px 0; color: #1f2937; font-size: 20px;">PDF-Dokument</h3>
-                    <p style="color: #6b7280; margin: 0 0 20px 0; font-size: 16px;">Dieses PDF-Dokument kann nicht direkt in der Vorschau angezeigt werden.</p>
+                    <p style="color: #6b7280; margin: 0 0 20px 0; font-size: 16px;">PDF-Dokumente können nicht direkt in der Vorschau angezeigt werden.</p>
                     <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                        <div style="display: flex; align-items: flex-start; gap: 12px;">
-                            <div style="width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
-                                <svg width="12" height="12" fill="white" viewBox="0 0 24 24">
-                                    <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.5;">
-                                    <strong style="color: #1f2937;">Hinweis:</strong> PDF-Dokumente können nicht direkt in der Vorschau angezeigt werden. Verwenden Sie die Download-Funktion, um das Dokument zu öffnen.
-                                </p>
-                            </div>
-                        </div>
+                        <p style="margin: 0 0 16px 0; font-size: 14px; color: #374151; line-height: 1.5;">
+                            <strong style="color: #1f2937;">Hinweis:</strong> Verwenden Sie die Download-Funktion, um das PDF-Dokument zu öffnen.
+                        </p>
+                        <button onclick="window.open('${pdfUrl}', '_blank')" style="padding: 10px 20px; background: #2d2d2d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                            PDF öffnen
+                        </button>
                     </div>
                 </div>
             `;
             break;
             
         case 'text':
-            // Try to get content from the document
-            let textContent = '';
-            if (doc.content) {
-                textContent = doc.content;
-            } else if (doc.text) {
-                textContent = doc.text;
-            } else if (doc.data) {
-                textContent = doc.data;
-            } else {
+            // Display text content
+            if (!textContent || textContent.trim() === '') {
                 textContent = 'Inhalt nicht verfügbar. Bitte laden Sie die Datei herunter, um den Inhalt zu sehen.';
             }
+            
+            // Limit preview to first 5000 characters
+            const displayText = textContent.length > 5000 ? textContent.substring(0, 5000) + '\n\n... (Inhalt gekürzt - Download für vollständige Ansicht)' : textContent;
             
             content = `
                 <div>
                     <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;">
-                        <h3 style="margin: 0; color: #1f2937; font-size: 18px;">Text-Dokument</h3>
+                        <h3 style="margin: 0; color: #1f2937; font-size: 18px; font-weight: 500;">Text-Inhalt</h3>
                     </div>
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px;">
-                        <pre style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.6; color: #374151; white-space: pre-wrap; word-wrap: break-word;">${textContent.substring(0, 3000)}${textContent.length > 3000 ? '\n\n... (Inhalt gekürzt - Download für vollständige Ansicht)' : ''}</pre>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-height: 400px; overflow-y: auto;">
+                        <pre style="margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.6; color: #374151; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(displayText)}</pre>
                     </div>
                 </div>
             `;
             break;
             
         case 'csv':
+            // Try to display CSV as table
+            if (textContent) {
+                const lines = textContent.split('\n').slice(0, 100); // Limit to first 100 lines
+                const rows = lines.map(line => {
+                    const cells = line.split(',');
+                    return cells.map(cell => `<td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${escapeHtml(cell.trim())}</td>`).join('');
+                }).filter(row => row.trim() !== '').map(row => `<tr>${row}</tr>`).join('');
+                
+                content = `
+                    <div>
+                        <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;">
+                            <h3 style="margin: 0; color: #1f2937; font-size: 18px; font-weight: 500;">CSV-Daten</h3>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; max-height: 400px; overflow: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                ${rows}
+                            </table>
+                            ${lines.length >= 100 ? '<p style="margin-top: 16px; color: #6b7280; font-size: 14px;">... (weitere Zeilen verfügbar - Download für vollständige Ansicht)</p>' : ''}
+                        </div>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <p style="color: #6b7280;">CSV-Inhalt konnte nicht geladen werden. Bitte verwenden Sie die Download-Funktion.</p>
+                    </div>
+                `;
+            }
+            break;
+            
         case 'excel':
             content = `
                 <div style="text-align: center; padding: 40px 20px;">
@@ -3871,8 +3964,8 @@ function generatePreviewContent(docId, doc, type) {
                             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,11L9,14H11V18H13V14H15L12,11Z"/>
                         </svg>
                     </div>
-                    <h3 style="margin: 0 0 12px 0; color: #1f2937; font-size: 20px;">Unbekannter Dateityp</h3>
-                    <p style="color: #6b7280; margin: 0 0 20px 0; font-size: 16px;">Vorschau für diesen Dateityp ist nicht verfügbar.</p>
+                    <h3 style="margin: 0 0 12px 0; color: #1f2937; font-size: 20px;">${fileType === 'excel' ? 'Tabellen-Dokument' : fileType === 'word' ? 'Word-Dokument' : 'Unbekannter Dateityp'}</h3>
+                    <p style="color: #6b7280; margin: 0 0 20px 0; font-size: 16px;">${fileType === 'excel' ? 'Tabellenkalkulation' : fileType === 'word' ? 'Microsoft Word-Dokument' : 'Vorschau für diesen Dateityp ist nicht verfügbar'}.</p>
                     <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
                         <div style="display: flex; align-items: flex-start; gap: 12px;">
                             <div style="width: 20px; height: 20px; background: #6b7280; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">

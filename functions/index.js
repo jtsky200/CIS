@@ -3806,13 +3806,13 @@ function isBase64(str) {
 exports.viewDocument = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         try {
-            const { docId, type } = req.query;
+            const { docId, type, format } = req.query;
             
             if (!docId || !type) {
                 return res.status(400).json({ error: 'Missing docId or type parameter' });
             }
             
-            console.log('👁️ View request:', { docId, type });
+            console.log('👁️ View request:', { docId, type, format });
             
             // Determine collection based on type
             const collection = type === 'technical' ? 'technicalDatabase' : 'knowledgebase';
@@ -3831,6 +3831,20 @@ exports.viewDocument = functions.https.onRequest((req, res) => {
             
             const docData = docSnap.data();
             console.log('📊 Document data keys:', Object.keys(docData));
+            
+            // If JSON format requested, return JSON
+            if (format === 'json') {
+                return res.status(200).json({
+                    id: docId,
+                    filename: docData.filename || docData.name,
+                    fileType: docData.fileType || docData.type,
+                    content: docData.content || docData.text || docData.data || '',
+                    size: docData.size || 0,
+                    category: docData.category,
+                    uploadedAt: docData.uploadedAt
+                });
+            }
+            
             console.log('📊 File type:', docData.fileType || docData.type);
             console.log('📊 Has content:', !!docData.content);
             console.log('📊 Has originalFileData:', !!docData.originalFileData);
