@@ -2971,6 +2971,7 @@
                         btn.onclick = null;
                         const newBtn = btn.cloneNode(true);
                         btn.parentNode.replaceChild(newBtn, btn);
+                        newBtn.id = 'themeToggle'; // Ensure ID is preserved
                         
                         newBtn.addEventListener('click', function(e) {
                             e.preventDefault();
@@ -2996,6 +2997,13 @@
                     setTimeout(setupThemeToggleDirect, 2500);
                 }
             }
+            
+            // Also ensure setupThemeToggle is called after a delay
+            setTimeout(() => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
+                }
+            }, 500);
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
