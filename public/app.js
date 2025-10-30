@@ -43,9 +43,18 @@ function applyTheme(theme) {
         settingsContainer.setAttribute('data-theme', theme);
     }
     
-    // Fix settings page white blocks in dark mode
+    // Fix settings page white blocks in dark mode - MORE AGGRESSIVE
     if (theme === 'dark') {
-        // Find all divs with white backgrounds in branding-section and override them
+        // Find all divs with white backgrounds ANYWHERE on the page and override them
+        const allWhiteBlocks = document.querySelectorAll('div[style*="background: #f9fafb"], div[style*="background:#f9fafb"], div[style*="background: white"], div[style*="background:#fff"], div[style*="background: #fff"]');
+        allWhiteBlocks.forEach(block => {
+            block.style.setProperty('background', '#2a2a2a', 'important');
+            if (block.style.borderColor) {
+                block.style.setProperty('border-color', '#404040', 'important');
+            }
+        });
+        
+        // Fix branding section specifically
         const brandingSection = document.querySelector('.branding-section');
         if (brandingSection) {
             const whiteBlocks = brandingSection.querySelectorAll('div[style*="background: #f9fafb"], div[style*="background:#f9fafb"]');
@@ -63,6 +72,16 @@ function applyTheme(theme) {
             const headings = brandingSection.querySelectorAll('h3[style*="color: #2d2d2d"], h3[style*="color:#2d2d2d"]');
             headings.forEach(h => {
                 h.style.setProperty('color', '#e0e0e0', 'important');
+            });
+        }
+        
+        // Also fix any white blocks in settings-container
+        const settingsContainer = document.querySelector('.settings-container');
+        if (settingsContainer) {
+            const containerWhiteBlocks = settingsContainer.querySelectorAll('div[style*="background: #f9fafb"], div[style*="background:#f9fafb"]');
+            containerWhiteBlocks.forEach(block => {
+                block.style.setProperty('background', '#2a2a2a', 'important');
+                block.style.setProperty('border-color', '#404040', 'important');
             });
         }
     } else {
@@ -1791,7 +1810,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // This handles cases where the inline script didn't execute
         if (currentPage === 'settings') {
             console.log('🔍 Settings page detected, ensuring theme toggle is set up...');
-            // Multiple attempts to ensure toggle works
+            // Multiple attempts to ensure toggle works - MORE AGGRESSIVE
             setTimeout(() => {
                 if (typeof window.setupThemeToggle === 'function') {
                     window.setupThemeToggle();
@@ -1816,6 +1835,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                     window.ensureSettingsThemeToggle();
                 }
             }, 2000);
+            setTimeout(() => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
+                }
+                if (typeof window.ensureSettingsThemeToggle === 'function') {
+                    window.ensureSettingsThemeToggle();
+                }
+            }, 4000);
+            
+            // Also set up a periodic checker for settings page
+            if (!window.settingsPageToggleChecker) {
+                window.settingsPageToggleChecker = setInterval(() => {
+                    const btn = document.getElementById('themeToggle');
+                    if (btn && (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null)) {
+                        console.log('🔄 Periodic check: Settings page toggle missing listener, fixing...');
+                        if (typeof window.ensureSettingsThemeToggle === 'function') {
+                            window.ensureSettingsThemeToggle();
+                        } else if (typeof window.setupThemeToggle === 'function') {
+                            window.setupThemeToggle();
+                        }
+                    }
+                }, 3000); // Check every 3 seconds
+            }
         }
         
         // Debug available functions after a delay
@@ -2409,18 +2451,38 @@ function initializePage(page) {
                 window.initializeSettingsPage();
             }, 100);
         }
-        // Also ensure theme toggle is set up directly
+        // Also ensure theme toggle is set up directly - MULTIPLE ATTEMPTS
         setTimeout(() => {
             if (typeof window.setupThemeToggle === 'function') {
-                console.log('🔄 Calling setupThemeToggle from app.js for settings page...');
+                console.log('🔄 Calling setupThemeToggle from app.js for settings page (attempt 1)...');
                 window.setupThemeToggle();
             }
             // Also try ensureSettingsThemeToggle if available
             if (typeof window.ensureSettingsThemeToggle === 'function') {
-                console.log('🔄 Calling ensureSettingsThemeToggle from app.js...');
+                console.log('🔄 Calling ensureSettingsThemeToggle from app.js (attempt 1)...');
                 window.ensureSettingsThemeToggle();
             }
         }, 500);
+        setTimeout(() => {
+            if (typeof window.setupThemeToggle === 'function') {
+                console.log('🔄 Calling setupThemeToggle from app.js for settings page (attempt 2)...');
+                window.setupThemeToggle();
+            }
+            if (typeof window.ensureSettingsThemeToggle === 'function') {
+                console.log('🔄 Calling ensureSettingsThemeToggle from app.js (attempt 2)...');
+                window.ensureSettingsThemeToggle();
+            }
+        }, 1500);
+        setTimeout(() => {
+            if (typeof window.setupThemeToggle === 'function') {
+                console.log('🔄 Calling setupThemeToggle from app.js for settings page (attempt 3)...');
+                window.setupThemeToggle();
+            }
+            if (typeof window.ensureSettingsThemeToggle === 'function') {
+                console.log('🔄 Calling ensureSettingsThemeToggle from app.js (attempt 3)...');
+                window.ensureSettingsThemeToggle();
+            }
+        }, 3000);
         if (typeof loadKnowledgeBase === 'function') loadKnowledgeBase();
         if (typeof loadKnowledgeBaseStats === 'function') loadKnowledgeBaseStats();
     } else if (page === 'dashboard') {
