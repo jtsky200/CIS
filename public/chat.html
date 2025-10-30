@@ -4,6 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadillac EV - Nachrichten</title>
+    
+    <!-- Critical CSS - Apply theme immediately to prevent FOUC -->
+    <style>
+        /* Apply theme immediately before CSS loads */
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.documentElement.style.visibility = 'hidden';
+        })();
+        
+        /* Critical styles to prevent flash */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #2d2d2d;
+        }
+        
+        [data-theme="dark"] body {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        .modern-chat-page {
+            background: #ffffff;
+            min-height: calc(100vh - 81px);
+        }
+        
+        [data-theme="dark"] .modern-chat-page {
+            background: #1a1a1a;
+        }
+        
+        .modern-chat-container {
+            background: #ffffff;
+        }
+        
+        [data-theme="dark"] .modern-chat-container {
+            background: #1a1a1a;
+        }
+        
+        /* Show content after CSS loads */
+        html { visibility: visible; }
+    </style>
+    
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="js/i18n.js?v=1730000020"></script>
