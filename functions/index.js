@@ -1890,7 +1890,7 @@ exports.technicalDatabase = functions.runWith({
             if (req.method === 'GET') {
             try {
                 console.log('🔧 Fetching Technical Database documents for chat...');
-                const snapshot = await db.collection('technical-database')
+                const snapshot = await db.collection('technicalDatabase')
                     .limit(100)
                     .get();
                     
