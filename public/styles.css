@@ -3211,33 +3211,40 @@ button, input, select, textarea, a, .clickable {
     color: #9ca3af;
 }
 
-/* Override inline styles for white background blocks in settings */
-[data-theme="dark"] .branding-section div[style*="background: #f9fafb"],
-[data-theme="dark"] .branding-section div[style*="background:#f9fafb"] {
+/* Override inline styles for white background blocks in settings - Use universal selector with higher specificity */
+[data-theme="dark"] .branding-section div {
+    /* This will target all divs, but we'll be more specific below */
+}
+
+/* More aggressive targeting - match any div with inline background style */
+[data-theme="dark"] .branding-section div[style*="f9fafb"] {
     background: #2a2a2a !important;
     border-color: #404040 !important;
 }
 
+/* Override border colors */
+[data-theme="dark"] .branding-section div[style*="e5e7eb"] {
+    border-color: #404040 !important;
+}
+
 /* Override inline styles for text colors in these blocks */
-[data-theme="dark"] .branding-section span[style*="color: #374151"],
-[data-theme="dark"] .branding-section span[style*="color:#374151"] {
+[data-theme="dark"] .branding-section span[style*="374151"] {
     color: #e0e0e0 !important;
 }
 
-[data-theme="dark"] .branding-section h3[style*="color: #2d2d2d"],
-[data-theme="dark"] .branding-section h3[style*="color:#2d2d2d"] {
+[data-theme="dark"] .branding-section h3[style*="2d2d2d"] {
     color: #e0e0e0 !important;
 }
 
 /* Ensure form hints are readable in dark mode within these blocks */
-[data-theme="dark"] .branding-section div[style*="background: #f9fafb"] .form-hint,
-[data-theme="dark"] .branding-section div[style*="background:#f9fafb"] .form-hint {
+[data-theme="dark"] .branding-section div[style*="f9fafb"] .form-hint,
+[data-theme="dark"] .branding-section div .form-hint {
     color: #9ca3af !important;
 }
 
 /* Ensure labels are readable */
-[data-theme="dark"] .branding-section div[style*="background: #f9fafb"] label,
-[data-theme="dark"] .branding-section div[style*="background:#f9fafb"] label {
+[data-theme="dark"] .branding-section div[style*="f9fafb"] label,
+[data-theme="dark"] .branding-section div label {
     color: #e0e0e0 !important;
 }
 

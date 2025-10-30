@@ -37,6 +37,50 @@ function applyTheme(theme) {
         container.setAttribute('data-theme', theme);
     });
     
+    // Fix settings page white blocks in dark mode
+    if (theme === 'dark') {
+        // Find all divs with white backgrounds in branding-section and override them
+        const brandingSection = document.querySelector('.branding-section');
+        if (brandingSection) {
+            const whiteBlocks = brandingSection.querySelectorAll('div[style*="background: #f9fafb"], div[style*="background:#f9fafb"]');
+            whiteBlocks.forEach(block => {
+                block.style.setProperty('background', '#2a2a2a', 'important');
+                block.style.setProperty('border-color', '#404040', 'important');
+            });
+            
+            // Fix text colors
+            const textSpans = brandingSection.querySelectorAll('span[style*="color: #374151"], span[style*="color:#374151"]');
+            textSpans.forEach(span => {
+                span.style.setProperty('color', '#e0e0e0', 'important');
+            });
+            
+            const headings = brandingSection.querySelectorAll('h3[style*="color: #2d2d2d"], h3[style*="color:#2d2d2d"]');
+            headings.forEach(h => {
+                h.style.setProperty('color', '#e0e0e0', 'important');
+            });
+        }
+    } else {
+        // Reset to original styles in light mode
+        const brandingSection = document.querySelector('.branding-section');
+        if (brandingSection) {
+            const whiteBlocks = brandingSection.querySelectorAll('div[style*="background: #f9fafb"], div[style*="background:#f9fafb"]');
+            whiteBlocks.forEach(block => {
+                block.style.setProperty('background', '#f9fafb', 'important');
+                block.style.setProperty('border-color', '#e5e7eb', 'important');
+            });
+            
+            const textSpans = brandingSection.querySelectorAll('span[style*="color: #374151"], span[style*="color:#374151"]');
+            textSpans.forEach(span => {
+                span.style.setProperty('color', '#374151', 'important');
+            });
+            
+            const headings = brandingSection.querySelectorAll('h3[style*="color: #2d2d2d"], h3[style*="color:#2d2d2d"]');
+            headings.forEach(h => {
+                h.style.setProperty('color', '#2d2d2d', 'important');
+            });
+        }
+    }
+    
     // Update theme toggle button appearance
     updateThemeToggle(theme);
 }
