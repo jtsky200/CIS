@@ -3141,18 +3141,23 @@ button, input, select, textarea, a, .clickable {
 
 /* ========== COMPREHENSIVE DARK THEME - ALL PAGES ========== */
 
-/* Settings Page Dark Theme */
+/* Settings Page Dark Theme - Ensure all content is visible */
 [data-theme="dark"] .settings-container {
-    background: #1a1a1a;
-    color: #e0e0e0;
+    background: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+[data-theme="dark"] .settings-container .tab-content.active,
+[data-theme="dark"] .settings-container .settings-tab-content.active {
+    display: block !important;
 }
 
 [data-theme="dark"] .settings-header h1 {
-    color: #e0e0e0;
+    color: #e0e0e0 !important;
 }
 
 [data-theme="dark"] .settings-header p {
-    color: #9ca3af;
+    color: #9ca3af !important;
 }
 
 [data-theme="dark"] .settings-tabs {
