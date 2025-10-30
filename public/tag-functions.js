@@ -131,15 +131,21 @@ window.removeTag = function(button, tag) {
 // Load all tags from both databases
 window.loadAllTags = async function() {
     try {
+        console.log('🔄 loadAllTags() - Fetching documents from databases...');
         // Load tags from Knowledge Base
         const kbResponse = await fetch(`${API_BASE}/knowledgebase`);
         const kbData = await kbResponse.json();
         const kbDocs = kbData.documents || [];
+        console.log(`📚 Knowledge Base: ${kbDocs.length} documents loaded`);
         
         // Load tags from Technical Database
         const tdResponse = await fetch(`${API_BASE}/technicalDatabase`);
         const tdData = await tdResponse.json();
         const tdDocs = tdData.documents || [];
+        console.log(`🔧 Technical Database: ${tdDocs.length} documents loaded`);
+        
+        const totalDocs = kbDocs.length + tdDocs.length;
+        console.log(`📊 Total documents: ${totalDocs}`);
         
         // Category mappings to clean up
         const categoryMappings = {
@@ -172,7 +178,13 @@ window.loadAllTags = async function() {
         const tagsMap = new Map();
         const categoriesMap = new Map();
         
+        let processedDocs = 0;
+        let docsWithTags = 0;
+        let docsWithCategories = 0;
+        
         [...kbDocs, ...tdDocs].forEach(doc => {
+            processedDocs++;
+            
             // Clean and count categories
             let category = doc.category || 'GENERAL';
             // Apply mapping
@@ -180,9 +192,11 @@ window.loadAllTags = async function() {
             // Convert to uppercase
             category = category.toUpperCase();
             categoriesMap.set(category, (categoriesMap.get(category) || 0) + 1);
+            if (category !== 'GENERAL') docsWithCategories++;
             
             // Clean and count tags
             if (doc.tags && Array.isArray(doc.tags)) {
+                docsWithTags++;
                 doc.tags.forEach(tag => {
                     // Skip excluded tags
                     if (tagsToExclude.includes(tag) || tagsToExclude.includes(tag.toUpperCase())) {
@@ -208,10 +222,23 @@ window.loadAllTags = async function() {
             }
         });
         
-        return {
+        console.log(`📊 Processed ${processedDocs} documents:`);
+        console.log(`   - ${docsWithCategories} documents with categories`);
+        console.log(`   - ${docsWithTags} documents with tags`);
+        console.log(`   - Found ${categoriesMap.size} unique categories`);
+        console.log(`   - Found ${tagsMap.size} unique tags`);
+        
+        const result = {
             tags: Array.from(tagsMap.entries()),
             categories: Array.from(categoriesMap.entries())
         };
+        
+        console.log('📋 Final result:', {
+            categories: result.categories.map(([name, count]) => `${name} (${count})`),
+            tags: result.tags.map(([name, count]) => `${name} (${count})`)
+        });
+        
+        return result;
         
     } catch (error) {
         console.error('Error loading tags:', error);
@@ -224,13 +251,18 @@ window.loadAllTags = async function() {
 window.refreshTags = async function() {
     const tagsContainer = document.getElementById('tagsContainer');
     if (!tagsContainer) {
-        console.error('tagsContainer not found');
+        console.error('❌ tagsContainer not found');
         return;
     }
     
+    console.log('🔄 refreshTags() called - Loading tags from database...');
     tagsContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-weight: 500;">Lade Tags...</div>';
     
     const { tags, categories } = await window.loadAllTags();
+    
+    console.log(`📊 Loaded ${categories.length} categories and ${tags.length} tags from database`);
+    console.log('📋 Categories:', categories.map(([name]) => name));
+    console.log('🏷️ Tags:', tags.map(([name]) => name));
     
     if (tags.length === 0 && categories.length === 0) {
         tagsContainer.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280; font-weight: 500; background: #f9fafb; border-radius: 8px; border: 2px dashed #e5e7eb;">Keine Tags gefunden. Erstellen Sie Ihren ersten Tag!</div>';
@@ -311,6 +343,7 @@ window.refreshTags = async function() {
     }
     
     tagsContainer.innerHTML = html;
+    console.log(`✅ Tags display updated: ${categories.length} categories and ${tags.length} tags displayed`);
 }
 
 // Auto-load tags when page loads
@@ -318,8 +351,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wait a bit for the page to fully load
     setTimeout(() => {
         if (typeof window.refreshTags === 'function') {
-            console.log('Auto-loading tags...');
+            console.log('🏷️ Auto-loading tags on page load...');
             window.refreshTags();
+        } else {
+            console.error('❌ refreshTags function not available');
         }
     }, 1000);
 });
@@ -926,7 +961,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const observer = new MutationObserver(function(mutations) {
         const tagsTab = document.getElementById('tags');
         if (tagsTab && tagsTab.classList.contains('active')) {
-            refreshTags();
+            console.log('🏷️ Tags tab became active - refreshing tags...');
+            setTimeout(() => {
+                if (typeof window.refreshTags === 'function') {
+                    window.refreshTags();
+                } else {
+                    console.error('❌ refreshTags function not available');
+                }
+            }, 100);
         }
     });
     
@@ -938,8 +980,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Also listen to tab clicks
     document.querySelectorAll('[data-tab="tags"]').forEach(btn => {
         btn.addEventListener('click', () => {
-            setTimeout(() => refreshTags(), 100);
+            console.log('🏷️ Tags tab clicked - refreshing tags...');
+            setTimeout(() => {
+                if (typeof window.refreshTags === 'function') {
+                    window.refreshTags();
+                } else {
+                    console.error('❌ refreshTags function not available');
+                }
+            }, 100);
         });
     });
+    
+    // Also check if tags tab is already active on load
+    setTimeout(() => {
+        const tagsTab = document.getElementById('tags');
+        if (tagsTab && tagsTab.classList.contains('active')) {
+            console.log('🏷️ Tags tab is already active on page load - refreshing tags...');
+            if (typeof window.refreshTags === 'function') {
+                window.refreshTags();
+            }
+        }
+    }, 2000);
 });
 

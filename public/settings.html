@@ -2377,7 +2377,12 @@
             } else if (tabName === 'tags') {
                 console.log('🏷️ Initializing tag management...');
                 if (typeof window.refreshTags === 'function') {
-                    setTimeout(() => window.refreshTags(), 100);
+                    setTimeout(() => {
+                        console.log('🏷️ Calling refreshTags() from switchSettingsTab...');
+                        window.refreshTags();
+                    }, 100);
+                } else {
+                    console.error('❌ refreshTags function not found');
                 }
             }
             
@@ -3205,6 +3210,15 @@
                     window.loadTechnicalDatabase();
                 }
             }, 2000);
+            
+            // Check URL hash and switch to appropriate tab if needed
+            const hash = window.location.hash.replace('#', '');
+            if (hash && ['branding', 'knowledge', 'technical', 'tags', 'general'].includes(hash)) {
+                console.log(`📍 URL hash detected: ${hash}, switching to tab...`);
+                setTimeout(() => {
+                    switchSettingsTab(hash);
+                }, 500);
+            }
             
             console.log('✅ Settings page initialization complete');
         }
