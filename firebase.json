@@ -34,8 +34,18 @@
     ],
     "redirects": [
       {
+        "source": "/settings",
+        "destination": "/settings.html",
+        "type": 301
+      },
+      {
         "source": "/settings/",
-        "destination": "/settings",
+        "destination": "/settings.html",
+        "type": 301
+      },
+      {
+        "source": "/troubleshooting",
+        "destination": "/troubleshooting.html",
         "type": 301
       },
       {
