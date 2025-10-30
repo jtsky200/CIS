@@ -1883,14 +1883,15 @@ exports.knowledgeBase = functions.runWith({
 });
 
 exports.technicalDatabase = functions.runWith({
-    memory: '512MB',
+    memory: '1GB',
     timeoutSeconds: 60
 }).https.onRequest((req, res) => {
     cors(req, res, async () => {
-            if (req.method === 'GET') {
+        if (req.method === 'GET') {
             try {
                 console.log('🔧 Fetching Technical Database documents for chat...');
                 const snapshot = await db.collection('technicalDatabase')
+                    .where('isActive', '==', true)
                     .limit(100)
                     .get();
                     
@@ -1900,26 +1901,29 @@ exports.technicalDatabase = functions.runWith({
                     documents.push({
                         id: doc.id,
                         title: data.title || data.name || data.filename || 'Untitled',
-                        content: data.content || '',
-                        fullContent: data.fullContent || data.content || '',
                         name: data.name || data.filename || 'Unnamed Document',
                         fileType: data.fileType || 'unknown',
                         category: data.category || 'General',
                         subcategory: data.subcategory || 'General',
                         tags: data.tags || [],
                         vehicleType: data.vehicleType || 'General',
-                        images: data.images || [],
                         uploadedAt: data.uploadedAt,
                         size: data.size || 0,
-                        isActive: data.isActive
+                        isActive: data.isActive !== undefined ? data.isActive : true
+                        // Note: Not including 'content' or 'fullContent' to reduce response size
+                        // Content can be fetched separately if needed
                     });
                 });
 
-                console.log(`✅ Returning ${documents.length} technical database documents`);
-                return res.json({ documents });
+                console.log(`✅ Returning ${documents.length} technical database documents (metadata only)`);
+                return res.status(200).json({ documents });
             } catch (error) {
                 console.error('❌ Error fetching technical documents:', error);
-                return res.status(500).json({ error: 'Failed to fetch technical documents' });
+                console.error('Error stack:', error.stack);
+                return res.status(500).json({ 
+                    error: 'Failed to fetch technical documents',
+                    message: error.message 
+                });
             }
         } else {
             return res.status(405).json({ error: 'Method not allowed' });
