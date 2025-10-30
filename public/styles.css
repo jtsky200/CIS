@@ -4406,16 +4406,17 @@ button, input, select, textarea, a, .clickable {
 }
 
 .control-bar-send {
-    background: transparent;
-    color: var(--text-color);
+    background: var(--text-color);
+    color: white;
     opacity: 1;
     font-weight: 500;
 }
 
 .control-bar-send:hover {
-    background: var(--surface-color);
-    color: var(--text-color);
-    opacity: 1;
+    background: var(--text-color);
+    color: white;
+    opacity: 0.9;
+    transform: scale(1.05);
 }
 
 .modern-chat-input-container:focus-within {
@@ -4589,13 +4590,13 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .control-bar-send {
-    background: transparent;
-    color: #e0e0e0;
+    background: #e0e0e0;
+    color: #2d2d2d;
 }
 
 [data-theme="dark"] .control-bar-send:hover {
-    background: #374151;
-    color: #f9fafb;
+    background: #f0f0f0;
+    color: #2d2d2d;
     opacity: 1;
 }
 
