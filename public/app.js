@@ -1810,6 +1810,46 @@ document.addEventListener('DOMContentLoaded', async function() {
         // This handles cases where the inline script didn't execute
         if (currentPage === 'settings') {
             console.log('🔍 Settings page detected, ensuring theme toggle is set up...');
+            
+            // CRITICAL: For direct Settings page loads, wait longer and check more aggressively
+            // Create a dedicated function that checks and sets up the toggle
+            const ensureSettingsToggle = () => {
+                const btn = document.getElementById('themeToggle');
+                if (btn) {
+                    const hasListener = btn.getAttribute('data-listener-attached') === 'true';
+                    const hasOnclick = btn.onclick !== null;
+                    
+                    if (!hasListener || !hasOnclick) {
+                        console.log('🔧 Settings page: Button exists but no listener, setting up now...');
+                        if (typeof window.setupThemeToggle === 'function') {
+                            window.setupThemeToggle();
+                        }
+                        if (typeof window.ensureSettingsThemeToggle === 'function') {
+                            window.ensureSettingsThemeToggle();
+                        }
+                        return true; // Will retry
+                    } else {
+                        console.log('✅ Settings page: Toggle already has listener');
+                        return false; // Done
+                    }
+                } else {
+                    console.log('⚠️ Settings page: Button not found yet');
+                    return true; // Will retry
+                }
+            };
+            
+            // Try immediately
+            if (ensureSettingsToggle()) {
+                // Keep retrying until button is found and listener is attached
+                let retryCount = 0;
+                const retryInterval = setInterval(() => {
+                    retryCount++;
+                    if (!ensureSettingsToggle() || retryCount >= 30) {
+                        clearInterval(retryInterval);
+                    }
+                }, 200); // Check every 200ms, up to 6 seconds
+            }
+            
             // Multiple attempts to ensure toggle works - MORE AGGRESSIVE
             setTimeout(() => {
                 if (typeof window.setupThemeToggle === 'function') {
