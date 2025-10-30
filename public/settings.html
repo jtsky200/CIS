@@ -2952,6 +2952,35 @@
             }, 500);
         }
         
+        // CRITICAL: Also check periodically when page loads via navigation
+        // This handles cases where DOMContentLoaded already fired before script loads
+        let immediateCheckAttempts = 0;
+        const immediateCheck = setInterval(() => {
+            immediateCheckAttempts++;
+            const btn = document.getElementById('themeToggle');
+            if (btn && typeof window.toggleTheme === 'function') {
+                // Button exists and toggleTheme is available, but might not be initialized
+                if (btn.getAttribute('data-listener-attached') !== 'true') {
+                    console.log('🔄 Immediate check: Button exists but no listener, initializing...');
+                    if (typeof initializeSettingsPage === 'function') {
+                        initializeSettingsPage();
+                    }
+                }
+            }
+            
+            // Stop checking after 10 seconds
+            if (immediateCheckAttempts >= 20) {
+                clearInterval(immediateCheck);
+            }
+        }, 500);
+        
+        // Clean up interval on page unload
+        window.addEventListener('beforeunload', () => {
+            if (immediateCheck) {
+                clearInterval(immediateCheck);
+            }
+        });
+        
         function initializeSettingsPage() {
             console.log('🔧 Initializing settings page...');
             
@@ -3098,13 +3127,16 @@
             }
             window.settingsThemeToggleChecker = setInterval(() => {
                 const btn = document.getElementById('themeToggle');
-                if (btn && btn.getAttribute('data-listener-attached') !== 'true') {
-                    console.log('🔄 Periodic check: Theme toggle missing listener, fixing...');
-                    if (typeof window.ensureSettingsThemeToggle === 'function') {
-                        window.ensureSettingsThemeToggle();
+                if (btn) {
+                    // Check if listener is missing
+                    if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
+                        console.log('🔄 Periodic check: Theme toggle missing listener, fixing...');
+                        if (typeof window.ensureSettingsThemeToggle === 'function') {
+                            window.ensureSettingsThemeToggle();
+                        }
                     }
                 }
-            }, 3000);
+            }, 2000); // Check every 2 seconds
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
