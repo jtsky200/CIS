@@ -2917,6 +2917,249 @@
 
         // Define initializeSettingsPage function FIRST so it's always available
         // This is critical for navigation scenarios where scripts load after DOMContentLoaded
+        function initializeSettingsPage() {
+            console.log('🔧 Initializing settings page...');
+            
+            // Initialize theme FIRST - Use app.js version if available
+            if (typeof window.initializeTheme === 'function') {
+                console.log('✅ Initializing theme...');
+                window.initializeTheme();
+            } else {
+                console.log('⚠️ initializeTheme not found, applying default theme');
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.body.setAttribute('data-theme', savedTheme);
+                
+                // Apply theme using applyTheme if available
+                if (typeof window.applyTheme === 'function') {
+                    window.applyTheme(savedTheme);
+                }
+            }
+            
+            // Call applyTheme after a short delay to ensure DOM is ready
+            setTimeout(() => {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (typeof window.applyTheme === 'function') {
+                    window.applyTheme(savedTheme);
+                }
+            }, 100);
+            
+            // Setup theme toggle - MULTIPLE ATTEMPTS WITH VERIFICATION
+            console.log('🔧 Setting up theme toggle...');
+            
+            // Function to verify and fix theme toggle - Make it globally accessible
+            window.ensureSettingsThemeToggle = function() {
+                const btn = document.getElementById('themeToggle');
+                if (!btn) {
+                    console.log('⚠️ Theme toggle button not found');
+                    return false;
+                }
+                
+                // Check if listener is already attached
+                if (btn.getAttribute('data-listener-attached') === 'true') {
+                    // Verify it actually works
+                    const hasListener = btn.onclick !== null;
+                    if (hasListener) {
+                        console.log('✅ Theme toggle verified and working');
+                        return true;
+                    } else {
+                        console.log('⚠️ Theme toggle marked but listener missing, fixing...');
+                        btn.removeAttribute('data-listener-attached');
+                    }
+                }
+                
+                // Remove any existing handlers
+                btn.onclick = null;
+                
+                // Clone to remove all listeners
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.id = 'themeToggle';
+                
+                // Add multiple handlers for reliability
+                const clickHandler = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    console.log('🌙 Theme button clicked!');
+                    if (typeof window.toggleTheme === 'function') {
+                        window.toggleTheme();
+                    } else {
+                        console.error('❌ toggleTheme function not available');
+                    }
+                    return false;
+                };
+                
+                // Add event listener with capture
+                newBtn.addEventListener('click', clickHandler, { capture: true });
+                
+                // Also add direct onclick as fallback
+                newBtn.onclick = clickHandler;
+                
+                // Mark as having listener attached
+                newBtn.setAttribute('data-listener-attached', 'true');
+                
+                console.log('✅ Theme toggle set up successfully');
+                return true;
+            };
+            
+            // Use the global function
+            const ensureThemeToggle = window.ensureSettingsThemeToggle;
+            
+            // Try immediately
+            if (!ensureThemeToggle()) {
+                setTimeout(ensureThemeToggle, 100);
+            }
+            
+            // Multiple retries to ensure it works - MORE RETRIES FOR NAVIGATION
+            setTimeout(ensureThemeToggle, 500);
+            setTimeout(ensureThemeToggle, 1000);
+            setTimeout(ensureThemeToggle, 2000);
+            setTimeout(ensureThemeToggle, 3000);
+            setTimeout(ensureThemeToggle, 4000);
+            setTimeout(ensureThemeToggle, 5000);
+            
+            // Also use app.js setupThemeToggle as backup
+            if (typeof window.setupThemeToggle === 'function') {
+                window.setupThemeToggle();
+            }
+            
+            // Setup a MutationObserver to watch for button changes
+            if (window.settingsThemeObserver) {
+                window.settingsThemeObserver.disconnect();
+            }
+            
+            window.settingsThemeObserver = new MutationObserver((mutations) => {
+                const btn = document.getElementById('themeToggle');
+                if (btn && btn.getAttribute('data-listener-attached') !== 'true') {
+                    console.log('🔄 Theme toggle button changed, re-attaching listener...');
+                    if (typeof window.ensureSettingsThemeToggle === 'function') {
+                        window.ensureSettingsThemeToggle();
+                    }
+                }
+            });
+            
+            // Start observing after a delay
+            setTimeout(() => {
+                const nav = document.querySelector('.nav');
+                if (nav) {
+                    window.settingsThemeObserver.observe(nav, { childList: true, subtree: true });
+                }
+            }, 1000);
+            
+            // Also observe the entire document for any changes
+            setTimeout(() => {
+                window.settingsThemeObserver.observe(document.body, { 
+                    childList: true, 
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['id', 'class']
+                });
+            }, 2000);
+            
+            // Setup a periodic check to ensure toggle is always working
+            if (window.settingsThemeToggleChecker) {
+                clearInterval(window.settingsThemeToggleChecker);
+            }
+            window.settingsThemeToggleChecker = setInterval(() => {
+                const btn = document.getElementById('themeToggle');
+                if (btn) {
+                    // Check if listener is missing
+                    if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
+                        console.log('🔄 Periodic check: Theme toggle missing listener, fixing...');
+                        if (typeof window.ensureSettingsThemeToggle === 'function') {
+                            window.ensureSettingsThemeToggle();
+                        }
+                    }
+                }
+            }, 2000); // Check every 2 seconds
+            
+            // Setup language dropdown event listener
+            const languageDropdown = document.getElementById('languageSetting');
+            if (languageDropdown) {
+                languageDropdown.addEventListener('change', function(e) {
+                    if (typeof window.changeLanguage === 'function') {
+                        window.changeLanguage(e.target.value);
+                    }
+                });
+                console.log('✅ Language dropdown event listener added');
+            } else {
+                console.error('❌ Language dropdown not found');
+            }
+            
+            // Apply branding to navigation
+            applyBrandingToNavigation();
+            
+            // Setup tab navigation
+            setupTabNavigation();
+            
+            // Load branding settings with proper timing
+            console.log('🔄 DOMContentLoaded: About to call loadBrandingSettings()');
+            // Call immediately after DOM is ready
+            if (typeof window.loadBrandingSettings === 'function') {
+                console.log('✅ loadBrandingSettings function exists, calling immediately...');
+                window.loadBrandingSettings();
+            } else {
+                console.error('❌ loadBrandingSettings function not found');
+            }
+            
+            // Additional call after a short delay to ensure all elements are ready
+            setTimeout(() => {
+                console.log('🔄 setTimeout: Calling loadBrandingSettings() after delay');
+                if (typeof window.loadBrandingSettings === 'function') {
+                    window.loadBrandingSettings();
+                }
+            }, 500);
+            
+            // Final call when page is fully loaded
+            window.addEventListener('load', () => {
+                console.log('🔄 Window load event: Calling loadBrandingSettings()');
+                if (typeof window.loadBrandingSettings === 'function') {
+                    window.loadBrandingSettings();
+                }
+            });
+            
+            // LOAD DATABASES IMMEDIATELY - MULTIPLE ATTEMPTS
+            console.log('🔄 Loading databases on DOMContentLoaded...');
+            
+            // Attempt 1: Try immediately
+            setTimeout(function() {
+                console.log('🔄 Attempt 1: Executing database load...');
+                
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    console.log('✅ Calling loadKnowledgeBase...');
+                    window.loadKnowledgeBase().catch(error => {
+                        console.error('❌ Error loading knowledge base:', error);
+                    });
+                } else {
+                    console.error('❌ loadKnowledgeBase not available');
+                }
+                
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    console.log('✅ Calling loadTechnicalDatabase...');
+                    window.loadTechnicalDatabase().catch(error => {
+                        console.error('❌ Error loading technical database:', error);
+                    });
+                } else {
+                    console.error('❌ loadTechnicalDatabase not available');
+                }
+            }, 500);
+            
+            // Attempt 2: Try again after 2 seconds
+            setTimeout(function() {
+                console.log('🔄 Attempt 2: Retrying database load...');
+                
+                if (typeof window.loadKnowledgeBase === 'function') {
+                    window.loadKnowledgeBase();
+                }
+                
+                if (typeof window.loadTechnicalDatabase === 'function') {
+                    window.loadTechnicalDatabase();
+                }
+            }, 2000);
+            
+            console.log('✅ Settings page initialization complete');
+        }
         
         // Make function globally accessible
         window.initializeSettingsPage = initializeSettingsPage;
