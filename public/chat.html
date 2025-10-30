@@ -51,8 +51,8 @@
                         
                         <div class="quick-questions" id="quickQuestions">
                             <!-- Will be populated dynamically with random suggestions -->
-                        </div>
-                        
+        </div>
+        
                         <!-- Input Area - Initially inside welcome state (Position 1) -->
                         <div class="modern-chat-input-wrapper input-wrapper-initial" id="chatInputWrapper">
                             <div class="modern-chat-input-container">
@@ -201,12 +201,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path>
                 </svg>`
             }
-        let isProcessing = false;
-        let knowledgeBaseData = [];
-        let technicalDatabaseData = [];
+        ];
         
-        // Suggestion bubbles pool with different icons - Car Industry Themed
-            {
+        // Initialize quick questions with random selection
+        function initializeQuickQuestions() {
+            const container = document.getElementById('quickQuestions');
                 question: 'Was kostet der Cadillac LYRIQ in der Schweiz?',
                 label: 'Preise & Ausstattung',
                 icon: `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -306,6 +305,23 @@
             const shuffled = [...suggestionPool].sort(() => Math.random() - 0.5);
             const selected = shuffled.slice(0, 4);
             
+            container.innerHTML = '';
+            
+            selected.forEach(suggestion => {
+                const button = document.createElement('button');
+                button.className = 'quick-question-btn';
+                button.onclick = () => sendQuickQuestion(suggestion.question);
+                button.innerHTML = `
+                    ${suggestion.icon}
+                    <span>${suggestion.label}</span>
+                `;
+                container.appendChild(button);
+            });
+            
+            console.log(`✅ Initialized ${selected.length} quick question buttons`);
+        }
+        
+        // Initialize on page load
             container.innerHTML = '';
             
             selected.forEach(suggestion => {
