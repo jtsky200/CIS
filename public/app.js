@@ -31,11 +31,17 @@ function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
     
-    // Apply theme to all page containers
+    // Apply theme to all page containers (including settings-container)
     const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container, .settings-container');
     pageContainers.forEach(container => {
         container.setAttribute('data-theme', theme);
     });
+    
+    // Also ensure settings-container gets the attribute
+    const settingsContainer = document.querySelector('.settings-container');
+    if (settingsContainer) {
+        settingsContainer.setAttribute('data-theme', theme);
+    }
     
     // Fix settings page white blocks in dark mode
     if (theme === 'dark') {
@@ -3194,12 +3200,6 @@ window.testAllFunctions = function() {
 
 // Setup theme toggle functionality - Improved with better timing and single listener
 function setupThemeToggle() {
-    // Use a flag to prevent multiple setups
-    if (window.themeToggleSetup) {
-        console.log('✅ Theme toggle already being set up');
-        return;
-    }
-    window.themeToggleSetup = true;
     const attemptSetup = () => {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
@@ -3209,14 +3209,17 @@ function setupThemeToggle() {
                 return true;
             }
             
+            console.log('🔧 Setting up theme toggle button...');
+            
             // Remove any existing onclick handlers
             themeToggle.onclick = null;
             
-            // Remove any existing listeners by cloning
+            // Clone to remove all listeners
             const newToggle = themeToggle.cloneNode(true);
             themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+            newToggle.id = 'themeToggle'; // Ensure ID is preserved
             
-            // Add the click listener with proper event handling
+            // Add click handler with capture to ensure it fires first
             newToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -3228,7 +3231,19 @@ function setupThemeToggle() {
                     console.error('❌ toggleTheme function not available');
                 }
                 return false;
-            });
+            }, { capture: true, once: false });
+            
+            // Also add direct onclick as fallback
+            newToggle.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                console.log('🎨 Theme toggle clicked (onclick fallback)!');
+                if (typeof window.toggleTheme === 'function') {
+                    window.toggleTheme();
+                }
+                return false;
+            };
             
             // Mark as having listener attached
             newToggle.setAttribute('data-listener-attached', 'true');
@@ -3244,6 +3259,8 @@ function setupThemeToggle() {
                     console.log('✅ Theme toggle already set up (by class)');
                     return true;
                 }
+                
+                console.log('🔧 Setting up theme toggle button (by class)...');
                 
                 // Remove any existing onclick handlers
                 themeToggleByClass.onclick = null;
@@ -3262,7 +3279,19 @@ function setupThemeToggle() {
                         console.error('❌ toggleTheme function not available');
                     }
                     return false;
-                });
+                }, { capture: true });
+                
+                // Also add direct onclick as fallback
+                newToggle.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    console.log('🎨 Theme toggle clicked (onclick fallback by class)!');
+                    if (typeof window.toggleTheme === 'function') {
+                        window.toggleTheme();
+                    }
+                    return false;
+                };
                 
                 newToggle.setAttribute('data-listener-attached', 'true');
                 
@@ -3296,6 +3325,13 @@ function setupThemeToggle() {
     
     // Make function globally accessible
     window.setupThemeToggle = setupThemeToggle;
+}
+
+// Call setupThemeToggle immediately if DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
+} else {
+    setupThemeToggle();
 }
 
 // Setup sidebar functionality
