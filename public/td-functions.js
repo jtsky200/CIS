@@ -79,6 +79,10 @@
         console.log('🔧 loadTdDocuments called with', documents.length, 'documents');
         window.tdState.allDocuments = documents || [];
         window.tdState.filteredDocuments = [...window.tdState.allDocuments];
+        
+        // Also set window.technicalDatabase for previewDocument function
+        window.technicalDatabase = documents || [];
+        
         applyFiltersAndSort();
         renderDocuments();
         
@@ -360,10 +364,15 @@
         if (!doc) return;
         
         try {
-            // Open the document directly in a new tab
-            const url = `https://us-central1-cis-de.cloudfunctions.net/viewDocument?docId=${docId}&type=technical`;
-            window.open(url, '_blank');
-            showNotification('Dokument wird geöffnet...', 'success');
+            // Use previewDocument function if available, otherwise fallback to opening in new tab
+            if (typeof window.previewDocument === 'function') {
+                await window.previewDocument(docId, 'technical');
+            } else {
+                // Fallback: open the document directly in a new tab
+                const url = `https://us-central1-cis-de.cloudfunctions.net/viewDocument?docId=${docId}&type=technical`;
+                window.open(url, '_blank');
+                showNotification('Dokument wird geöffnet...', 'success');
+            }
         } catch (error) {
             console.error('Error viewing document:', error);
             showNotification('Fehler beim Öffnen des Dokuments.', 'error');
