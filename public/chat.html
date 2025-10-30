@@ -816,14 +816,10 @@
             
             // Only embed images if the response actually discusses relevant topics
             const shouldEmbedImages = 
-                combinedText.includes('technologie') && combinedText.includes('display') ||
-                combinedText.includes('technologie') && combinedText.includes('infotainment') ||
-                combinedText.includes('technologie') && combinedText.includes('screen') ||
-                combinedText.includes('interieur') && combinedText.includes('innenraum') ||
-                combinedText.includes('interieur') && combinedText.includes('cockpit') ||
-                combinedText.includes('exterieur') && combinedText.includes('design') ||
-                combinedText.includes('exterieur') && combinedText.includes('außen') ||
-                (combinedText.includes('technologie') && text.length > 500); // Only if substantial tech discussion
+                (combinedText.includes('technologie') && (combinedText.includes('display') || combinedText.includes('infotainment') || combinedText.includes('screen'))) ||
+                (combinedText.includes('interieur') && (combinedText.includes('innenraum') || combinedText.includes('cockpit'))) ||
+                (combinedText.includes('exterieur') && (combinedText.includes('design') || combinedText.includes('außen'))) ||
+                false; // Never embed by default - only when explicitly relevant
             
             if (!shouldEmbedImages) {
                 console.log('📸 Skipping image embedding - not relevant to response');

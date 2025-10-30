@@ -890,10 +890,12 @@ KRITISCHE REGELN - STRIKT BEFOLGEN:
 - ERFINDEN SIE KEINE SPEZIFIKATIONEN die nicht in den Dokumenten oder Web-Quellen stehen
 - Wenn Zahlen in den Dokumenten stehen, zitieren Sie diese EXAKT wie sie in den Dokumenten stehen
 - Wenn Preise in den Dokumenten stehen, geben Sie diese GENAU an (z.B. "Ab CHF 90'100")
-- VERMEIDEN SIE unprofessionelle Formulierungen wie "Leider sind keine Informationen verfügbar" oder "nicht in den Dokumenten aufgelistet"
+- VERBOTEN: Verwenden Sie NIEMALS Formulierungen wie "Leider wurden", "Leider sind", "nicht in den Dokumenten aufgeführt", "nicht in den Dokumenten aufgelistet", "basierend auf den allgemeinen Standards", "basierend auf den verfügbaren Informationen kann ich Ihnen jedoch"
+- STARTEN SIE NIEMALS MIT ENTSCHULDIGUNGEN oder negativen Formulierungen
 - Antworten Sie SELBSTBEWUSST und PROFESSIONELL - präsentieren Sie die verfügbaren Informationen direkt und positiv
-- Wenn spezifische Informationen nicht verfügbar sind, geben Sie stattdessen die verfügbaren relevanten Informationen an
+- Wenn spezifische Informationen nicht verfügbar sind, geben Sie stattdessen die verfügbaren relevanten Informationen direkt an, OHNE Entschuldigungen
 - Verwenden Sie professionelle, hilfreiche Sprache ohne Entschuldigungen oder negative Formulierungen
+- Wenn Sie keine genauen Daten haben, sagen Sie einfach die verfügbaren Informationen, OHNE zu erwähnen, was fehlt
 
 FORMATIERUNG - STRUKTURIERTE ANTWORT:
 - Erstellen Sie eine STRUKTURIERTE, professionelle Antwort mit Markdown
@@ -951,7 +953,8 @@ WICHTIGE ANWEISUNGEN FÜR DIE ANTWORT:
 - Erstellen Sie eine KOHÄRENTE, logische Antwort die Sinn ergibt
 - Alle Informationen müssen zusammenhängend sein und einen roten Faden haben
 - Stellen Sie sicher, dass jede Information in den Kontext passt und verständlich ist
-- VERMEIDEN SIE unprofessionelle Formulierungen wie "Leider sind keine Informationen verfügbar" oder "nicht in den Dokumenten aufgelistet"
+- VERBOTEN: Verwenden Sie NIEMALS Formulierungen wie "Leider wurden", "Leider sind", "nicht in den Dokumenten", "basierend auf den allgemeinen Standards", "basierend auf den verfügbaren Informationen kann ich Ihnen jedoch"
+- STARTEN SIE NIEMALS MIT ENTSCHULDIGUNGEN - beginnen Sie direkt mit den verfügbaren Informationen
 - Antworten Sie SELBSTBEWUSST und PROFESSIONELL - präsentieren Sie die verfügbaren Informationen direkt und positiv
 - Wenn Sie Web-Informationen verwenden, integrieren Sie sie nahtlos in die Antwort
 - Verwenden Sie Datenbank-Informationen für Fakten, Web-Informationen für Aktualität
@@ -982,7 +985,8 @@ WICHTIGE ANWEISUNGEN FÜR DIE ANTWORT:
 - Erstellen Sie eine KOHÄRENTE, logische Antwort die Sinn ergibt
 - Alle Informationen müssen zusammenhängend sein und einen roten Faden haben
 - Stellen Sie sicher, dass jede Information in den Kontext passt und verständlich ist
-- VERMEIDEN SIE unprofessionelle Formulierungen wie "Leider sind keine Informationen verfügbar"
+- VERBOTEN: Verwenden Sie NIEMALS Formulierungen wie "Leider wurden", "Leider sind", "nicht in den Dokumenten"
+- STARTEN SIE NIEMALS MIT ENTSCHULDIGUNGEN - beginnen Sie direkt mit den verfügbaren Informationen
 - Antworten Sie SELBSTBEWUSST und PROFESSIONELL - präsentieren Sie die verfügbaren Informationen direkt und positiv
 - Wenn Sie Web-Informationen verwenden, integrieren Sie sie nahtlos in die Antwort
 - Verwenden Sie Datenbank-Informationen für Fakten, Web-Informationen für Aktualität
