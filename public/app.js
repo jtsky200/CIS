@@ -3127,12 +3127,21 @@ window.testAllFunctions = function() {
     return 'Test completed';
 };
 
-// Setup theme toggle functionality - Improved
+// Setup theme toggle functionality - Improved with better timing
 function setupThemeToggle() {
     const attemptSetup = () => {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            // Remove any existing listeners to avoid duplicates
+            // Check if already set up
+            if (themeToggle.getAttribute('data-listener-attached') === 'true') {
+                console.log('✅ Theme toggle already set up');
+                return true;
+            }
+            
+            // Remove any existing onclick handlers
+            themeToggle.onclick = null;
+            
+            // Remove any existing listeners by cloning
             const newToggle = themeToggle.cloneNode(true);
             themeToggle.parentNode.replaceChild(newToggle, themeToggle);
             
@@ -3140,11 +3149,14 @@ function setupThemeToggle() {
             newToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                e.stopImmediatePropagation();
+                console.log('🎨 Theme toggle clicked!');
                 if (typeof window.toggleTheme === 'function') {
                     window.toggleTheme();
                 } else {
                     console.error('❌ toggleTheme function not available');
                 }
+                return false;
             });
             
             // Mark as having listener attached
@@ -3156,17 +3168,29 @@ function setupThemeToggle() {
             // Try to find it by class name
             const themeToggleByClass = document.querySelector('.theme-toggle');
             if (themeToggleByClass) {
+                // Check if already set up
+                if (themeToggleByClass.getAttribute('data-listener-attached') === 'true') {
+                    console.log('✅ Theme toggle already set up (by class)');
+                    return true;
+                }
+                
+                // Remove any existing onclick handlers
+                themeToggleByClass.onclick = null;
+                
                 const newToggle = themeToggleByClass.cloneNode(true);
                 themeToggleByClass.parentNode.replaceChild(newToggle, themeToggleByClass);
                 
                 newToggle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    console.log('🎨 Theme toggle clicked! (by class)');
                     if (typeof window.toggleTheme === 'function') {
                         window.toggleTheme();
                     } else {
                         console.error('❌ toggleTheme function not available');
                     }
+                    return false;
                 });
                 
                 newToggle.setAttribute('data-listener-attached', 'true');
@@ -3188,6 +3212,16 @@ function setupThemeToggle() {
             }
         }, 500);
     }
+    
+    // Also retry after DOM is fully loaded (in case inline scripts run after)
+    setTimeout(() => {
+        attemptSetup();
+    }, 1000);
+    
+    // Final retry after longer delay
+    setTimeout(() => {
+        attemptSetup();
+    }, 2000);
 }
 
 // Setup sidebar functionality

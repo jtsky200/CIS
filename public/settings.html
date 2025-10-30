@@ -2805,22 +2805,15 @@
                 document.body.setAttribute('data-theme', 'light');
             }
             
-            // Setup theme toggle - Simple approach
-            console.log('🔧 Setting up theme toggle...');
+            // Setup theme toggle - Let app.js handle it via setupThemeToggle()
+            console.log('🔧 Theme toggle will be set up by app.js setupThemeToggle()...');
             
+            // Ensure setupThemeToggle is called after a delay to override any inline handlers
             setTimeout(() => {
-                const btn = document.getElementById('themeToggle');
-                if (btn && typeof window.toggleTheme === 'function') {
-                    btn.onclick = function(e) {
-                        e.preventDefault();
-                        console.log('🌙 Theme button CLICKED');
-                        window.toggleTheme();
-                    };
-                    console.log('✅ Theme button setup complete');
-                } else {
-                    console.error('❌ Theme button or function missing');
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
                 }
-            }, 500);
+            }, 1500);
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
