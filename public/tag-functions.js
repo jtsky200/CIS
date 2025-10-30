@@ -290,7 +290,7 @@ window.refreshTags = async function() {
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #92400e;">${count} Dok.</span>
-                        <button onclick="event.stopPropagation(); editTag('${category.replace(/'/g, "\\'")}', 'category')" 
+                        <button onclick="event.stopPropagation(); if(typeof window.editTag === 'function') { window.editTag('${category.replace(/'/g, "\\'")}', 'category'); } else { console.error('editTag not available'); }" 
                             style="padding: 6px; background: white; border: 1px solid #fde68a; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
                             onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='white'"
                             title="Bearbeiten">
@@ -322,13 +322,13 @@ window.refreshTags = async function() {
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="padding: 4px 12px; background: white; border-radius: 12px; font-size: 13px; font-weight: 600; color: #1e40af;">${count} Dok.</span>
-                        <button onclick="event.stopPropagation(); editTag('${tag.replace(/'/g, "\\'")}', 'tag')" 
+                        <button onclick="event.stopPropagation(); if(typeof window.editTag === 'function') { window.editTag('${tag.replace(/'/g, "\\'")}', 'tag'); } else { console.error('editTag not available'); }" 
                             style="padding: 6px; background: white; border: 1px solid #bfdbfe; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
                             onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='white'"
                             title="Bearbeiten">
                             <svg width="14" height="14" fill="#1e40af" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/></svg>
                         </button>
-                        <button onclick="event.stopPropagation(); deleteTag('${tag.replace(/'/g, "\\'")}', 'tag', ${count})" 
+                        <button onclick="event.stopPropagation(); if(typeof window.deleteTag === 'function') { window.deleteTag('${tag.replace(/'/g, "\\'")}', 'tag', ${count}); } else { console.error('deleteTag not available'); }" 
                             style="padding: 6px; background: white; border: 1px solid #bfdbfe; border-radius: 6px; cursor: pointer; display: flex; align-items: center; transition: all 0.2s;"
                             onmouseover="this.style.background='#fee2e2'; this.style.borderColor='#fecaca'" 
                             onmouseout="this.style.background='white'; this.style.borderColor='#bfdbfe'"
@@ -729,8 +729,21 @@ window.viewDocument = function(docId, source) {
 
 // Create new tag
 window.createNewTag = async function() {
-    const tagName = document.getElementById('newTagName').value;
-    const category = document.getElementById('newTagCategory').value;
+    console.log('🏷️ createNewTag() called');
+    
+    const tagNameInput = document.getElementById('newTagName');
+    const categorySelect = document.getElementById('newTagCategory');
+    
+    if (!tagNameInput || !categorySelect) {
+        console.error('❌ Tag input elements not found');
+        window.showNotification('Fehler: Eingabefelder nicht gefunden. Bitte Seite neu laden.', 'error');
+        return;
+    }
+    
+    const tagName = tagNameInput.value;
+    const category = categorySelect.value;
+    
+    console.log('🏷️ Creating tag:', { tagName, category });
     
     if (!tagName || tagName.trim() === '') {
         window.showNotification('Bitte geben Sie einen Tag-Namen ein.', 'error');
@@ -740,12 +753,17 @@ window.createNewTag = async function() {
     window.showNotification(`Tag "${tagName}" zur Kategorie "${category}" wurde erstellt. Sie können ihn jetzt beim Hochladen von Dokumenten verwenden.`, 'success');
     
     // Clear inputs
-    document.getElementById('newTagName').value = '';
-    document.getElementById('newTagCategory').value = 'General';
+    tagNameInput.value = '';
+    categorySelect.value = 'GENERAL';
     
     // Refresh tags list
     setTimeout(() => {
-        refreshTags();
+        if (typeof window.refreshTags === 'function') {
+            window.refreshTags();
+        } else {
+            console.error('❌ refreshTags not available, trying direct call...');
+            refreshTags();
+        }
     }, 500);
 }
 
@@ -824,7 +842,13 @@ window.editTag = async function(oldName, type) {
             'success'
         );
         
-        setTimeout(() => refreshTags(), 1000);
+        setTimeout(() => {
+            if (typeof window.refreshTags === 'function') {
+                window.refreshTags();
+            } else {
+                console.error('❌ refreshTags not available');
+            }
+        }, 1000);
         
     } catch (error) {
         console.error('Error editing tag:', error);
@@ -881,7 +905,13 @@ window.deleteTag = async function(tagName, type, count) {
             'success'
         );
         
-        setTimeout(() => refreshTags(), 1000);
+        setTimeout(() => {
+            if (typeof window.refreshTags === 'function') {
+                window.refreshTags();
+            } else {
+                console.error('❌ refreshTags not available');
+            }
+        }, 1000);
         
     } catch (error) {
         console.error('Error deleting tag:', error);

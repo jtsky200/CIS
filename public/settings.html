@@ -1198,7 +1198,7 @@
                                 <option value="TROUBLESHOOTING">TROUBLESHOOTING</option>
                             </select>
                         </div>
-                        <button onclick="createNewTag()" class="btn-primary" 
+                        <button onclick="if(typeof window.createNewTag === 'function') { window.createNewTag(); } else { console.error('createNewTag not available'); alert('Bitte Seite neu laden'); }" class="btn-primary" 
                             style="padding: 10px 24px; font-size: 15px; font-weight: 600; white-space: nowrap; height: 44px;">
                             + Tag erstellen
                         </button>
@@ -1210,7 +1210,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="font-size: 16px; font-weight: 600; color: #2d2d2d;">Bestehende Tags</h3>
                         <div style="display: flex; gap: 8px;">
-                            <button onclick="refreshTags()" 
+                            <button onclick="if(typeof window.refreshTags === 'function') { window.refreshTags(); } else { console.error('refreshTags not available'); alert('Bitte Seite neu laden'); }" 
                                 style="padding: 8px 16px; font-size: 14px; font-weight: 500; height: 36px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
                                 onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
                                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
@@ -1218,7 +1218,7 @@
                                 </svg>
                                 Aktualisieren
                             </button>
-                            <button onclick="cleanupTags()" 
+                            <button onclick="if(typeof window.cleanupTags === 'function') { window.cleanupTags(); } else { console.error('cleanupTags not available'); alert('Bitte Seite neu laden'); }" 
                                 style="padding: 8px 16px; font-size: 14px; font-weight: 500; height: 36px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
                                 onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
                                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
