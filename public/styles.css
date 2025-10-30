@@ -589,7 +589,7 @@ body {
 }
 
 [data-theme="dark"] .quick-action-icon {
-    background: #374151;
+    background: #404040;
     color: #9ca3af;
 }
 
@@ -1890,8 +1890,8 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .btn-secondary {
-    background: #374151;
-    color: #d1d5db;
+    background: #404040;
+    color: #e0e0e0;
     border-color: #4b5563;
 }
 
@@ -2959,8 +2959,8 @@ button, input, select, textarea, a, .clickable {
 
 /* Dark theme for stats */
 [data-theme="dark"] .stat-card {
-    background: #1f2937;
-    border-color: #374151;
+    background: #2a2a2a;
+    border-color: #404040;
 }
 
 [data-theme="dark"] .stat-card:hover {
@@ -2968,7 +2968,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .stat-icon {
-    background: #374151;
+    background: #404040;
     color: #9ca3af;
 }
 
@@ -3026,17 +3026,17 @@ button, input, select, textarea, a, .clickable {
 
 /* Dark theme for autocomplete */
 [data-theme="dark"] .autocomplete {
-    background: #1f2937;
-    border-color: #374151;
+    background: #2a2a2a;
+    border-color: #404040;
 }
 
 [data-theme="dark"] .autocomplete-item {
-    border-bottom-color: #374151;
+    border-bottom-color: #404040;
     color: #f9fafb;
 }
 
 [data-theme="dark"] .autocomplete-item:hover {
-    background-color: #374151;
+    background-color: #404040;
 }
 
 /* Chat history styles */
@@ -3103,7 +3103,7 @@ button, input, select, textarea, a, .clickable {
 
 /* Dark theme for chat history */
 [data-theme="dark"] .chat-history-item:hover {
-    background-color: #374151;
+    background-color: #404040;
 }
 
 [data-theme="dark"] .chat-history-item.active {
@@ -3178,7 +3178,7 @@ button, input, select, textarea, a, .clickable {
 
 [data-theme="dark"] .form-group input[type="text"],
 [data-theme="dark"] .form-group input[type="color"] {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
     color: #e0e0e0;
 }
@@ -3193,14 +3193,14 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .logo-preview {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
     color: #6b7280;
 }
 
 [data-theme="dark"] .logo-preview:hover {
     border-color: #6b7280;
-    background: #374151;
+    background: #404040;
 }
 
 [data-theme="dark"] .btn-primary {
@@ -3213,7 +3213,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .btn-secondary {
-    background: #374151;
+    background: #404040;
     color: #e0e0e0;
     border-color: #4b5563;
 }
@@ -3237,7 +3237,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .kb-search-input {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
     color: #e0e0e0;
 }
@@ -3253,7 +3253,7 @@ button, input, select, textarea, a, .clickable {
 
 [data-theme="dark"] .kb-filter,
 [data-theme="dark"] .kb-sort {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
     color: #e0e0e0;
 }
@@ -3266,7 +3266,7 @@ button, input, select, textarea, a, .clickable {
 
 /* Bulk Actions Dark Theme */
 [data-theme="dark"] .kb-bulk-actions {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
 }
 
@@ -3363,7 +3363,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .kb-tool-btn.secondary {
-    background: #374151;
+    background: #404040;
     color: #e0e0e0;
 }
 
@@ -3387,7 +3387,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .file-size-badge {
-    background: #374151;
+    background: #404040;
     color: #d1d5db;
 }
 
@@ -3406,7 +3406,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .modal-header {
-    background: #1f2937;
+    background: #2a2a2a;
     color: white;
 }
 
@@ -3501,13 +3501,13 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .message-content code {
-    background: #1f2937;
+    background: #2a2a2a;
     color: #93c5fd;
     border-color: #404040;
 }
 
 [data-theme="dark"] .message-content pre {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
 }
 
@@ -3553,7 +3553,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .delete-modal-btn-cancel {
-    background: #374151;
+    background: #404040;
     color: #e0e0e0;
 }
 
@@ -3588,7 +3588,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .file-editor-close:hover {
-    background: #374151;
+    background: #404040;
 }
 
 [data-theme="dark"] .file-editor-close svg {
@@ -3596,7 +3596,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .file-editor-textarea {
-    background: #1f2937;
+    background: #2a2a2a;
     color: #e0e0e0;
 }
 
@@ -3609,7 +3609,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .file-editor-btn-secondary {
-    background: #374151;
+    background: #404040;
     color: #e0e0e0;
 }
 
@@ -3633,7 +3633,7 @@ button, input, select, textarea, a, .clickable {
 [data-theme="dark"] input[type="search"],
 [data-theme="dark"] textarea,
 [data-theme="dark"] select {
-    background: #1f2937;
+    background: #2a2a2a;
     border-color: #404040;
     color: #e0e0e0;
 }
@@ -3650,7 +3650,7 @@ button, input, select, textarea, a, .clickable {
 
 /* Ensure all buttons respect dark theme */
 [data-theme="dark"] button:not(.btn-primary):not(.btn-secondary):not(.btn-danger) {
-    background: #374151;
+    background: #404040;
     color: #e0e0e0;
     border-color: #4b5563;
 }
@@ -4112,7 +4112,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .message-action-btn:hover {
-    background: #374151;
+    background: #404040;
     color: #f9fafb;
 }
 
@@ -4524,16 +4524,16 @@ button, input, select, textarea, a, .clickable {
 
 /* Dark Theme */
 [data-theme="dark"] .modern-chat-page {
-    background: #1f2937;
+    background: #1a1a1a;
 }
 
 [data-theme="dark"] .modern-chat-container {
-    background: #1f2937;
+    background: #1a1a1a;
 }
 
 [data-theme="dark"] .modern-message-user,
 [data-theme="dark"] .modern-message-response {
-    background: #1f2937;
+    background: #1a1a1a;
 }
 
 [data-theme="dark"] .welcome-title {
@@ -4551,7 +4551,7 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .quick-question-btn:hover {
-    background: #374151;
+    background: #404040;
     border-color: var(--primary-color);
 }
 
