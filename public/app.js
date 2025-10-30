@@ -3189,8 +3189,14 @@ window.testAllFunctions = function() {
     return 'Test completed';
 };
 
-// Setup theme toggle functionality - Improved with better timing
+// Setup theme toggle functionality - Improved with better timing and single listener
 function setupThemeToggle() {
+    // Use a flag to prevent multiple setups
+    if (window.themeToggleSetup) {
+        console.log('✅ Theme toggle already being set up');
+        return;
+    }
+    window.themeToggleSetup = true;
     const attemptSetup = () => {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
@@ -3284,6 +3290,9 @@ function setupThemeToggle() {
     setTimeout(() => {
         attemptSetup();
     }, 2000);
+    
+    // Make function globally accessible
+    window.setupThemeToggle = setupThemeToggle;
 }
 
 // Setup sidebar functionality
