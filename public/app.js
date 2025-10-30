@@ -1828,6 +1828,10 @@ function displayTechnicalDatabase(documents) {
     console.log('🔧 Displaying technical database documents:', documents.length);
     console.log('📄 First few documents:', documents.slice(0, 3).map(d => ({ filename: d.filename || d.name, fileType: d.fileType, isActive: d.isActive })));
     
+    // Store in global variables for access by other functions
+    technicalDatabase = documents;
+    window.technicalDatabase = documents;
+    
     // Update stats
     const totalDocs = documents.length;
     const totalSize = documents.reduce((sum, doc) => sum + (doc.size || 0), 0);
