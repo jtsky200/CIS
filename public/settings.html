@@ -2936,10 +2936,21 @@
             // Ensure theme toggle is set up even if DOMContentLoaded already ran
             setTimeout(() => {
                 if (typeof initializeSettingsPage === 'function') {
+                    console.log('🔄 Re-initializing settings page from window.load...');
                     initializeSettingsPage();
                 }
             }, 1000);
         });
+        
+        // Also initialize immediately if DOM is already loaded (for navigation scenarios)
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('Settings page already loaded, initializing immediately...');
+            setTimeout(() => {
+                if (typeof initializeSettingsPage === 'function') {
+                    initializeSettingsPage();
+                }
+            }, 500);
+        }
         
         function initializeSettingsPage() {
             console.log('🔧 Initializing settings page...');
@@ -2971,8 +2982,8 @@
             // Setup theme toggle - MULTIPLE ATTEMPTS WITH VERIFICATION
             console.log('🔧 Setting up theme toggle...');
             
-            // Function to verify and fix theme toggle
-            const ensureThemeToggle = () => {
+            // Function to verify and fix theme toggle - Make it globally accessible
+            window.ensureSettingsThemeToggle = function() {
                 const btn = document.getElementById('themeToggle');
                 if (!btn) {
                     console.log('⚠️ Theme toggle button not found');
@@ -3027,6 +3038,9 @@
                 return true;
             };
             
+            // Use the global function
+            const ensureThemeToggle = window.ensureSettingsThemeToggle;
+            
             // Try immediately
             if (!ensureThemeToggle()) {
                 setTimeout(ensureThemeToggle, 100);
@@ -3054,7 +3068,9 @@
                 const btn = document.getElementById('themeToggle');
                 if (btn && btn.getAttribute('data-listener-attached') !== 'true') {
                     console.log('🔄 Theme toggle button changed, re-attaching listener...');
-                    ensureThemeToggle();
+                    if (typeof window.ensureSettingsThemeToggle === 'function') {
+                        window.ensureSettingsThemeToggle();
+                    }
                 }
             });
             
@@ -3075,6 +3091,20 @@
                     attributeFilter: ['id', 'class']
                 });
             }, 2000);
+            
+            // Setup a periodic check to ensure toggle is always working
+            if (window.settingsThemeToggleChecker) {
+                clearInterval(window.settingsThemeToggleChecker);
+            }
+            window.settingsThemeToggleChecker = setInterval(() => {
+                const btn = document.getElementById('themeToggle');
+                if (btn && btn.getAttribute('data-listener-attached') !== 'true') {
+                    console.log('🔄 Periodic check: Theme toggle missing listener, fixing...');
+                    if (typeof window.ensureSettingsThemeToggle === 'function') {
+                        window.ensureSettingsThemeToggle();
+                    }
+                }
+            }, 3000);
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
