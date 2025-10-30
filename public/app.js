@@ -462,7 +462,7 @@ function handleLogoUpload(event) {
     }
     
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         console.log('📖 File read successfully, setting logo...');
         systemSettings.logo = e.target.result;
         console.log('💾 Logo set in systemSettings:', systemSettings.logo ? 'exists' : 'null');
@@ -1018,7 +1018,7 @@ function quickBrandingTest() {
 window.quickBrandingTest = quickBrandingTest;
 
 // Direct logo upload test function
-function testLogoUploadDirect() {
+async function testLogoUploadDirect() {
     console.log('🧪 Testing logo upload directly...');
     
     // Create a test logo using canvas
@@ -3647,9 +3647,17 @@ async function previewDocument(docId, type) {
     // Find the document in the appropriate array
     let doc = null;
     if (type === 'knowledge') {
-        doc = knowledgeBase.find(d => d.id === docId);
+        if (typeof knowledgeBase !== 'undefined' && Array.isArray(knowledgeBase)) {
+            doc = knowledgeBase.find(d => d.id === docId);
+        } else if (typeof window.knowledgeBase !== 'undefined' && Array.isArray(window.knowledgeBase)) {
+            doc = window.knowledgeBase.find(d => d.id === docId);
+        }
     } else if (type === 'technical') {
-        doc = technicalDatabase.find(d => d.id === docId);
+        if (typeof technicalDatabase !== 'undefined' && Array.isArray(technicalDatabase)) {
+            doc = technicalDatabase.find(d => d.id === docId);
+        } else if (typeof window.technicalDatabase !== 'undefined' && Array.isArray(window.technicalDatabase)) {
+            doc = window.technicalDatabase.find(d => d.id === docId);
+        }
     }
     
     if (!doc) {
