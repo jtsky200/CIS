@@ -25,6 +25,22 @@ let systemSettings = {
 // Make systemSettings globally accessible
 window.systemSettings = systemSettings;
 
+// Helper function to apply theme consistently
+function applyTheme(theme) {
+    // Apply theme to html and body
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    
+    // Apply theme to all page containers
+    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
+    pageContainers.forEach(container => {
+        container.setAttribute('data-theme', theme);
+    });
+    
+    // Update theme toggle button appearance
+    updateThemeToggle(theme);
+}
+
 // Define toggleTheme function early to ensure it's available immediately
 window.toggleTheme = async function() {
     try {
@@ -41,18 +57,8 @@ window.toggleTheme = async function() {
             console.error('❌ Error saving to localStorage:', e);
         }
         
-        // Apply theme to html and body
-        document.documentElement.setAttribute('data-theme', newTheme);
-        document.body.setAttribute('data-theme', newTheme);
-        
-        // Apply theme to all page containers
-        const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
-        pageContainers.forEach(container => {
-            container.setAttribute('data-theme', newTheme);
-        });
-        
-        // Update theme toggle button appearance
-        updateThemeToggle(newTheme);
+        // Apply theme using helper function
+        applyTheme(newTheme);
         
         // Save theme to database (non-blocking, don't wait for it)
         (async () => {
