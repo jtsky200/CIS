@@ -4406,16 +4406,18 @@ button, input, select, textarea, a, .clickable {
 }
 
 .control-bar-send {
-    background: var(--text-color);
-    color: white;
+    background: #e5e7eb;
+    color: #374151;
     opacity: 1;
     font-weight: 500;
+    width: 32px;
+    height: 32px;
 }
 
 .control-bar-send:hover {
-    background: var(--text-color);
-    color: white;
-    opacity: 0.9;
+    background: #d1d5db;
+    color: #1f2937;
+    opacity: 1;
     transform: scale(1.05);
 }
 
@@ -4590,13 +4592,13 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .control-bar-send {
-    background: #e0e0e0;
-    color: #2d2d2d;
+    background: #6b7280;
+    color: #1f2937;
 }
 
 [data-theme="dark"] .control-bar-send:hover {
-    background: #f0f0f0;
-    color: #2d2d2d;
+    background: #9ca3af;
+    color: #111827;
     opacity: 1;
 }
 
