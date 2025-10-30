@@ -2930,6 +2930,17 @@
             }
         });
         
+        // Also initialize on window load event as backup
+        window.addEventListener('load', function() {
+            console.log('Settings page window.load event fired');
+            // Ensure theme toggle is set up even if DOMContentLoaded already ran
+            setTimeout(() => {
+                if (typeof initializeSettingsPage === 'function') {
+                    initializeSettingsPage();
+                }
+            }, 1000);
+        });
+        
         function initializeSettingsPage() {
             console.log('🔧 Initializing settings page...');
             
@@ -2971,8 +2982,7 @@
                 // Check if listener is already attached
                 if (btn.getAttribute('data-listener-attached') === 'true') {
                     // Verify it actually works
-                    const hasListener = btn.onclick !== null || 
-                                       (btn.getEventListeners && btn.getEventListeners('click').length > 0);
+                    const hasListener = btn.onclick !== null;
                     if (hasListener) {
                         console.log('✅ Theme toggle verified and working');
                         return true;
@@ -3022,11 +3032,13 @@
                 setTimeout(ensureThemeToggle, 100);
             }
             
-            // Multiple retries to ensure it works
+            // Multiple retries to ensure it works - MORE RETRIES FOR NAVIGATION
             setTimeout(ensureThemeToggle, 500);
             setTimeout(ensureThemeToggle, 1000);
             setTimeout(ensureThemeToggle, 2000);
             setTimeout(ensureThemeToggle, 3000);
+            setTimeout(ensureThemeToggle, 4000);
+            setTimeout(ensureThemeToggle, 5000);
             
             // Also use app.js setupThemeToggle as backup
             if (typeof window.setupThemeToggle === 'function') {
@@ -3034,7 +3046,11 @@
             }
             
             // Setup a MutationObserver to watch for button changes
-            const observer = new MutationObserver((mutations) => {
+            if (window.settingsThemeObserver) {
+                window.settingsThemeObserver.disconnect();
+            }
+            
+            window.settingsThemeObserver = new MutationObserver((mutations) => {
                 const btn = document.getElementById('themeToggle');
                 if (btn && btn.getAttribute('data-listener-attached') !== 'true') {
                     console.log('🔄 Theme toggle button changed, re-attaching listener...');
@@ -3046,9 +3062,19 @@
             setTimeout(() => {
                 const nav = document.querySelector('.nav');
                 if (nav) {
-                    observer.observe(nav, { childList: true, subtree: true });
+                    window.settingsThemeObserver.observe(nav, { childList: true, subtree: true });
                 }
             }, 1000);
+            
+            // Also observe the entire document for any changes
+            setTimeout(() => {
+                window.settingsThemeObserver.observe(document.body, { 
+                    childList: true, 
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['id', 'class']
+                });
+            }, 2000);
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
