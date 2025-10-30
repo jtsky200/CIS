@@ -88,7 +88,19 @@ function applyTheme(theme) {
 // Define toggleTheme function early to ensure it's available immediately
 window.toggleTheme = async function() {
     try {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme') || 'light';
+        // Get current theme - check multiple sources
+        let currentTheme = document.documentElement.getAttribute('data-theme');
+        if (!currentTheme) {
+            currentTheme = document.body.getAttribute('data-theme');
+        }
+        if (!currentTheme) {
+            currentTheme = localStorage.getItem('theme');
+        }
+        if (!currentTheme) {
+            currentTheme = 'light'; // default
+        }
+        
+        // Toggle theme
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
         console.log('🎨 Theme toggle clicked! Current:', currentTheme, '→ New:', newTheme);
@@ -132,6 +144,11 @@ window.toggleTheme = async function() {
         console.log('✅ Theme switched to:', newTheme);
     } catch (error) {
         console.error('❌ Error in toggleTheme:', error);
+        // Fallback: just toggle manually
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', newTheme);
+        applyTheme(newTheme);
     }
 };
 
