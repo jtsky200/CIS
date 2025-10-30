@@ -2428,10 +2428,17 @@ function switchPage(page) {
 // Get current page from URL
 function getCurrentPage() {
     const path = window.location.pathname;
+    const href = window.location.href;
+    console.log('🔍 getCurrentPage - path:', path, 'href:', href);
     if (path.includes('dashboard.html')) return 'dashboard';
     if (path.includes('chat.html')) return 'chat';
     if (path.includes('troubleshooting.html')) return 'troubleshooting';
     if (path.includes('settings.html')) return 'settings';
+    // Also check href as fallback
+    if (href.includes('settings.html')) return 'settings';
+    if (href.includes('dashboard.html')) return 'dashboard';
+    if (href.includes('chat.html')) return 'chat';
+    if (href.includes('troubleshooting.html')) return 'troubleshooting';
     return 'chat'; // default
 }
 
