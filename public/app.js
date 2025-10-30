@@ -3200,13 +3200,21 @@ window.testAllFunctions = function() {
 
 // Setup theme toggle functionality - Improved with better timing and single listener
 function setupThemeToggle() {
+    // Don't use early return - always try to setup
     const attemptSetup = () => {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            // Check if already set up
+            // Check if already set up AND working
             if (themeToggle.getAttribute('data-listener-attached') === 'true') {
-                console.log('✅ Theme toggle already set up');
-                return true;
+                // Verify it actually has a handler
+                if (themeToggle.onclick !== null) {
+                    console.log('✅ Theme toggle already set up and verified');
+                    return true;
+                } else {
+                    // Listener was removed, reset the flag
+                    console.log('⚠️ Theme toggle flag set but handler missing, re-attaching...');
+                    themeToggle.removeAttribute('data-listener-attached');
+                }
             }
             
             console.log('🔧 Setting up theme toggle button...');
@@ -3219,8 +3227,8 @@ function setupThemeToggle() {
             themeToggle.parentNode.replaceChild(newToggle, themeToggle);
             newToggle.id = 'themeToggle'; // Ensure ID is preserved
             
-            // Add click handler with capture to ensure it fires first
-            newToggle.addEventListener('click', (e) => {
+            // Create a single handler function
+            const clickHandler = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
@@ -3231,19 +3239,13 @@ function setupThemeToggle() {
                     console.error('❌ toggleTheme function not available');
                 }
                 return false;
-            }, { capture: true, once: false });
+            };
+            
+            // Add click handler with capture to ensure it fires first
+            newToggle.addEventListener('click', clickHandler, { capture: true, once: false });
             
             // Also add direct onclick as fallback
-            newToggle.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                console.log('🎨 Theme toggle clicked (onclick fallback)!');
-                if (typeof window.toggleTheme === 'function') {
-                    window.toggleTheme();
-                }
-                return false;
-            };
+            newToggle.onclick = clickHandler;
             
             // Mark as having listener attached
             newToggle.setAttribute('data-listener-attached', 'true');
@@ -3256,8 +3258,12 @@ function setupThemeToggle() {
             if (themeToggleByClass) {
                 // Check if already set up
                 if (themeToggleByClass.getAttribute('data-listener-attached') === 'true') {
-                    console.log('✅ Theme toggle already set up (by class)');
-                    return true;
+                    if (themeToggleByClass.onclick !== null) {
+                        console.log('✅ Theme toggle already set up (by class)');
+                        return true;
+                    } else {
+                        themeToggleByClass.removeAttribute('data-listener-attached');
+                    }
                 }
                 
                 console.log('🔧 Setting up theme toggle button (by class)...');
@@ -3268,7 +3274,7 @@ function setupThemeToggle() {
                 const newToggle = themeToggleByClass.cloneNode(true);
                 themeToggleByClass.parentNode.replaceChild(newToggle, themeToggleByClass);
                 
-                newToggle.addEventListener('click', (e) => {
+                const clickHandler = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     e.stopImmediatePropagation();
@@ -3279,20 +3285,10 @@ function setupThemeToggle() {
                         console.error('❌ toggleTheme function not available');
                     }
                     return false;
-                }, { capture: true });
-                
-                // Also add direct onclick as fallback
-                newToggle.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    console.log('🎨 Theme toggle clicked (onclick fallback by class)!');
-                    if (typeof window.toggleTheme === 'function') {
-                        window.toggleTheme();
-                    }
-                    return false;
                 };
                 
+                newToggle.addEventListener('click', clickHandler, { capture: true });
+                newToggle.onclick = clickHandler;
                 newToggle.setAttribute('data-listener-attached', 'true');
                 
                 console.log('✅ Theme toggle setup by class complete');

@@ -2957,53 +2957,98 @@
                 }
             }, 100);
             
-            // Setup theme toggle - Use app.js version
+            // Setup theme toggle - MULTIPLE ATTEMPTS WITH VERIFICATION
             console.log('🔧 Setting up theme toggle...');
             
-            // Call app.js setupThemeToggle (it has retry logic)
-            if (typeof window.setupThemeToggle === 'function') {
-                window.setupThemeToggle();
-            } else {
-                // Fallback: Direct setup with retry
-                const setupThemeToggleDirect = () => {
-                    const btn = document.getElementById('themeToggle');
-                    if (btn && typeof window.toggleTheme === 'function') {
-                        btn.onclick = null;
-                        const newBtn = btn.cloneNode(true);
-                        btn.parentNode.replaceChild(newBtn, btn);
-                        newBtn.id = 'themeToggle'; // Ensure ID is preserved
-                        
-                        newBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            e.stopImmediatePropagation();
-                            console.log('🌙 Theme button clicked!');
-                            if (typeof window.toggleTheme === 'function') {
-                                window.toggleTheme();
-                            }
-                            return false;
-                        }, { capture: true });
-                        
-                        newBtn.setAttribute('data-listener-attached', 'true');
-                        console.log('✅ Theme toggle set up directly');
+            // Function to verify and fix theme toggle
+            const ensureThemeToggle = () => {
+                const btn = document.getElementById('themeToggle');
+                if (!btn) {
+                    console.log('⚠️ Theme toggle button not found');
+                    return false;
+                }
+                
+                // Check if listener is already attached
+                if (btn.getAttribute('data-listener-attached') === 'true') {
+                    // Verify it actually works
+                    const hasListener = btn.onclick !== null || 
+                                       (btn.getEventListeners && btn.getEventListeners('click').length > 0);
+                    if (hasListener) {
+                        console.log('✅ Theme toggle verified and working');
                         return true;
+                    } else {
+                        console.log('⚠️ Theme toggle marked but listener missing, fixing...');
+                        btn.removeAttribute('data-listener-attached');
+                    }
+                }
+                
+                // Remove any existing handlers
+                btn.onclick = null;
+                
+                // Clone to remove all listeners
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.id = 'themeToggle';
+                
+                // Add multiple handlers for reliability
+                const clickHandler = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    console.log('🌙 Theme button clicked!');
+                    if (typeof window.toggleTheme === 'function') {
+                        window.toggleTheme();
+                    } else {
+                        console.error('❌ toggleTheme function not available');
                     }
                     return false;
                 };
                 
-                if (!setupThemeToggleDirect()) {
-                    setTimeout(setupThemeToggleDirect, 500);
-                    setTimeout(setupThemeToggleDirect, 1500);
-                    setTimeout(setupThemeToggleDirect, 2500);
-                }
+                // Add event listener with capture
+                newBtn.addEventListener('click', clickHandler, { capture: true });
+                
+                // Also add direct onclick as fallback
+                newBtn.onclick = clickHandler;
+                
+                // Mark as having listener attached
+                newBtn.setAttribute('data-listener-attached', 'true');
+                
+                console.log('✅ Theme toggle set up successfully');
+                return true;
+            };
+            
+            // Try immediately
+            if (!ensureThemeToggle()) {
+                setTimeout(ensureThemeToggle, 100);
             }
             
-            // Also ensure setupThemeToggle is called after a delay
-            setTimeout(() => {
-                if (typeof window.setupThemeToggle === 'function') {
-                    window.setupThemeToggle();
+            // Multiple retries to ensure it works
+            setTimeout(ensureThemeToggle, 500);
+            setTimeout(ensureThemeToggle, 1000);
+            setTimeout(ensureThemeToggle, 2000);
+            setTimeout(ensureThemeToggle, 3000);
+            
+            // Also use app.js setupThemeToggle as backup
+            if (typeof window.setupThemeToggle === 'function') {
+                window.setupThemeToggle();
+            }
+            
+            // Setup a MutationObserver to watch for button changes
+            const observer = new MutationObserver((mutations) => {
+                const btn = document.getElementById('themeToggle');
+                if (btn && btn.getAttribute('data-listener-attached') !== 'true') {
+                    console.log('🔄 Theme toggle button changed, re-attaching listener...');
+                    ensureThemeToggle();
                 }
-            }, 500);
+            });
+            
+            // Start observing after a delay
+            setTimeout(() => {
+                const nav = document.querySelector('.nav');
+                if (nav) {
+                    observer.observe(nav, { childList: true, subtree: true });
+                }
+            }, 1000);
             
             // Setup language dropdown event listener
             const languageDropdown = document.getElementById('languageSetting');
