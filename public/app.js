@@ -1787,6 +1787,37 @@ document.addEventListener('DOMContentLoaded', async function() {
             initializePage(currentPage);
         }
         
+        // CRITICAL: Also check for settings page and ensure toggle is set up
+        // This handles cases where the inline script didn't execute
+        if (currentPage === 'settings') {
+            console.log('🔍 Settings page detected, ensuring theme toggle is set up...');
+            // Multiple attempts to ensure toggle works
+            setTimeout(() => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
+                }
+                if (typeof window.ensureSettingsThemeToggle === 'function') {
+                    window.ensureSettingsThemeToggle();
+                }
+            }, 200);
+            setTimeout(() => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
+                }
+                if (typeof window.ensureSettingsThemeToggle === 'function') {
+                    window.ensureSettingsThemeToggle();
+                }
+            }, 1000);
+            setTimeout(() => {
+                if (typeof window.setupThemeToggle === 'function') {
+                    window.setupThemeToggle();
+                }
+                if (typeof window.ensureSettingsThemeToggle === 'function') {
+                    window.ensureSettingsThemeToggle();
+                }
+            }, 2000);
+        }
+        
         // Debug available functions after a delay
         setTimeout(() => {
             window.debugFunctions();
@@ -2378,6 +2409,18 @@ function initializePage(page) {
                 window.initializeSettingsPage();
             }, 100);
         }
+        // Also ensure theme toggle is set up directly
+        setTimeout(() => {
+            if (typeof window.setupThemeToggle === 'function') {
+                console.log('🔄 Calling setupThemeToggle from app.js for settings page...');
+                window.setupThemeToggle();
+            }
+            // Also try ensureSettingsThemeToggle if available
+            if (typeof window.ensureSettingsThemeToggle === 'function') {
+                console.log('🔄 Calling ensureSettingsThemeToggle from app.js...');
+                window.ensureSettingsThemeToggle();
+            }
+        }, 500);
         if (typeof loadKnowledgeBase === 'function') loadKnowledgeBase();
         if (typeof loadKnowledgeBaseStats === 'function') loadKnowledgeBaseStats();
     } else if (page === 'dashboard') {
@@ -3211,6 +3254,46 @@ window.testAllFunctions = function() {
     
     return 'Test completed';
 };
+
+// Handle pageshow event for back/forward navigation
+window.addEventListener('pageshow', function(event) {
+    console.log('🔄 Pageshow event fired');
+    const currentPage = getCurrentPage();
+    if (currentPage === 'settings') {
+        console.log('🔍 Settings page loaded via pageshow, ensuring theme toggle...');
+        setTimeout(() => {
+            if (typeof window.setupThemeToggle === 'function') {
+                window.setupThemeToggle();
+            }
+            if (typeof window.ensureSettingsThemeToggle === 'function') {
+                window.ensureSettingsThemeToggle();
+            }
+            if (typeof window.initializeSettingsPage === 'function') {
+                window.initializeSettingsPage();
+            }
+        }, 100);
+    }
+});
+
+// Handle visibility change
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        const currentPage = getCurrentPage();
+        if (currentPage === 'settings') {
+            console.log('🔍 Settings page became visible, checking theme toggle...');
+            setTimeout(() => {
+                const btn = document.getElementById('themeToggle');
+                if (btn && (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null)) {
+                    if (typeof window.ensureSettingsThemeToggle === 'function') {
+                        window.ensureSettingsThemeToggle();
+                    } else if (typeof window.setupThemeToggle === 'function') {
+                        window.setupThemeToggle();
+                    }
+                }
+            }, 500);
+        }
+    }
+});
 
 // Setup theme toggle functionality - Improved with better timing and single listener
 function setupThemeToggle() {
