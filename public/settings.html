@@ -2960,10 +2960,12 @@
             const btn = document.getElementById('themeToggle');
             if (btn && typeof window.toggleTheme === 'function') {
                 // Button exists and toggleTheme is available, but might not be initialized
-                if (btn.getAttribute('data-listener-attached') !== 'true') {
+                if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
                     console.log('🔄 Immediate check: Button exists but no listener, initializing...');
                     if (typeof initializeSettingsPage === 'function') {
                         initializeSettingsPage();
+                    } else if (typeof window.ensureSettingsThemeToggle === 'function') {
+                        window.ensureSettingsThemeToggle();
                     }
                 }
             }
