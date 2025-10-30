@@ -3166,22 +3166,35 @@
         
         // CRITICAL: Immediate synchronous check when script loads
         // This runs as soon as the script tag executes, before any events
+        console.log('🔍 Settings page script tag executing...');
         (function immediateInitCheck() {
+            console.log('🔍 Immediate check function running...');
             const checkAndInit = () => {
                 const btn = document.getElementById('themeToggle');
+                console.log('🔍 Checking button:', btn ? 'found' : 'not found');
                 if (btn) {
+                    const hasListener = btn.getAttribute('data-listener-attached') === 'true';
+                    const hasOnclick = btn.onclick !== null;
+                    console.log('🔍 Button state - listener:', hasListener, 'onclick:', hasOnclick);
                     // Check if listener is missing
-                    if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
+                    if (!hasListener || !hasOnclick) {
                         console.log('🔄 IMMEDIATE INIT CHECK: Button exists but no listener, initializing NOW...');
                         // Call initialization immediately - don't wait for toggleTheme
                         setTimeout(() => {
+                            console.log('🔍 About to call initializeSettingsPage...');
                             if (typeof initializeSettingsPage === 'function') {
+                                console.log('🔍 Calling initializeSettingsPage (local)...');
                                 initializeSettingsPage();
                             } else if (typeof window.initializeSettingsPage === 'function') {
+                                console.log('🔍 Calling initializeSettingsPage (window)...');
                                 window.initializeSettingsPage();
+                            } else {
+                                console.error('❌ initializeSettingsPage not found!');
                             }
                         }, 50); // Very short delay to ensure DOM is ready
                         return true; // Found and will initialize
+                    } else {
+                        console.log('✅ Button already has listener attached');
                     }
                 }
                 return false; // Button not found or already has listener
@@ -3189,10 +3202,12 @@
             
             // Try immediately
             if (!checkAndInit()) {
+                console.log('🔍 Button not found or already initialized, will retry...');
                 // If button doesn't exist yet or toggleTheme not available, keep checking
                 let attempts = 0;
                 const retryCheck = setInterval(() => {
                     attempts++;
+                    console.log(`🔍 Retry attempt ${attempts}...`);
                     if (checkAndInit() || attempts >= 20) {
                         clearInterval(retryCheck);
                     }
