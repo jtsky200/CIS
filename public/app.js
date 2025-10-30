@@ -3679,12 +3679,17 @@ async function previewDocument(docId, type) {
         // Try to fetch document metadata from API
         try {
             const apiBase = window.API_BASE || API_BASE || 'https://us-central1-cis-de.cloudfunctions.net';
-            const response = await fetch(`${apiBase}/viewDocument?docId=${docId}&type=${type}&format=json`);
+            const apiUrl = `${apiBase}/viewDocument?docId=${docId}&type=${type}&format=json`;
+            console.log('📡 Fetching from API:', apiUrl);
+            const response = await fetch(apiUrl);
+            console.log('📡 API response status:', response.status);
             if (response.ok) {
                 const data = await response.json();
                 doc = { id: docId, ...data };
                 console.log('✅ Document fetched from API');
             } else {
+                const errorText = await response.text();
+                console.error('❌ API error:', response.status, errorText);
                 showMessage('Dokument nicht gefunden', 'error');
                 return;
             }
