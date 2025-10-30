@@ -108,6 +108,30 @@
     <link rel="stylesheet" href="styles.css?v=1730000017">
     <link rel="stylesheet" href="settings-redesign.css?v=1730000017">
     <script src="app.js?v=1730000020"></script>
+    <script>
+        // Wait for app.js to load before initializing settings-specific code
+        (function() {
+            // Ensure app.js has loaded by checking for critical functions
+            function waitForAppJS(callback, maxAttempts = 50) {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    if (typeof window.applyTheme === 'function' && typeof window.toggleTheme === 'function') {
+                        clearInterval(checkInterval);
+                        console.log('✅ app.js loaded, proceeding with initialization');
+                        callback();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        console.warn('⚠️ app.js functions not found after waiting, using fallback');
+                        callback();
+                    }
+                }, 100);
+            }
+            
+            // Store wait function for use in DOMContentLoaded
+            window.waitForAppJS = waitForAppJS;
+        })();
+    </script>
     <script src="cis-export-system.js?v=1730000020"></script>
     <script src="general-settings.js?v=1730000020"></script>
     <script src="kb-functions.js?v=1730000017"></script>
@@ -2888,6 +2912,20 @@
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Settings page loaded');
+            
+            // Wait for app.js to fully load before initializing
+            if (window.waitForAppJS) {
+                window.waitForAppJS(function() {
+                    initializeSettingsPage();
+                });
+            } else {
+                // Fallback: wait a bit then initialize
+                setTimeout(initializeSettingsPage, 500);
+            }
+        });
+        
+        function initializeSettingsPage() {
+            console.log('🔧 Initializing settings page...');
             
             // Initialize theme FIRST - Use app.js version if available
             if (typeof window.initializeTheme === 'function') {
