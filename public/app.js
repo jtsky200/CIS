@@ -3363,17 +3363,20 @@ function setupThemeToggle() {
     const attemptSetup = () => {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            // Check if already set up AND working
-            if (themeToggle.getAttribute('data-listener-attached') === 'true') {
-                // Verify it actually has a handler
-                if (themeToggle.onclick !== null) {
-                    console.log('✅ Theme toggle already set up and verified');
-                    return true;
-                } else {
-                    // Listener was removed, reset the flag
-                    console.log('⚠️ Theme toggle flag set but handler missing, re-attaching...');
-                    themeToggle.removeAttribute('data-listener-attached');
-                }
+            // Always verify the listener actually exists - don't trust the flag alone
+            const hasListenerFlag = themeToggle.getAttribute('data-listener-attached') === 'true';
+            const actuallyHasOnclick = themeToggle.onclick !== null;
+            
+            // Only skip if BOTH flag is set AND onclick actually exists
+            if (hasListenerFlag && actuallyHasOnclick) {
+                console.log('✅ Theme toggle already set up and verified');
+                return true;
+            }
+            
+            // If flag is set but onclick is missing, or if neither exist, set it up
+            if (hasListenerFlag && !actuallyHasOnclick) {
+                console.log('⚠️ Theme toggle flag set but handler missing, re-attaching...');
+                themeToggle.removeAttribute('data-listener-attached');
             }
             
             console.log('🔧 Setting up theme toggle button...');
@@ -3416,13 +3419,14 @@ function setupThemeToggle() {
             const themeToggleByClass = document.querySelector('.theme-toggle');
             if (themeToggleByClass) {
                 // Check if already set up
-                if (themeToggleByClass.getAttribute('data-listener-attached') === 'true') {
-                    if (themeToggleByClass.onclick !== null) {
-                        console.log('✅ Theme toggle already set up (by class)');
-                        return true;
-                    } else {
-                        themeToggleByClass.removeAttribute('data-listener-attached');
-                    }
+                const hasListenerFlag = themeToggleByClass.getAttribute('data-listener-attached') === 'true';
+                const actuallyHasOnclick = themeToggleByClass.onclick !== null;
+                
+                if (hasListenerFlag && actuallyHasOnclick) {
+                    console.log('✅ Theme toggle already set up (by class)');
+                    return true;
+                } else if (hasListenerFlag && !actuallyHasOnclick) {
+                    themeToggleByClass.removeAttribute('data-listener-attached');
                 }
                 
                 console.log('🔧 Setting up theme toggle button (by class)...');
