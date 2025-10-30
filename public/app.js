@@ -2290,7 +2290,8 @@ function initializePage(page) {
     
     // Page-specific initialization
     if (page === 'chat') {
-        if (typeof initChat === 'function') initChat();
+        // Skip initChat() on chat.html - it has its own initialization logic
+        // Only initialize chat history if function exists
         if (typeof initChatHistory === 'function') initChatHistory();
     } else if (page === 'settings') {
         if (typeof loadKnowledgeBase === 'function') loadKnowledgeBase();
