@@ -4406,13 +4406,15 @@ button, input, select, textarea, a, .clickable {
 }
 
 .control-bar-send {
-    background: #2d2d2d;
-    color: white;
+    background: transparent;
+    color: var(--text-color);
     opacity: 1;
+    font-weight: 500;
 }
 
 .control-bar-send:hover {
-    background: #404040;
+    background: var(--surface-color);
+    color: var(--text-color);
     opacity: 1;
 }
 
@@ -4587,12 +4589,13 @@ button, input, select, textarea, a, .clickable {
 }
 
 [data-theme="dark"] .control-bar-send {
-    background: #404040;
+    background: transparent;
     color: #e0e0e0;
 }
 
 [data-theme="dark"] .control-bar-send:hover {
-    background: #555555;
+    background: #374151;
+    color: #f9fafb;
     opacity: 1;
 }
 
