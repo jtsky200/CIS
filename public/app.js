@@ -32,7 +32,7 @@ function applyTheme(theme) {
     document.body.setAttribute('data-theme', theme);
     
     // Apply theme to all page containers
-    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container');
+    const pageContainers = document.querySelectorAll('.page, .dashboard-container, .troubleshooting-container, .settings-page, .chat-container, .settings-container');
     pageContainers.forEach(container => {
         container.setAttribute('data-theme', theme);
     });
@@ -84,6 +84,9 @@ function applyTheme(theme) {
     // Update theme toggle button appearance
     updateThemeToggle(theme);
 }
+
+// Make applyTheme globally accessible
+window.applyTheme = applyTheme;
 
 // Define toggleTheme function early to ensure it's available immediately
 window.toggleTheme = async function() {

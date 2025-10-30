@@ -13,6 +13,12 @@
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 document.documentElement.setAttribute('data-theme', savedTheme);
                 document.body.setAttribute('data-theme', savedTheme);
+                
+                // Apply theme to settings container immediately
+                const settingsContainer = document.querySelector('.settings-container');
+                if (settingsContainer) {
+                    settingsContainer.setAttribute('data-theme', savedTheme);
+                }
             } catch(e) {}
         })();
         
@@ -2942,6 +2948,14 @@
                     window.applyTheme(savedTheme);
                 }
             }
+            
+            // Call applyTheme after a short delay to ensure DOM is ready
+            setTimeout(() => {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (typeof window.applyTheme === 'function') {
+                    window.applyTheme(savedTheme);
+                }
+            }, 100);
             
             // Setup theme toggle - Use app.js version
             console.log('🔧 Setting up theme toggle...');
