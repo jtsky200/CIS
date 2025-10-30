@@ -3953,6 +3953,11 @@ button, input, select, textarea, a, .clickable {
     opacity: 0.8;
 }
 
+[data-theme="dark"] .quick-question-btn svg {
+    color: #9ca3af;
+    opacity: 0.9;
+}
+
 /* Input Wrapper - Initial Position (Position 1) */
 .input-wrapper-initial {
     margin-top: 40px;
@@ -4384,7 +4389,7 @@ button, input, select, textarea, a, .clickable {
     border-radius: 50%;
     background: transparent;
     border: none;
-    color: var(--text-muted);
+    color: #6b7280;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -4586,9 +4591,15 @@ button, input, select, textarea, a, .clickable {
     border-top: none;
 }
 
+[data-theme="dark"] .control-bar-btn {
+    color: #9ca3af;
+    opacity: 0.8;
+}
+
 [data-theme="dark"] .control-bar-btn:hover {
     background: #404040;
     color: #e0e0e0;
+    opacity: 1;
 }
 
 [data-theme="dark"] .control-bar-send {
