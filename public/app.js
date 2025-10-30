@@ -3646,23 +3646,53 @@ async function previewDocument(docId, type) {
     
     // Find the document in the appropriate array
     let doc = null;
-    if (type === 'knowledge') {
-        if (typeof knowledgeBase !== 'undefined' && Array.isArray(knowledgeBase)) {
-            doc = knowledgeBase.find(d => d.id === docId);
-        } else if (typeof window.knowledgeBase !== 'undefined' && Array.isArray(window.knowledgeBase)) {
-            doc = window.knowledgeBase.find(d => d.id === docId);
+    try {
+        if (type === 'knowledge') {
+            if (typeof window.knowledgeBase !== 'undefined' && Array.isArray(window.knowledgeBase)) {
+                doc = window.knowledgeBase.find(d => d.id === docId);
+            } else if (typeof knowledgeBase !== 'undefined' && Array.isArray(knowledgeBase)) {
+                doc = knowledgeBase.find(d => d.id === docId);
+            }
+        } else if (type === 'technical') {
+            if (typeof window.technicalDatabase !== 'undefined' && Array.isArray(window.technicalDatabase)) {
+                doc = window.technicalDatabase.find(d => d.id === docId);
+            } else {
+                try {
+                    if (typeof technicalDatabase !== 'undefined' && Array.isArray(technicalDatabase)) {
+                        doc = technicalDatabase.find(d => d.id === docId);
+                    }
+                } catch (e) {
+                    // Variable might be in temporal dead zone, try window
+                    if (typeof window.technicalDatabase !== 'undefined' && Array.isArray(window.technicalDatabase)) {
+                        doc = window.technicalDatabase.find(d => d.id === docId);
+                    }
+                }
+            }
         }
-    } else if (type === 'technical') {
-        if (typeof technicalDatabase !== 'undefined' && Array.isArray(technicalDatabase)) {
-            doc = technicalDatabase.find(d => d.id === docId);
-        } else if (typeof window.technicalDatabase !== 'undefined' && Array.isArray(window.technicalDatabase)) {
-            doc = window.technicalDatabase.find(d => d.id === docId);
-        }
+    } catch (error) {
+        console.error('Error accessing database arrays:', error);
+        // Try to fetch document directly from API if arrays aren't available
     }
     
     if (!doc) {
-        showMessage('Dokument nicht gefunden', 'error');
-        return;
+        console.error('❌ Document not found in arrays, trying to fetch from API...');
+        // Try to fetch document metadata from API
+        try {
+            const apiBase = window.API_BASE || API_BASE || 'https://us-central1-cis-de.cloudfunctions.net';
+            const response = await fetch(`${apiBase}/viewDocument?docId=${docId}&type=${type}&format=json`);
+            if (response.ok) {
+                const data = await response.json();
+                doc = { id: docId, ...data };
+                console.log('✅ Document fetched from API');
+            } else {
+                showMessage('Dokument nicht gefunden', 'error');
+                return;
+            }
+        } catch (error) {
+            console.error('Error fetching document:', error);
+            showMessage('Dokument nicht gefunden', 'error');
+            return;
+        }
     }
     
     // Fetch full document content if not available locally
