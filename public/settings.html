@@ -3167,19 +3167,36 @@
         // CRITICAL: Immediate synchronous check when script loads
         // This runs as soon as the script tag executes, before any events
         (function immediateInitCheck() {
-            const btn = document.getElementById('themeToggle');
-            if (btn && typeof window.toggleTheme === 'function') {
-                if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
-                    console.log('🔄 IMMEDIATE INIT CHECK: Button exists but no listener, initializing NOW...');
-                    // Call initialization immediately
-                    setTimeout(() => {
-                        if (typeof initializeSettingsPage === 'function') {
-                            initializeSettingsPage();
-                        } else if (typeof window.initializeSettingsPage === 'function') {
-                            window.initializeSettingsPage();
-                        }
-                    }, 50); // Very short delay to ensure DOM is ready
+            const checkAndInit = () => {
+                const btn = document.getElementById('themeToggle');
+                if (btn) {
+                    // Check if listener is missing
+                    if (btn.getAttribute('data-listener-attached') !== 'true' || btn.onclick === null) {
+                        console.log('🔄 IMMEDIATE INIT CHECK: Button exists but no listener, initializing NOW...');
+                        // Call initialization immediately - don't wait for toggleTheme
+                        setTimeout(() => {
+                            if (typeof initializeSettingsPage === 'function') {
+                                initializeSettingsPage();
+                            } else if (typeof window.initializeSettingsPage === 'function') {
+                                window.initializeSettingsPage();
+                            }
+                        }, 50); // Very short delay to ensure DOM is ready
+                        return true; // Found and will initialize
+                    }
                 }
+                return false; // Button not found or already has listener
+            };
+            
+            // Try immediately
+            if (!checkAndInit()) {
+                // If button doesn't exist yet or toggleTheme not available, keep checking
+                let attempts = 0;
+                const retryCheck = setInterval(() => {
+                    attempts++;
+                    if (checkAndInit() || attempts >= 20) {
+                        clearInterval(retryCheck);
+                    }
+                }, 200); // Check every 200ms
             }
         })();
 
