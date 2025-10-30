@@ -4011,6 +4011,55 @@ button, input, select, textarea, a, .clickable {
     color: var(--text-color);
 }
 
+.modern-message-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.modern-message:hover .modern-message-actions {
+    opacity: 1;
+}
+
+.message-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    opacity: 0.7;
+}
+
+.message-action-btn:hover {
+    background: var(--background-color);
+    color: var(--text-color);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.message-action-btn:active {
+    transform: scale(0.95);
+}
+
+[data-theme="dark"] .message-action-btn {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .message-action-btn:hover {
+    background: #374151;
+    color: #f9fafb;
+}
+
 @keyframes messageSlideIn {
     from {
         opacity: 0;
