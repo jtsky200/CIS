@@ -322,23 +322,6 @@
         }
         
         // Initialize on page load
-            container.innerHTML = '';
-            
-            selected.forEach(suggestion => {
-                const button = document.createElement('button');
-                button.className = 'quick-question-btn';
-                button.onclick = () => sendQuickQuestion(suggestion.question);
-                button.innerHTML = `
-                    ${suggestion.icon}
-                    <span>${suggestion.label}</span>
-                `;
-                container.appendChild(button);
-            });
-            
-            console.log(`✅ Initialized ${selected.length} quick question buttons`);
-        }
-        
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Page loaded');
             initializeChat();
