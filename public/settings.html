@@ -2915,6 +2915,12 @@
         // Old applyBrandingToNavigation function removed - now using database version above
         // Theme functions are now defined in the first script tag for early loading
 
+        // Define initializeSettingsPage function FIRST so it's always available
+        // This is critical for navigation scenarios where scripts load after DOMContentLoaded
+        
+        // Make function globally accessible
+        window.initializeSettingsPage = initializeSettingsPage;
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Settings page loaded');
