@@ -51,8 +51,8 @@
                         
                         <div class="quick-questions" id="quickQuestions">
                             <!-- Will be populated dynamically with random suggestions -->
-        </div>
-        
+                        </div>
+                        
                         <!-- Input Area - Initially inside welcome state (Position 1) -->
                         <div class="modern-chat-input-wrapper input-wrapper-initial" id="chatInputWrapper">
                             <div class="modern-chat-input-container">
@@ -201,10 +201,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path>
                 </svg>`
             }
-        ];
+        let isProcessing = false;
+        let knowledgeBaseData = [];
+        let technicalDatabaseData = [];
         
         // Suggestion bubbles pool with different icons - Car Industry Themed
-        const suggestionPool = [
             {
                 question: 'Was kostet der Cadillac LYRIQ in der Schweiz?',
                 label: 'Preise & Ausstattung',
